@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.env
+.ipynb_checkpoints/
+.DS_Store
+results/tmp_trainer/
+data/winning-args-corpus/utterances.jsonl
