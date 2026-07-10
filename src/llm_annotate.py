@@ -37,10 +37,11 @@ FEWSHOT_EXAMPLES = [
         "label": "agree",
     },
     {
-        "parent": "Sometimes it's both. Many medications associated with mental health "
-        "have warnings that you may gain weight while taking them, as do birth "
-        "controls and a host of other meds.",
-        "reply": "It's not both. It just isn't.",
+        "parent": "Complexity != worth. Dungeons and Dragons is complex - I don't "
+        "expect a college department dedicated to it.",
+        "reply": "No, it doesn't equal worth, but most of your complaints about "
+        "\"worthless\" academic pursuits seem to grossly oversimplifying or "
+        "completely misunderstanding those fields.",
         "label": "disagree",
     },
     {
