@@ -1,5 +1,5 @@
 ,agree,disagree,question,statement
-agree,0,0,0,0
-disagree,1,0,0,0
-question,0,0,0,0
-statement,4,0,0,0
+agree,25,15,0,24
+disagree,2,62,11,70
+question,0,2,32,10
+statement,2,16,3,26
