@@ -30,27 +30,41 @@ def load_env() -> None:
     load_dotenv()
 
 
+FEWSHOT_EXAMPLES = [
+    {
+        "parent": "There are more than 2 colours",
+        "reply": "Exactly. Not everything is black and white.",
+        "label": "agree",
+    },
+    {
+        "parent": "Sometimes it's both. Many medications associated with mental health "
+        "have warnings that you may gain weight while taking them, as do birth "
+        "controls and a host of other meds.",
+        "reply": "It's not both. It just isn't.",
+        "label": "disagree",
+    },
+    {
+        "parent": "They have nukes",
+        "reply": "Are they insane enough to use them though?",
+        "label": "question",
+    },
+    {
+        "parent": "Sounds horrible huh? But seriously, the only rule is that they "
+        "can't make more than 2 million, so yeah. They'd have to give it away.",
+        "reply": "Some would burn it first!",
+        "label": "statement",
+    },
+]
+
+
 def build_prompt(parent: str, reply: str, mode: str) -> str:
     examples = ""
     if mode == "fewshot":
-        examples = """
-Examples:
-Parent: I think public transit should be free.
-Reply: I agree that it would make commuting fairer.
-Label: agree
-
-Parent: I think public transit should be free.
-Reply: I disagree because the operating costs still need funding.
-Label: disagree
-
-Parent: I think public transit should be free.
-Reply: What evidence shows this would reduce traffic?
-Label: question
-
-Parent: I think public transit should be free.
-Reply: The policy would mainly affect commuters in large cities.
-Label: statement
-"""
+        blocks = [
+            f"Parent: {ex['parent']}\nReply: {ex['reply']}\nLabel: {ex['label']}"
+            for ex in FEWSHOT_EXAMPLES
+        ]
+        examples = "\nExamples:\n" + "\n\n".join(blocks) + "\n"
 
     return f"""Classify the dialogue act of the Reddit CMV reply.
 Allowed labels: {", ".join(DIALOGUE_LABELS)}.
@@ -141,6 +155,10 @@ def run_strategy_a(mode: str, limit: int | None = None, mock: bool = False) -> D
     ensure_results_dirs()
     set_seed(42)
     df = load_gold_data()
+
+    fewshot_pairs = {(ex["parent"], ex["reply"]) for ex in FEWSHOT_EXAMPLES}
+    df = df[~df.apply(lambda row: (row["Parent"], row["Reply"]) in fewshot_pairs, axis=1)]
+
     if limit is not None:
         df = df.head(limit).copy()
 
