@@ -6,11 +6,11 @@
   "input_csv": "data/task3_silver_candidates_10k.csv",
   "output_csv": "data/task3_silver_labeled_10k.csv",
   "rows": 10000,
-  "fallback_count": 88,
+  "fallback_count": 93,
   "label_counts": {
-    "disagree": 4400,
-    "statement": 4075,
-    "question": 1191,
-    "agree": 334
+    "disagree": 4401,
+    "statement": 4076,
+    "question": 1187,
+    "agree": 336
   }
 }

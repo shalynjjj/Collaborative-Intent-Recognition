@@ -44,9 +44,9 @@ def load_utterance_pairs(jsonl_path: Path) -> pd.DataFrame:
 
 def remove_gold_overlap(candidates: pd.DataFrame) -> pd.DataFrame:
     gold = load_gold_data()
-    gold_pairs = set(zip(gold["Parent"].astype(str), gold["Reply"].astype(str)))
+    gold_pairs = set(zip(gold["Parent"].map(_norm_text), gold["Reply"].map(_norm_text)))
     mask = [
-        (str(parent), str(reply)) not in gold_pairs
+        (_norm_text(parent), _norm_text(reply)) not in gold_pairs
         for parent, reply in zip(candidates["Parent"], candidates["Reply"])
     ]
     return candidates.loc[mask].reset_index(drop=True)
@@ -57,18 +57,14 @@ def sample_silver_candidates(
     output_csv: Path,
     size: int,
     seed: int,
-    min_parent_chars: int,
-    min_reply_chars: int,
-    max_parent_chars: int,
-    max_reply_chars: int,
+    min_reply_tokens: int,
+    max_reply_tokens: int,
 ) -> pd.DataFrame:
     set_seed(seed)
     candidates = load_utterance_pairs(input_jsonl)
     candidates = remove_gold_overlap(candidates)
-    candidates = candidates[
-        candidates["Parent"].str.len().between(min_parent_chars, max_parent_chars)
-        & candidates["Reply"].str.len().between(min_reply_chars, max_reply_chars)
-    ].reset_index(drop=True)
+    reply_token_counts = candidates["Reply"].str.split().str.len()
+    candidates = candidates[reply_token_counts.between(min_reply_tokens, max_reply_tokens)].reset_index(drop=True)
     if size > len(candidates):
         raise ValueError(f"Requested {size} rows, but only {len(candidates)} candidates remain.")
     sampled = candidates.sample(n=size, random_state=seed).reset_index(drop=True)
@@ -83,10 +79,8 @@ def main() -> None:
     parser.add_argument("--output-csv", type=Path, default=SILVER_CANDIDATES_CSV)
     parser.add_argument("--size", type=int, default=SILVER_CANDIDATE_SIZE)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--min-parent-chars", type=int, default=20)
-    parser.add_argument("--min-reply-chars", type=int, default=5)
-    parser.add_argument("--max-parent-chars", type=int, default=4000)
-    parser.add_argument("--max-reply-chars", type=int, default=2000)
+    parser.add_argument("--min-reply-tokens", type=int, default=1)
+    parser.add_argument("--max-reply-tokens", type=int, default=30)
     args = parser.parse_args()
 
     sampled = sample_silver_candidates(
@@ -94,10 +88,8 @@ def main() -> None:
         output_csv=args.output_csv,
         size=args.size,
         seed=args.seed,
-        min_parent_chars=args.min_parent_chars,
-        min_reply_chars=args.min_reply_chars,
-        max_parent_chars=args.max_parent_chars,
-        max_reply_chars=args.max_reply_chars,
+        min_reply_tokens=args.min_reply_tokens,
+        max_reply_tokens=args.max_reply_tokens,
     )
     print(f"Wrote {len(sampled)} rows to {args.output_csv}")
     print(sampled[["parent_id", "reply_id", "Parent", "Reply"]].head(3).to_string(index=False))
