@@ -7,7 +7,7 @@
       "precision": 0.0,
       "recall": 0.0,
       "f1-score": 0.0,
-      "support": 12.0
+      "support": 13.0
     },
     "disagree": {
       "precision": 0.48333333333333334,
@@ -25,7 +25,7 @@
       "precision": 0.0,
       "recall": 0.0,
       "f1-score": 0.0,
-      "support": 10.0
+      "support": 9.0
     },
     "accuracy": 0.48333333333333334,
     "macro avg": {
@@ -44,7 +44,7 @@
   "confusion_matrix": [
     [
       0,
-      12,
+      13,
       0,
       0
     ],
@@ -62,7 +62,7 @@
     ],
     [
       0,
-      10,
+      9,
       0,
       0
     ]
@@ -74,7 +74,8 @@
     "statement"
   ],
   "strategy": "C",
-  "fold": 1,
-  "seed": 2024,
-  "dry_run": true
+  "fold": 5,
+  "seed": 2026,
+  "dry_run": false,
+  "use_class_weights": true
 }

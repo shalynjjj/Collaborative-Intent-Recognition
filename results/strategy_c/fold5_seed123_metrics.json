@@ -76,5 +76,6 @@
   "strategy": "C",
   "fold": 5,
   "seed": 123,
-  "dry_run": true
+  "dry_run": false,
+  "use_class_weights": true
 }

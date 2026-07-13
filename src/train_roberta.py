@@ -293,9 +293,56 @@ def run_strategy_b(
     return summarize_runs(rows, ["silver_size"], STRATEGY_B_DIR / "summary.csv")
 
 
+def _clear_strategy_c_outputs() -> None:
+    STRATEGY_C_DIR.mkdir(parents=True, exist_ok=True)
+    for path in STRATEGY_C_DIR.glob("fold*_seed*_*"):
+        if path.is_file():
+            path.unlink()
+    for filename in ("summary.csv", "summary_by_fold.csv"):
+        path = STRATEGY_C_DIR / filename
+        if path.exists():
+            path.unlink()
+
+
+def _summarize_strategy_c(rows: List[Dict]) -> pd.DataFrame:
+    df = pd.DataFrame(rows)
+    metric_cols = ["macro_f1", "cohen_kappa"]
+    by_fold = (
+        df.groupby("fold", dropna=False)[metric_cols]
+        .agg(["mean", "std"])
+        .reset_index()
+    )
+    by_fold.columns = [
+        "_".join(str(part) for part in col if part) if isinstance(col, tuple) else col
+        for col in by_fold.columns
+    ]
+    STRATEGY_C_DIR.mkdir(parents=True, exist_ok=True)
+    by_fold.to_csv(STRATEGY_C_DIR / "summary_by_fold.csv", index=False)
+
+    summary = pd.DataFrame(
+        [
+            {
+                "folds": int(df["fold"].nunique()),
+                "seeds": ",".join(str(seed) for seed in sorted(df["seed"].unique())),
+                "runs": int(len(df)),
+                "macro_f1_mean": df["macro_f1"].mean(),
+                "macro_f1_std": df["macro_f1"].std(),
+                "cohen_kappa_mean": df["cohen_kappa"].mean(),
+                "cohen_kappa_std": df["cohen_kappa"].std(),
+                "dry_run": bool(df["dry_run"].any()),
+                "use_class_weights": bool(TRAINING.use_class_weights),
+            }
+        ]
+    )
+    summary.to_csv(STRATEGY_C_DIR / "summary.csv", index=False)
+    return summary
+
+
 def run_strategy_c(seeds: List[int] | None = None, dry_run: bool = False) -> pd.DataFrame:
     ensure_results_dirs()
     seeds = seeds or SEEDS
+    if not dry_run:
+        _clear_strategy_c_outputs()
     gold = _prepare_labeled_frame(load_gold_data(), "Dialogue_act")
     splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
@@ -330,10 +377,11 @@ def run_strategy_c(seeds: List[int] | None = None, dry_run: bool = False) -> pd.
                     "seed": seed,
                     "macro_f1": metrics["macro_f1"],
                     "cohen_kappa": metrics["cohen_kappa"],
+                    "dry_run": dry_run,
                 }
             )
 
-    return summarize_runs(rows, ["fold"], STRATEGY_C_DIR / "summary.csv")
+    return _summarize_strategy_c(rows)
 
 
 def main() -> None:
