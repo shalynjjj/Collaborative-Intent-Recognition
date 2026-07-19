@@ -117,6 +117,22 @@ python3 -m src.train_roberta strategy_c --seeds 42 --dry-run
 
 Per-fold, per-seed outputs and `summary.csv` are saved under `results/strategy_c/`.
 
+### Strategy C: Partial Fine-Tuning (Optional)
+
+Full-parameter fine-tuning of RoBERTa-base on gold-only folds (~240 rows per fold) can be unstable and collapse to predicting only 1-2 classes, since ~125M parameters are being updated from very little data. `--trainable-layers N` freezes the embeddings and all but the last `N` encoder layers, leaving only those layers plus the classification head trainable:
+
+```bash
+python3 -m src.train_roberta strategy_c --trainable-layers 2
+```
+
+Smoke test:
+
+```bash
+python3 -m src.train_roberta strategy_c --seeds 42 --dry-run --trainable-layers 2
+```
+
+Omitting `--trainable-layers` keeps the original full-parameter fine-tuning behavior. This flag only applies to Strategy C; Strategy B is unaffected.
+
 ## Notebook
 
 `notebooks/stage1_experiments.ipynb` is intentionally thin: it imports from `src/`, runs scripts, and displays saved results.

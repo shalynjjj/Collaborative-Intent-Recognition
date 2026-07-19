@@ -114,11 +114,25 @@ def _compute_class_weights(frame: pd.DataFrame) -> np.ndarray:
     return weights.to_numpy(dtype=np.float32)
 
 
+def _freeze_backbone_layers(model, trainable_layers: int) -> Tuple[int, int]:
+    for param in model.roberta.embeddings.parameters():
+        param.requires_grad = False
+    encoder_layers = model.roberta.encoder.layer
+    num_freeze = max(0, len(encoder_layers) - trainable_layers)
+    for layer in encoder_layers[:num_freeze]:
+        for param in layer.parameters():
+            param.requires_grad = False
+    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    total = sum(p.numel() for p in model.parameters())
+    return trainable, total
+
+
 def _train_and_predict(
     train_df: pd.DataFrame,
     eval_df: pd.DataFrame,
     seed: int,
     train_label_col: str,
+    freeze_layers: int | None = None,
 ) -> List[str]:
     set_seed(seed)
     import torch
@@ -197,6 +211,12 @@ def _train_and_predict(
         id2label=ID2LABEL,
         label2id=LABEL2ID,
     )
+    if freeze_layers is not None:
+        trainable, total = _freeze_backbone_layers(model, freeze_layers)
+        print(
+            f"Partial fine-tuning: {trainable:,}/{total:,} parameters trainable "
+            f"({trainable / total:.1%}), last {freeze_layers} encoder layers unfrozen."
+        )
 
     tmp_root = Path("results") / "tmp_trainer"
     tmp_root.mkdir(parents=True, exist_ok=True)
@@ -233,11 +253,12 @@ def _run_once(
     train_label_col: str,
     eval_label_col: str,
     dry_run: bool,
+    freeze_layers: int | None = None,
 ) -> Tuple[List[str], Dict]:
     predictions = (
         _dry_run_predictions(train_df, eval_df, train_label_col)
         if dry_run
-        else _train_and_predict(train_df, eval_df, seed, train_label_col)
+        else _train_and_predict(train_df, eval_df, seed, train_label_col, freeze_layers)
     )
     metrics = compute_metrics(eval_df[eval_label_col], predictions)
     return predictions, metrics
@@ -338,7 +359,11 @@ def _summarize_strategy_c(rows: List[Dict]) -> pd.DataFrame:
     return summary
 
 
-def run_strategy_c(seeds: List[int] | None = None, dry_run: bool = False) -> pd.DataFrame:
+def run_strategy_c(
+    seeds: List[int] | None = None,
+    dry_run: bool = False,
+    freeze_layers: int | None = None,
+) -> pd.DataFrame:
     ensure_results_dirs()
     seeds = seeds or SEEDS
     if not dry_run:
@@ -362,8 +387,9 @@ def run_strategy_c(seeds: List[int] | None = None, dry_run: bool = False) -> pd.
                 "Dialogue_act",
                 "Dialogue_act",
                 dry_run,
+                freeze_layers,
             )
-            metrics.update({"strategy": "C", "fold": fold, "seed": seed, "dry_run": dry_run})
+            metrics.update({"strategy": "C", "fold": fold, "seed": seed, "dry_run": dry_run, "freeze_layers": freeze_layers})
             metrics.update({"use_class_weights": TRAINING.use_class_weights})
 
             pred_df = eval_df[["Parent", "Reply", "Dialogue_act"]].copy()
@@ -397,12 +423,18 @@ def main() -> None:
     c_parser = subparsers.add_parser("strategy_c")
     c_parser.add_argument("--seeds", type=int, nargs="+", default=SEEDS)
     c_parser.add_argument("--dry-run", action="store_true")
+    c_parser.add_argument(
+        "--trainable-layers",
+        type=int,
+        default=None,
+        help="If set, freeze embeddings and all but the last N encoder layers (partial fine-tuning).",
+    )
 
     args = parser.parse_args()
     if args.strategy == "strategy_b":
         summary = run_strategy_b(args.silver_csv, args.sizes, args.seeds, args.dry_run)
     else:
-        summary = run_strategy_c(args.seeds, args.dry_run)
+        summary = run_strategy_c(args.seeds, args.dry_run, args.trainable_layers)
     print(summary.to_string(index=False))
 
 
