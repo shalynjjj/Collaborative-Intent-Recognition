@@ -1,0 +1,2 @@
+folds,seeds,runs,macro_f1_mean,macro_f1_std,cohen_kappa_mean,cohen_kappa_std,dry_run,use_class_weights
+5,"42,123,2026",15,0.16911605777619962,0.038609053457586834,-0.011239865052846177,0.02819531993124747,False,True

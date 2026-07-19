@@ -131,6 +131,16 @@ Smoke test:
 python3 -m src.train_roberta strategy_c --seeds 42 --dry-run --trainable-layers 2
 ```
 
+### What We Tried and Found
+
+We tested 3 versions of Strategy C:
+
+1. **Full fine-tuning** (all layers trainable): the model often collapsed and only predicted 1-2 of the 4 classes. macro-F1 ≈ 0.20.
+2. **`--trainable-layers 2`**: did not fix it. The model collapsed even harder, predicting only 1 class every time, no matter the input. macro-F1 ≈ 0.16.
+3. **`--trainable-layers 4`**: same collapse. macro-F1 ≈ 0.17.
+
+Since freezing more or fewer layers gave almost the same broken result, the number of frozen layers is probably not the real cause. A more likely cause: the class-weighted loss ([train_roberta.py:110-114](src/train_roberta.py#L110-L114)) combined with no warmup steps, on very little data (~200 rows per fold), may push the model toward a "shortcut" answer very early in training that it never recovers from. Next step: try turning off or lowering the class weights and adding warmup, instead of changing the frozen layers further.
+
 Omitting `--trainable-layers` keeps the original full-parameter fine-tuning behavior. This flag only applies to Strategy C; Strategy B is unaffected.
 
 ## Notebook
