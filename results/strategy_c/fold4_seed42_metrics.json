@@ -1,24 +1,24 @@
 {
-  "macro_f1": 0.12450592885375494,
-  "cohen_kappa": 0.020319303338171335,
+  "macro_f1": 0.27286585365853655,
+  "cohen_kappa": 0.053156146179401786,
   "fallback_count": 0,
   "classification_report": {
     "agree": {
-      "precision": 0.23214285714285715,
-      "recall": 1.0,
-      "f1-score": 0.37681159420289856,
+      "precision": 0.25,
+      "recall": 0.5384615384615384,
+      "f1-score": 0.34146341463414637,
       "support": 13.0
     },
     "disagree": {
-      "precision": 0.5,
-      "recall": 0.06896551724137931,
-      "f1-score": 0.12121212121212122,
+      "precision": 0.48148148148148145,
+      "recall": 0.4482758620689655,
+      "f1-score": 0.4642857142857143,
       "support": 29.0
     },
     "question": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
+      "precision": 0.4,
+      "recall": 0.2222222222222222,
+      "f1-score": 0.2857142857142857,
       "support": 9.0
     },
     "statement": {
@@ -27,42 +27,42 @@
       "f1-score": 0.0,
       "support": 9.0
     },
-    "accuracy": 0.25,
+    "accuracy": 0.36666666666666664,
     "macro avg": {
-      "precision": 0.1830357142857143,
-      "recall": 0.2672413793103448,
-      "f1-score": 0.12450592885375494,
+      "precision": 0.2828703703703703,
+      "recall": 0.30223990568818154,
+      "f1-score": 0.27286585365853655,
       "support": 60.0
     },
     "weighted avg": {
-      "precision": 0.29196428571428573,
-      "recall": 0.25,
-      "f1-score": 0.14022837066315327,
+      "precision": 0.3468827160493827,
+      "recall": 0.36666666666666664,
+      "f1-score": 0.3412456445993031,
       "support": 60.0
     }
   },
   "confusion_matrix": [
     [
+      7,
+      5,
+      1,
+      0
+    ],
+    [
+      14,
       13,
-      0,
-      0,
-      0
-    ],
-    [
-      27,
       2,
-      0,
       0
     ],
     [
-      8,
-      1,
-      0,
+      2,
+      5,
+      2,
       0
     ],
     [
-      8,
-      1,
+      5,
+      4,
       0,
       0
     ]
@@ -77,6 +77,6 @@
   "fold": 4,
   "seed": 42,
   "dry_run": false,
-  "freeze_layers": 2,
+  "freeze_layers": 4,
   "use_class_weights": true
 }
