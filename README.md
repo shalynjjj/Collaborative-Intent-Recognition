@@ -95,7 +95,9 @@ python3 -m src.train_roberta strategy_b --silver-csv results/strategy_a/zeroshot
 
 The default Strategy B learning-curve sizes are:
 
-`3000`, `5000`, `8000`, `10000`
+`500`, `1000`, `1500`, `2000`, `2500`, `3000`, `5000`, `8000`, `10000`
+
+The `500`-`2500` sizes were added to resolve the shape of the curve below 3000, since macro-F1 was already flat across `3000`-`10000`.
 
 Per-seed outputs and `summary.csv` are saved under `results/strategy_b/`.
 
