@@ -77,5 +77,6 @@
   "fold": 5,
   "seed": 123,
   "dry_run": false,
+  "freeze_layers": 2,
   "use_class_weights": true
 }

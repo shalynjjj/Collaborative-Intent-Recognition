@@ -1,18 +1,18 @@
 {
-  "macro_f1": 0.20445736434108527,
-  "cohen_kappa": 0.02872062663185382,
+  "macro_f1": 0.17511520737327188,
+  "cohen_kappa": -0.044434264773247856,
   "fallback_count": 0,
   "classification_report": {
     "agree": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
+      "precision": 0.10526315789473684,
+      "recall": 0.16666666666666666,
+      "f1-score": 0.12903225806451613,
       "support": 12.0
     },
     "disagree": {
-      "precision": 0.49122807017543857,
-      "recall": 0.9655172413793104,
-      "f1-score": 0.6511627906976745,
+      "precision": 0.4878048780487805,
+      "recall": 0.6896551724137931,
+      "f1-score": 0.5714285714285714,
       "support": 29.0
     },
     "question": {
@@ -22,49 +22,49 @@
       "support": 9.0
     },
     "statement": {
-      "precision": 0.5,
-      "recall": 0.1,
-      "f1-score": 0.16666666666666666,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
       "support": 10.0
     },
-    "accuracy": 0.48333333333333334,
+    "accuracy": 0.36666666666666664,
     "macro avg": {
-      "precision": 0.24780701754385964,
-      "recall": 0.2663793103448276,
-      "f1-score": 0.20445736434108527,
+      "precision": 0.14826700898587933,
+      "recall": 0.21408045977011494,
+      "f1-score": 0.17511520737327188,
       "support": 60.0
     },
     "weighted avg": {
-      "precision": 0.32076023391812863,
-      "recall": 0.48333333333333334,
-      "f1-score": 0.34250645994832046,
+      "precision": 0.2568249893025246,
+      "recall": 0.36666666666666664,
+      "f1-score": 0.30199692780337933,
       "support": 60.0
     }
   },
   "confusion_matrix": [
     [
-      0,
-      11,
-      0,
-      1
-    ],
-    [
-      1,
-      28,
+      2,
+      10,
       0,
       0
     ],
     [
-      0,
       9,
+      20,
       0,
       0
     ],
     [
+      6,
+      3,
       0,
-      9,
+      0
+    ],
+    [
+      2,
+      8,
       0,
-      1
+      0
     ]
   ],
   "labels": [
@@ -77,5 +77,6 @@
   "fold": 1,
   "seed": 2026,
   "dry_run": false,
+  "freeze_layers": 2,
   "use_class_weights": true
 }
