@@ -1,0 +1,97 @@
+{
+  "macro_f1": 0.48265633211869774,
+  "cohen_kappa": 0.2960047527105303,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.7647058823529411,
+      "recall": 0.203125,
+      "f1-score": 0.32098765432098764,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.6976744186046512,
+      "recall": 0.41379310344827586,
+      "f1-score": 0.5194805194805194,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.6938775510204082,
+      "recall": 0.7727272727272727,
+      "f1-score": 0.7311827956989247,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.23648648648648649,
+      "recall": 0.7446808510638298,
+      "f1-score": 0.358974358974359,
+      "support": 47.0
+    },
+    "accuracy": 0.47333333333333333,
+    "macro avg": {
+      "precision": 0.5981860846161217,
+      "recall": 0.5335815568098445,
+      "f1-score": 0.48265633211869774,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.639164814260085,
+      "recall": 0.47333333333333333,
+      "f1-score": 0.4830390769458868,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      13,
+      13,
+      0,
+      38
+    ],
+    [
+      2,
+      60,
+      12,
+      71
+    ],
+    [
+      1,
+      5,
+      34,
+      4
+    ],
+    [
+      1,
+      8,
+      3,
+      35
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 5000,
+  "sample_seed": 123,
+  "train_seed": 42,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 17,
+    "disagree": 86,
+    "question": 49,
+    "statement": 148
+  },
+  "missing_prediction_classes": [],
+  "class_collapse": false,
+  "train_rows": 4276,
+  "validation_rows": 724,
+  "group_column": "source_root",
+  "train_source_root_count": 1725,
+  "validation_source_root_count": 305,
+  "source_root_overlap_count": 0
+}

@@ -90,8 +90,28 @@ python3 -m src.train_roberta strategy_b --silver-csv data/task3_silver_labeled_1
 Smoke test without fine-tuning:
 
 ```bash
-python3 -m src.train_roberta strategy_b --silver-csv results/strategy_a/zeroshot_predictions.csv --sizes 5 --seeds 42 --dry-run
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 100 \
+  --sample-seeds 42 \
+  --train-seeds 42 \
+  --dry-run
 ```
+
+Strategy B now uses two independent seed controls:
+
+- `--sample-seeds` deterministically selects rows from the full silver pool. For a
+  fixed sample seed, larger sizes are nested extensions of smaller sizes.
+- `--train-seeds` controls model initialization, batch order, dropout, and other
+  PyTorch/Trainer randomness.
+
+The inner silver train/validation split is group-aware: all rows with the same
+`source_root` stay in one partition. Every metrics file records the train/validation
+row counts, source-root counts, and `source_root_overlap_count` (which must be zero).
+
+Class weighting can be enabled or disabled explicitly with `--class-weights` and
+`--no-class-weights`. New output filenames include silver size, sample seed, train
+seed, and weight configuration, so independent runs do not overwrite one another.
 
 The default Strategy B learning-curve sizes are:
 
@@ -99,49 +119,170 @@ The default Strategy B learning-curve sizes are:
 
 The `500`-`2500` sizes were added to resolve the shape of the curve below 3000, since macro-F1 was already flat across `3000`-`10000`.
 
-Per-seed outputs and `summary.csv` are saved under `results/strategy_b/`.
+Per-run outputs are saved under `results/strategy_b/`. After every run,
+`runs.csv`, `summary.csv`, and `summary_by_sample.csv` are rebuilt from the union of
+all existing per-run metrics files. Legacy results are preserved and summarized
+separately from the new group-split experiments.
+
+### Strategy B: Scoped Server Runs
+
+Run these only after the dry-run smoke test succeeds.
+
+Key-size experiment (12 real training runs):
+
+```bash
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 1000 2500 \
+  --sample-seeds 42 123 \
+  --train-seeds 42 123 2026 \
+  --class-weights
+```
+
+Class-weight ablation at 2000 silver rows (six real training runs):
+
+```bash
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 2000 \
+  --sample-seeds 42 \
+  --train-seeds 42 123 2026 \
+  --class-weights
+
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 2000 \
+  --sample-seeds 42 \
+  --train-seeds 42 123 2026 \
+  --no-class-weights
+```
+
+The key-size and class-weight checks should be reviewed before the final
+learning-curve completion below.
+
+### Strategy B: Final Learning-Curve Completion
+
+After the scoped checks confirmed the standardized setup, complete the remaining
+sizes with:
+
+```bash
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 500 5000 8000 \
+  --sample-seeds 42 123 \
+  --train-seeds 42 123 2026 \
+  --class-weights
+
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 10000 \
+  --sample-seeds 42 \
+  --train-seeds 42 123 2026 \
+  --class-weights
+```
+
+At size 10000, sample seeds 42 and 123 contain the same complete 10k-row pool
+(different order only), so only sample seed 42 is run. Generate the final plot and
+underlying table after all metrics have been downloaded:
+
+```bash
+python3 -m src.plot_strategy_b_learning_curve
+```
+
+This writes `results/strategy_b/learning_curve.png` and
+`results/strategy_b/learning_curve.csv`. The plot includes Strategy A zero-shot
+(`0.5148`) and few-shot (`0.5916`) reference lines.
+
+### Fixed Gold Benchmark Limitation
+
+Strategy B trains only on silver labels and evaluates every configuration on the same
+300-sample gold benchmark. The gold set is not split further at this stage. Because
+the same benchmark is used to compare configurations, results should be interpreted
+as comparisons on a fixed evaluation benchmark, not as performance on a fully
+untouched held-out test set. This limitation must be stated in the report.
 
 ## Strategy C: RoBERTa on Gold Labels
 
-Runs 5-fold cross-validation with seeds `42`, `123`, and `2026`.
+Runs stratified 5-fold cross-validation with train seeds `42`, `123`, and `2026`.
+The outer folds are fixed with seed `42`; the inner train/validation split is
+controlled separately by `--split-seed` (default `42`).
 
 ```bash
-python3 -m src.train_roberta strategy_c
+python3 -m src.train_roberta strategy_c --model roberta --class-weights
 ```
 
 Smoke test without fine-tuning:
 
 ```bash
-python3 -m src.train_roberta strategy_c --seeds 42 --dry-run
+python3 -m src.train_roberta strategy_c \
+  --model roberta \
+  --seeds 42 \
+  --class-weights \
+  --dry-run
 ```
 
-Per-fold, per-seed outputs and `summary.csv` are saved under `results/strategy_c/`.
+Each train seed's five test folds are concatenated into one 300-row out-of-fold (OOF)
+prediction file. Macro-F1 and kappa are computed once per seed on those 300 OOF rows;
+the final mean and standard deviation are calculated across the three seed-level
+scores, rather than treating 15 fold runs as independent observations.
 
-### Strategy C: Partial Fine-Tuning (Optional)
+Outputs are isolated by model and weight configuration:
 
-Full-parameter fine-tuning of RoBERTa-base on gold-only folds (~240 rows per fold) can be unstable and collapse to predicting only 1-2 classes, since ~125M parameters are being updated from very little data. `--trainable-layers N` freezes the embeddings and all but the last `N` encoder layers, leaving only those layers plus the classification head trainable:
+```text
+results/strategy_c/roberta_weights/
+results/strategy_c/roberta_no_weights/
+results/strategy_c/tfidf_weights/
+```
+
+Each directory contains fold-level files, `fold_runs.csv`, per-seed OOF predictions
+and metrics, `summary_by_seed.csv`, and `summary_oof.csv`. Metrics explicitly record
+missing predicted classes and class-collapse counts.
+
+### Strategy C: Class-Weight Ablation
+
+Run both full-fine-tuning configurations with identical folds, split seed, and train
+seeds. The old `strategy_c_full_backup` cannot be reused because its fold 1-2 test
+membership differs from the current fixed split and its inner split was tied directly
+to the train seed.
 
 ```bash
-python3 -m src.train_roberta strategy_c --trainable-layers 2
+python3 -m src.train_roberta strategy_c \
+  --model roberta \
+  --seeds 42 123 2026 \
+  --split-seed 42 \
+  --class-weights
+
+python3 -m src.train_roberta strategy_c \
+  --model roberta \
+  --seeds 42 123 2026 \
+  --split-seed 42 \
+  --no-class-weights
 ```
 
-Smoke test:
+### Strategy C: TF-IDF Baseline
+
+The TF-IDF vectorizer is fitted inside each outer training fold through an sklearn
+pipeline, so test-fold text never enters vocabulary fitting. This baseline runs on
+CPU:
 
 ```bash
-python3 -m src.train_roberta strategy_c --seeds 42 --dry-run --trainable-layers 2
+python3 -m src.train_roberta strategy_c \
+  --model tfidf \
+  --seeds 42 123 2026 \
+  --class-weights
 ```
 
-### What We Tried and Found
+The current weighted TF-IDF baseline has OOF macro-F1 `0.2485`. The three seed-level
+scores are identical because this solver converged deterministically on these folds.
 
-We tested 3 versions of Strategy C:
+### Previous Partial-Fine-Tuning Finding
 
-1. **Full fine-tuning** (all layers trainable): the model often collapsed and only predicted 1-2 of the 4 classes. macro-F1 ≈ 0.20.
-2. **`--trainable-layers 2`**: did not fix it. The model collapsed even harder, predicting only 1 class every time, no matter the input. macro-F1 ≈ 0.16.
-3. **`--trainable-layers 4`**: same collapse. macro-F1 ≈ 0.17.
-
-Since freezing more or fewer layers gave almost the same broken result, the number of frozen layers is probably not the real cause. A more likely cause: the class-weighted loss ([train_roberta.py:110-114](src/train_roberta.py#L110-L114)) combined with no warmup steps, on very little data (~200 rows per fold), may push the model toward a "shortcut" answer very early in training that it never recovers from. Next step: try turning off or lowering the class weights and adding warmup, instead of changing the frozen layers further.
-
-Omitting `--trainable-layers` keeps the original full-parameter fine-tuning behavior. This flag only applies to Strategy C; Strategy B is unaffected.
+Earlier exploratory runs produced fold-averaged macro-F1 of approximately `0.20` for
+full fine-tuning, `0.16` with only the last 2 layers trainable, and `0.17` with only
+the last 4 layers trainable. None learned all four classes reliably. Partial
+fine-tuning is therefore closed as an experimental direction; it is not exposed in
+the current CLI. Full RoBERTa weights-on/off must be rerun under the standardized OOF
+pipeline before comparison with TF-IDF and Strategy B.
 
 ## Notebook
 
@@ -156,7 +297,8 @@ For the RTX 4090 server, use this order before launching full experiments:
 
 ```bash
 python3 -m src.llm_annotate --mode zeroshot --mock --limit 5
-python3 -m src.train_roberta strategy_c --seeds 42 --dry-run
+python3 -m src.train_roberta strategy_c \
+  --model roberta --seeds 42 --split-seed 42 --class-weights --dry-run
 ```
 
 3. Run the real 15-row Strategy A test:
@@ -165,22 +307,32 @@ python3 -m src.train_roberta strategy_c --seeds 42 --dry-run
 python3 -m src.llm_annotate --mode zeroshot --limit 15
 ```
 
-4. Run one small RoBERTa smoke test only after the real Strategy A test succeeds:
+4. After the 10k silver file has been built and labeled, run the Strategy B dry-run
+   shown in the Strategy B section above. The group-aware split requires the
+   `source_root` column, so Strategy A gold prediction files are not valid smoke-test
+   inputs for Strategy B.
 
 ```bash
 python3 -m src.train_roberta strategy_b \
-  --silver-csv results/strategy_a/zeroshot_predictions.csv \
-  --sizes 15 \
-  --seeds 42
+  --silver-csv data/task3_silver_labeled_10k.csv \
+  --sizes 100 \
+  --sample-seeds 42 \
+  --train-seeds 42 \
+  --dry-run
 ```
 
-5. Run full Strategy C:
+5. Run both standardized full-RoBERTa Strategy C configurations:
 
 ```bash
-python3 -m src.train_roberta strategy_c
+python3 -m src.train_roberta strategy_c \
+  --model roberta --seeds 42 123 2026 --split-seed 42 --class-weights
+python3 -m src.train_roberta strategy_c \
+  --model roberta --seeds 42 123 2026 --split-seed 42 --no-class-weights
 ```
 
-6. Build and label the 10k silver candidate file, then run full Strategy B:
+6. Build and label the 10k silver candidate file, then run only the scoped Strategy B
+   experiments documented above (1000/2500 key sizes and the 2000 class-weight
+   ablation):
 
 ```bash
 python3 -m src.prepare_silver_data
@@ -188,9 +340,9 @@ python3 -m src.llm_annotate \
   --mode zeroshot \
   --input-csv data/task3_silver_candidates_10k.csv \
   --output-csv data/task3_silver_labeled_10k.csv
-python3 -m src.train_roberta strategy_b --silver-csv data/task3_silver_labeled_10k.csv
 ```
 
 Full RoBERTa experiments use `AI-ModelScope/roberta-base`, learning rate `2e-5`, batch size `8`, `3` epochs, and seeds `42`, `123`, `2026`.
 Each training run reserves an inner validation split and loads the checkpoint with the best validation `macro_f1`.
-Class-weighted cross-entropy is enabled to reduce majority-class collapse on the imbalanced gold labels.
+Strategy B retains class-weighted cross-entropy. Strategy C reports a paired
+weights-on/off ablation under identical folds and seeds.

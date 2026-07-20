@@ -1,0 +1,97 @@
+{
+  "macro_f1": 0.5551425779933966,
+  "cohen_kappa": 0.3697962187773126,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.8181818181818182,
+      "recall": 0.421875,
+      "f1-score": 0.5567010309278351,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.6952380952380952,
+      "recall": 0.503448275862069,
+      "f1-score": 0.584,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.6607142857142857,
+      "recall": 0.8409090909090909,
+      "f1-score": 0.74,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.24528301886792453,
+      "recall": 0.5531914893617021,
+      "f1-score": 0.33986928104575165,
+      "support": 47.0
+    },
+    "accuracy": 0.5433333333333333,
+    "macro avg": {
+      "precision": 0.6048543045005309,
+      "recall": 0.5798559640332155,
+      "f1-score": 0.5551425779933966,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.6459096354379373,
+      "recall": 0.5433333333333333,
+      "f1-score": 0.5628090739617725,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      27,
+      12,
+      1,
+      24
+    ],
+    [
+      5,
+      73,
+      14,
+      53
+    ],
+    [
+      0,
+      4,
+      37,
+      3
+    ],
+    [
+      1,
+      16,
+      4,
+      26
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 8000,
+  "sample_seed": 123,
+  "train_seed": 123,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 33,
+    "disagree": 105,
+    "question": 56,
+    "statement": 106
+  },
+  "missing_prediction_classes": [],
+  "class_collapse": false,
+  "train_rows": 6782,
+  "validation_rows": 1218,
+  "group_column": "source_root",
+  "train_source_root_count": 2057,
+  "validation_source_root_count": 364,
+  "source_root_overlap_count": 0
+}

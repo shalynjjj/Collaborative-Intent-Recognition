@@ -1,0 +1,97 @@
+{
+  "macro_f1": 0.5751173433436996,
+  "cohen_kappa": 0.39518879507662463,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.75,
+      "recall": 0.46875,
+      "f1-score": 0.5769230769230769,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.7291666666666666,
+      "recall": 0.4827586206896552,
+      "f1-score": 0.5809128630705395,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.6981132075471698,
+      "recall": 0.8409090909090909,
+      "f1-score": 0.7628865979381443,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.2702702702702703,
+      "recall": 0.6382978723404256,
+      "f1-score": 0.379746835443038,
+      "support": 47.0
+    },
+    "accuracy": 0.5566666666666666,
+    "macro avg": {
+      "precision": 0.6118875361210266,
+      "recall": 0.607678895984793,
+      "f1-score": 0.5751173433436996,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.6571628350048161,
+      "recall": 0.5566666666666666,
+      "f1-score": 0.5752351788113542,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      30,
+      13,
+      3,
+      18
+    ],
+    [
+      6,
+      70,
+      10,
+      59
+    ],
+    [
+      1,
+      2,
+      37,
+      4
+    ],
+    [
+      3,
+      11,
+      3,
+      30
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 8000,
+  "sample_seed": 42,
+  "train_seed": 42,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 40,
+    "disagree": 96,
+    "question": 53,
+    "statement": 111
+  },
+  "missing_prediction_classes": [],
+  "class_collapse": false,
+  "train_rows": 6841,
+  "validation_rows": 1159,
+  "group_column": "source_root",
+  "train_source_root_count": 2059,
+  "validation_source_root_count": 364,
+  "source_root_overlap_count": 0
+}

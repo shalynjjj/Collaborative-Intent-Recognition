@@ -1,0 +1,4 @@
+train_seed,macro_f1,cohen_kappa,class_collapse,fold_collapse_runs,agree_f1,agree_prediction_count,disagree_f1,disagree_prediction_count,question_f1,question_prediction_count,statement_f1,statement_prediction_count
+42,0.16292134831460675,0.0,True,5,0.0,0,0.651685393258427,300,0.0,0,0.0,0
+123,0.16292134831460675,0.0,True,5,0.0,0,0.651685393258427,300,0.0,0,0.0,0
+2026,0.16292134831460675,0.0,True,5,0.0,0,0.651685393258427,300,0.0,0,0.0,0

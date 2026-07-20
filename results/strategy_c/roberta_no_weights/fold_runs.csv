@@ -1,0 +1,16 @@
+fold,train_seed,macro_f1,cohen_kappa,predicted_class_count,missing_prediction_classes,class_collapse
+1,42,0.16292134831460675,0.0,1,"agree,question,statement",True
+1,123,0.16292134831460675,0.0,1,"agree,question,statement",True
+1,2026,0.16292134831460675,0.0,1,"agree,question,statement",True
+2,42,0.16292134831460675,0.0,1,"agree,question,statement",True
+2,123,0.16292134831460675,0.0,1,"agree,question,statement",True
+2,2026,0.16292134831460675,0.0,1,"agree,question,statement",True
+3,42,0.16292134831460675,0.0,1,"agree,question,statement",True
+3,123,0.16292134831460675,0.0,1,"agree,question,statement",True
+3,2026,0.16292134831460675,0.0,1,"agree,question,statement",True
+4,42,0.16292134831460675,0.0,1,"agree,question,statement",True
+4,123,0.16292134831460675,0.0,1,"agree,question,statement",True
+4,2026,0.16292134831460675,0.0,1,"agree,question,statement",True
+5,42,0.16292134831460675,0.0,1,"agree,question,statement",True
+5,123,0.16292134831460675,0.0,1,"agree,question,statement",True
+5,2026,0.16292134831460675,0.0,1,"agree,question,statement",True

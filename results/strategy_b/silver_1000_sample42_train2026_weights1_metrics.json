@@ -1,0 +1,99 @@
+{
+  "macro_f1": 0.3141868885885334,
+  "cohen_kappa": 0.2005556421777771,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.8103448275862069,
+      "recall": 0.32413793103448274,
+      "f1-score": 0.4630541871921182,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.34234234234234234,
+      "recall": 0.8636363636363636,
+      "f1-score": 0.49032258064516127,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.20610687022900764,
+      "recall": 0.574468085106383,
+      "f1-score": 0.30337078651685395,
+      "support": 47.0
+    },
+    "accuracy": 0.37333333333333335,
+    "macro avg": {
+      "precision": 0.3396985100393892,
+      "recall": 0.4405605949443074,
+      "f1-score": 0.3141868885885334,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.47416695321275476,
+      "recall": 0.37333333333333335,
+      "f1-score": 0.3432515921917879,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      0,
+      5,
+      16,
+      43
+    ],
+    [
+      0,
+      47,
+      42,
+      56
+    ],
+    [
+      0,
+      1,
+      38,
+      5
+    ],
+    [
+      0,
+      5,
+      15,
+      27
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 1000,
+  "sample_seed": 42,
+  "train_seed": 2026,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 0,
+    "disagree": 58,
+    "question": 111,
+    "statement": 131
+  },
+  "missing_prediction_classes": [
+    "agree"
+  ],
+  "class_collapse": true,
+  "train_rows": 847,
+  "validation_rows": 153,
+  "group_column": "source_root",
+  "train_source_root_count": 619,
+  "validation_source_root_count": 110,
+  "source_root_overlap_count": 0
+}
