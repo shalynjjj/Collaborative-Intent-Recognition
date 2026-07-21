@@ -1,10 +1,12 @@
 import argparse
+import csv
 import json
 import os
 from pathlib import Path
 from typing import Callable, Dict, List
 
 import pandas as pd
+from tqdm import tqdm
 
 from .config import (
     DIALOGUE_LABELS,
@@ -129,26 +131,49 @@ def make_transformers_generator() -> Callable[[str], str]:
     return generate
 
 
-def annotate_dataframe(df: pd.DataFrame, mode: str, generator: Callable[[str], str]) -> pd.DataFrame:
+def annotate_dataframe(
+    df: pd.DataFrame,
+    mode: str,
+    generator: Callable[[str], str],
+    output_csv: Path | None = None,
+) -> pd.DataFrame:
     rows: List[Dict] = []
-    for idx, row in df.iterrows():
-        prompt = build_prompt(str(row["Parent"]), str(row["Reply"]), mode)
-        raw_output = generator(prompt)
-        label, fallback_used = parse_label(raw_output)
-        out = {
-            "row_id": idx,
-            "Parent": row["Parent"],
-            "Reply": row["Reply"],
-            "pred_label": label,
-            "raw_output": raw_output,
-            "fallback_used": fallback_used,
-        }
-        if "Dialogue_act" in row:
-            out["gold_label"] = row["Dialogue_act"]
-        for column in ("source_root", "parent_id", "reply_id"):
-            if column in row:
-                out[column] = row[column]
-        rows.append(out)
+    writer = None
+    file_handle = None
+    if output_csv is not None:
+        output_csv.parent.mkdir(parents=True, exist_ok=True)
+        file_handle = output_csv.open("w", newline="", encoding="utf-8")
+
+    try:
+        for idx, row in tqdm(df.iterrows(), total=len(df), desc="Annotating"):
+            prompt = build_prompt(str(row["Parent"]), str(row["Reply"]), mode)
+            raw_output = generator(prompt)
+            label, fallback_used = parse_label(raw_output)
+            out = {
+                "row_id": idx,
+                "Parent": row["Parent"],
+                "Reply": row["Reply"],
+                "pred_label": label,
+                "raw_output": raw_output,
+                "fallback_used": fallback_used,
+            }
+            if "Dialogue_act" in row:
+                out["gold_label"] = row["Dialogue_act"]
+            for column in ("source_root", "parent_id", "reply_id"):
+                if column in row:
+                    out[column] = row[column]
+            rows.append(out)
+
+            if file_handle is not None:
+                if writer is None:
+                    writer = csv.DictWriter(file_handle, fieldnames=list(out.keys()))
+                    writer.writeheader()
+                writer.writerow(out)
+                file_handle.flush()
+    finally:
+        if file_handle is not None:
+            file_handle.close()
+
     return pd.DataFrame(rows)
 
 
@@ -163,8 +188,9 @@ def run_strategy_a(mode: str, limit: int | None = None, mock: bool = False) -> D
     if limit is not None:
         df = df.head(limit).copy()
 
+    pred_path = STRATEGY_A_DIR / f"{mode}_predictions.csv"
     generator = make_mock_generator() if mock else make_transformers_generator()
-    predictions = annotate_dataframe(df, mode, generator)
+    predictions = annotate_dataframe(df, mode, generator, output_csv=pred_path)
     fallback_count = int(predictions["fallback_used"].sum())
 
     metrics = compute_metrics(
@@ -181,10 +207,8 @@ def run_strategy_a(mode: str, limit: int | None = None, mock: bool = False) -> D
         }
     )
 
-    pred_path = STRATEGY_A_DIR / f"{mode}_predictions.csv"
     metrics_path = STRATEGY_A_DIR / f"{mode}_metrics.json"
     cm_path = STRATEGY_A_DIR / f"{mode}_confusion_matrix.csv"
-    predictions.to_csv(pred_path, index=False)
     save_metrics(metrics, metrics_path)
     save_confusion_matrix(metrics, cm_path)
     return metrics
@@ -207,11 +231,9 @@ def run_silver_annotation(
         df = df.head(limit).copy()
 
     generator = make_mock_generator() if mock else make_transformers_generator()
-    predictions = annotate_dataframe(df, mode, generator)
+    predictions = annotate_dataframe(df, mode, generator, output_csv=output_csv)
     fallback_count = int(predictions["fallback_used"].sum())
 
-    output_csv.parent.mkdir(parents=True, exist_ok=True)
-    predictions.to_csv(output_csv, index=False)
     summary = {
         "strategy": "B_silver_annotation",
         "prompting": mode,

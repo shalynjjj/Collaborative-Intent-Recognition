@@ -6,6 +6,7 @@ transformers
 modelscope
 accelerate
 python-dotenv
+tqdm
 jupyter
 matplotlib
 seaborn
