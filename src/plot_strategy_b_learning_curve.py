@@ -5,10 +5,9 @@ from typing import Iterable
 
 import pandas as pd
 
-from .config import RESULTS_DIR
+from .config import STRATEGY_B_DIR
 
 
-LEARNING_CURVE_SIZES = [500, 1000, 1500, 2000, 2500, 5000, 8000, 10000]
 STRATEGY_A_ZERO_SHOT = 0.5147993742785979
 STRATEGY_A_FEW_SHOT = 0.5916267942583732
 
@@ -71,8 +70,8 @@ def save_learning_curve(table: pd.DataFrame, result_dir: Path) -> tuple[Path, Pa
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    csv_path = result_dir / "learning_curve.csv"
-    plot_path = result_dir / "learning_curve.png"
+    csv_path = result_dir / "learning_curve_zeroshot.csv"
+    plot_path = result_dir / "learning_curve_zeroshot.png"
     table.to_csv(csv_path, index=False)
 
     figure, axis = plt.subplots(figsize=(8, 5))
@@ -113,7 +112,7 @@ def main() -> None:
     parser.add_argument(
         "--result-dir",
         type=Path,
-        default=RESULTS_DIR / "strategy_b",
+        default=STRATEGY_B_DIR,
     )
     args = parser.parse_args()
     table = collect_learning_curve(args.result_dir)

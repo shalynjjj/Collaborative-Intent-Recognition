@@ -12,7 +12,7 @@ SILVER_CANDIDATES_CSV = DATA_DIR / "task3_silver_candidates_10k.csv"
 SILVER_LABELED_CSV = DATA_DIR / "task3_silver_labeled_10k.csv"
 
 STRATEGY_A_DIR = RESULTS_DIR / "strategy_a"
-STRATEGY_B_DIR = RESULTS_DIR / "strategy_b"
+STRATEGY_B_DIR = RESULTS_DIR / "strategy_b_zeroshot"
 STRATEGY_C_DIR = RESULTS_DIR / "strategy_c"
 
 DIALOGUE_LABELS = ["agree", "disagree", "question", "statement"]

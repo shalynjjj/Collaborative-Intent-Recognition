@@ -119,7 +119,7 @@ The default Strategy B learning-curve sizes are:
 
 The `500`-`2500` sizes were added to resolve the shape of the curve below 3000, since macro-F1 was already flat across `3000`-`10000`.
 
-Per-run outputs are saved under `results/strategy_b/`. After every run,
+Per-run outputs are saved under `results/strategy_b_zeroshot/` (this is the silver data labeled with zero-shot LLM annotation). After every run,
 `runs.csv`, `summary.csv`, and `summary_by_sample.csv` are rebuilt from the union of
 all existing per-run metrics files. Legacy results are preserved and summarized
 separately from the new group-split experiments.
@@ -189,8 +189,8 @@ underlying table after all metrics have been downloaded:
 python3 -m src.plot_strategy_b_learning_curve
 ```
 
-This writes `results/strategy_b/learning_curve.png` and
-`results/strategy_b/learning_curve.csv`. The plot includes Strategy A zero-shot
+This writes `results/strategy_b_zeroshot/learning_curve_zeroshot.png` and
+`results/strategy_b_zeroshot/learning_curve_zeroshot.csv`. The plot includes Strategy A zero-shot
 (`0.5148`) and few-shot (`0.5916`) reference lines.
 
 ### Fixed Gold Benchmark Limitation

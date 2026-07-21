@@ -348,10 +348,11 @@ def _sample_silver_subset(silver: pd.DataFrame, size: int, sample_seed: int) -> 
     return silver.sample(frac=1, random_state=sample_seed).head(size).reset_index(drop=True)
 
 
-def rebuild_strategy_b_summaries() -> pd.DataFrame:
+def rebuild_strategy_b_summaries(results_dir: Path | None = None) -> pd.DataFrame:
     """Rebuild Strategy B summaries from the union of all saved per-run metrics."""
+    results_dir = results_dir or STRATEGY_B_DIR
     records: Dict[Tuple, Dict] = {}
-    for path in sorted(STRATEGY_B_DIR.glob("*_metrics.json")):
+    for path in sorted(results_dir.glob("*_metrics.json")):
         with path.open(encoding="utf-8") as handle:
             metrics = json.load(handle)
         if metrics.get("strategy") != "B" or "silver_size" not in metrics:
@@ -399,7 +400,7 @@ def rebuild_strategy_b_summaries() -> pd.DataFrame:
     runs = pd.DataFrame(records.values()).sort_values(
         ["experiment_version", "silver_size", "sample_seed", "train_seed"]
     )
-    runs.to_csv(STRATEGY_B_DIR / "runs.csv", index=False)
+    runs.to_csv(results_dir / "runs.csv", index=False)
 
     def aggregate(group_cols: List[str], output_path: Path) -> pd.DataFrame:
         aggregations = {
@@ -422,11 +423,11 @@ def rebuild_strategy_b_summaries() -> pd.DataFrame:
 
     summary = aggregate(
         ["experiment_version", "silver_size", "use_class_weights", "dry_run"],
-        STRATEGY_B_DIR / "summary.csv",
+        results_dir / "summary.csv",
     )
     aggregate(
         ["experiment_version", "silver_size", "sample_seed", "use_class_weights", "dry_run"],
-        STRATEGY_B_DIR / "summary_by_sample.csv",
+        results_dir / "summary_by_sample.csv",
     )
     return summary
 
@@ -438,8 +439,11 @@ def run_strategy_b(
     train_seeds: List[int] | None = None,
     dry_run: bool = False,
     use_class_weights: bool | None = None,
+    results_dir: Path | None = None,
 ) -> pd.DataFrame:
     ensure_results_dirs()
+    results_dir = results_dir or STRATEGY_B_DIR
+    results_dir.mkdir(parents=True, exist_ok=True)
     sample_seeds = sample_seeds or SAMPLE_SEEDS
     train_seeds = train_seeds or SEEDS
     weights_enabled = TRAINING.use_class_weights if use_class_weights is None else use_class_weights
@@ -493,14 +497,14 @@ def run_strategy_b(
                 )
                 pred_df = gold[["Parent", "Reply", "Dialogue_act"]].copy()
                 pred_df["pred_label"] = predictions
-                pred_df.to_csv(STRATEGY_B_DIR / f"{prefix}_predictions.csv", index=False)
-                save_metrics(metrics, STRATEGY_B_DIR / f"{prefix}_metrics.json")
+                pred_df.to_csv(results_dir / f"{prefix}_predictions.csv", index=False)
+                save_metrics(metrics, results_dir / f"{prefix}_metrics.json")
                 save_confusion_matrix(
                     metrics,
-                    STRATEGY_B_DIR / f"{prefix}_confusion_matrix.csv",
+                    results_dir / f"{prefix}_confusion_matrix.csv",
                 )
 
-    return rebuild_strategy_b_summaries()
+    return rebuild_strategy_b_summaries(results_dir)
 
 
 def _strategy_c_output_dir(model_type: str, use_class_weights: bool, dry_run: bool) -> Path:
@@ -738,6 +742,7 @@ def main() -> None:
         default=TRAINING.use_class_weights,
     )
     b_parser.add_argument("--dry-run", action="store_true")
+    b_parser.add_argument("--results-dir", type=Path, default=None)
 
     c_parser = subparsers.add_parser("strategy_c")
     c_parser.add_argument("--seeds", type=int, nargs="+", default=SEEDS)
@@ -763,6 +768,7 @@ def main() -> None:
             args.train_seeds,
             args.dry_run,
             args.class_weights,
+            args.results_dir,
         )
     else:
         summary = run_strategy_c(
