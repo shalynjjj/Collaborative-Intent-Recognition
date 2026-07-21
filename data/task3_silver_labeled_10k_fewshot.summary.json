@@ -1,0 +1,16 @@
+{
+  "strategy": "B_silver_annotation",
+  "prompting": "fewshot",
+  "model": "LLM-Research/Meta-Llama-3.1-8B-Instruct",
+  "model_source": "modelscope",
+  "input_csv": "data/task3_silver_candidates_10k.csv",
+  "output_csv": "data/task3_silver_labeled_10k_fewshot.csv",
+  "rows": 10000,
+  "fallback_count": 0,
+  "label_counts": {
+    "statement": 4682,
+    "disagree": 2300,
+    "question": 1664,
+    "agree": 1354
+  }
+}
