@@ -1,0 +1,97 @@
+{
+  "macro_f1": 0.305803190841554,
+  "cohen_kappa": 0.16634437712173944,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.5,
+      "recall": 0.03125,
+      "f1-score": 0.058823529411764705,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.676923076923077,
+      "recall": 0.30344827586206896,
+      "f1-score": 0.41904761904761906,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.2905982905982906,
+      "recall": 0.7727272727272727,
+      "f1-score": 0.422360248447205,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.22807017543859648,
+      "recall": 0.5531914893617021,
+      "f1-score": 0.32298136645962733,
+      "support": 47.0
+    },
+    "accuracy": 0.35333333333333333,
+    "macro avg": {
+      "precision": 0.42389788573999104,
+      "recall": 0.41515425948776097,
+      "f1-score": 0.305803190841554,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.5121982306192833,
+      "recall": 0.35333333333333333,
+      "f1-score": 0.32763528599845737,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      2,
+      10,
+      20,
+      32
+    ],
+    [
+      2,
+      44,
+      51,
+      48
+    ],
+    [
+      0,
+      2,
+      34,
+      8
+    ],
+    [
+      0,
+      9,
+      12,
+      26
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 500,
+  "sample_seed": 123,
+  "train_seed": 42,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 4,
+    "disagree": 65,
+    "question": 117,
+    "statement": 114
+  },
+  "missing_prediction_classes": [],
+  "class_collapse": false,
+  "train_rows": 423,
+  "validation_rows": 77,
+  "group_column": "source_root",
+  "train_source_root_count": 344,
+  "validation_source_root_count": 61,
+  "source_root_overlap_count": 0
+}
