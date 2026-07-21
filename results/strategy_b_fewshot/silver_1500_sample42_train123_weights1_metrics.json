@@ -1,0 +1,97 @@
+{
+  "macro_f1": 0.6124044212568652,
+  "cohen_kappa": 0.44893800938503337,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.6610169491525424,
+      "recall": 0.609375,
+      "f1-score": 0.6341463414634146,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.7142857142857143,
+      "recall": 0.5172413793103449,
+      "f1-score": 0.6,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.6949152542372882,
+      "recall": 0.9318181818181818,
+      "f1-score": 0.7961165048543689,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.33766233766233766,
+      "recall": 0.5531914893617021,
+      "f1-score": 0.41935483870967744,
+      "support": 47.0
+    },
+    "accuracy": 0.6033333333333334,
+    "macro avg": {
+      "precision": 0.6019700638344706,
+      "recall": 0.6529065126225572,
+      "f1-score": 0.6124044212568652,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.6410763812458727,
+      "recall": 0.6033333333333334,
+      "f1-score": 0.6077472316220187,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      39,
+      12,
+      0,
+      13
+    ],
+    [
+      16,
+      75,
+      16,
+      38
+    ],
+    [
+      0,
+      3,
+      41,
+      0
+    ],
+    [
+      4,
+      15,
+      2,
+      26
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 1500,
+  "sample_seed": 42,
+  "train_seed": 123,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 59,
+    "disagree": 105,
+    "question": 59,
+    "statement": 77
+  },
+  "missing_prediction_classes": [],
+  "class_collapse": false,
+  "train_rows": 1279,
+  "validation_rows": 221,
+  "group_column": "source_root",
+  "train_source_root_count": 822,
+  "validation_source_root_count": 146,
+  "source_root_overlap_count": 0
+}

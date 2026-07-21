@@ -1,0 +1,97 @@
+{
+  "macro_f1": 0.6263863233202855,
+  "cohen_kappa": 0.48661208231909714,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.620253164556962,
+      "recall": 0.765625,
+      "f1-score": 0.6853146853146853,
+      "support": 64.0
+    },
+    "disagree": {
+      "precision": 0.8873239436619719,
+      "recall": 0.43448275862068964,
+      "f1-score": 0.5833333333333334,
+      "support": 145.0
+    },
+    "question": {
+      "precision": 0.6774193548387096,
+      "recall": 0.9545454545454546,
+      "f1-score": 0.7924528301886793,
+      "support": 44.0
+    },
+    "statement": {
+      "precision": 0.3409090909090909,
+      "recall": 0.6382978723404256,
+      "f1-score": 0.4444444444444444,
+      "support": 47.0
+    },
+    "accuracy": 0.6133333333333333,
+    "macro avg": {
+      "precision": 0.6314763884916835,
+      "recall": 0.6982377713766423,
+      "f1-score": 0.6263863233202855,
+      "support": 300.0
+    },
+    "weighted avg": {
+      "precision": 0.7139578441608733,
+      "recall": 0.6133333333333333,
+      "f1-score": 0.61400095536888,
+      "support": 300.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      49,
+      1,
+      1,
+      13
+    ],
+    [
+      21,
+      63,
+      16,
+      45
+    ],
+    [
+      1,
+      1,
+      42,
+      0
+    ],
+    [
+      8,
+      6,
+      3,
+      30
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "B",
+  "experiment_version": "v2_group_split",
+  "silver_size": 2000,
+  "sample_seed": 123,
+  "train_seed": 2026,
+  "dry_run": false,
+  "use_class_weights": true,
+  "prediction_counts": {
+    "agree": 79,
+    "disagree": 71,
+    "question": 62,
+    "statement": 88
+  },
+  "missing_prediction_classes": [],
+  "class_collapse": false,
+  "train_rows": 1687,
+  "validation_rows": 313,
+  "group_column": "source_root",
+  "train_source_root_count": 961,
+  "validation_source_root_count": 170,
+  "source_root_overlap_count": 0
+}
