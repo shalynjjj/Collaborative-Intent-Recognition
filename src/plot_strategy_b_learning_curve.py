@@ -8,8 +8,15 @@ import pandas as pd
 from .config import STRATEGY_B_DIR
 
 
+LEARNING_CURVE_SIZES = [500, 1000, 1500, 2000, 2500, 5000, 8000, 10000]
 STRATEGY_A_ZERO_SHOT = 0.5147993742785979
 STRATEGY_A_FEW_SHOT = 0.5916267942583732
+
+
+def _default_label(result_dir: Path) -> str:
+    prefix = "strategy_b_"
+    name = result_dir.name
+    return name[len(prefix):] if name.startswith(prefix) else name
 
 
 def collect_learning_curve(
@@ -64,14 +71,14 @@ def collect_learning_curve(
     return table
 
 
-def save_learning_curve(table: pd.DataFrame, result_dir: Path) -> tuple[Path, Path]:
+def save_learning_curve(table: pd.DataFrame, result_dir: Path, label: str) -> tuple[Path, Path]:
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    csv_path = result_dir / "learning_curve_zeroshot.csv"
-    plot_path = result_dir / "learning_curve_zeroshot.png"
+    csv_path = result_dir / f"learning_curve_{label}.csv"
+    plot_path = result_dir / f"learning_curve_{label}.png"
     table.to_csv(csv_path, index=False)
 
     figure, axis = plt.subplots(figsize=(8, 5))
@@ -82,7 +89,7 @@ def save_learning_curve(table: pd.DataFrame, result_dir: Path) -> tuple[Path, Pa
         marker="o",
         linewidth=2,
         capsize=4,
-        label="Strategy B: RoBERTa on silver labels",
+        label=f"Strategy B: RoBERTa on {label} silver labels",
     )
     axis.axhline(
         STRATEGY_A_ZERO_SHOT,
@@ -98,7 +105,7 @@ def save_learning_curve(table: pd.DataFrame, result_dir: Path) -> tuple[Path, Pa
     )
     axis.set_xlabel("Number of silver training samples")
     axis.set_ylabel("Macro F1 on the 300-sample gold benchmark")
-    axis.set_title("Strategy B Learning Curve")
+    axis.set_title(f"Strategy B Learning Curve ({label} silver labels)")
     axis.grid(alpha=0.25)
     axis.legend()
     figure.tight_layout()
@@ -114,9 +121,16 @@ def main() -> None:
         type=Path,
         default=STRATEGY_B_DIR,
     )
+    parser.add_argument(
+        "--label",
+        type=str,
+        default=None,
+        help="Suffix for output filenames, e.g. 'fewshot'. Defaults to the result-dir name.",
+    )
     args = parser.parse_args()
+    label = args.label or _default_label(args.result_dir)
     table = collect_learning_curve(args.result_dir)
-    csv_path, plot_path = save_learning_curve(table, args.result_dir)
+    csv_path, plot_path = save_learning_curve(table, args.result_dir, label)
     print(table.to_string(index=False))
     print(f"Wrote {csv_path}")
     print(f"Wrote {plot_path}")
