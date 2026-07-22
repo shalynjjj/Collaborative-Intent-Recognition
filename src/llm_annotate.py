@@ -60,6 +60,16 @@ FEWSHOT_EXAMPLES = [
 ]
 
 
+def exclude_fewshot_examples(df: pd.DataFrame) -> pd.DataFrame:
+    """Return the common benchmark after removing prompt demonstrations."""
+    fewshot_pairs = {(example["parent"], example["reply"]) for example in FEWSHOT_EXAMPLES}
+    keep = [
+        (parent, reply) not in fewshot_pairs
+        for parent, reply in zip(df["Parent"], df["Reply"])
+    ]
+    return df.loc[keep].copy()
+
+
 def build_prompt(parent: str, reply: str, mode: str) -> str:
     examples = ""
     if mode == "fewshot":
@@ -182,8 +192,8 @@ def run_strategy_a(mode: str, limit: int | None = None, mock: bool = False) -> D
     set_seed(42)
     df = load_gold_data()
 
-    fewshot_pairs = {(ex["parent"], ex["reply"]) for ex in FEWSHOT_EXAMPLES}
-    df = df[~df.apply(lambda row: (row["Parent"], row["Reply"]) in fewshot_pairs, axis=1)]
+    if mode == "fewshot":
+        df = exclude_fewshot_examples(df)
 
     if limit is not None:
         df = df.head(limit).copy()

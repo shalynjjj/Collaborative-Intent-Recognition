@@ -201,6 +201,70 @@ the same benchmark is used to compare configurations, results should be interpre
 as comparisons on a fixed evaluation benchmark, not as performance on a fully
 untouched held-out test set. This limitation must be stated in the report.
 
+### Common 296-Sample Evaluation
+
+The four gold examples used as few-shot prompt demonstrations are excluded when
+comparing Strategy A with the few-shot-silver Strategy B. This is a scoring-only
+step and does not require retraining existing models:
+
+```bash
+python3 -m src.evaluate_common_296 \
+  --strategy-b-dir results/strategy_b_fewshot
+```
+
+This writes `strategy_a_common_296.csv`, `common_296_runs.csv`, and
+`common_296_summary.csv` under `results/strategy_b_fewshot/`.
+
+The completed common-benchmark comparison is:
+
+| Configuration | Macro-F1 mean | Macro-F1 std | Runs |
+| --- | ---: | ---: | ---: |
+| Strategy A: Llama few-shot | 0.5916 | n/a | 1 |
+| Strategy B: 2500 few-shot silver, class weights | 0.6179 | 0.0282 | 6 |
+| Strategy B: 2500 few-shot silver, no class weights | 0.6113 | 0.0252 | 6 |
+
+The Strategy B value is the mean across two silver sample seeds (`42`, `123`)
+and three training seeds (`42`, `123`, `2026`). RoBERTa has a higher observed
+mean than the Llama teacher on these 296 rows, but this is not treated as proof
+of significant student superiority because no paired significance test has been
+run and the 2500-row configuration was selected on the same fixed benchmark.
+
+### Few-Shot Silver Class-Weight Ablation (Completed)
+
+The paired no-weight configuration was run at the selected 2500-row setting with
+the same sample and training seeds:
+
+```bash
+python3 -m src.train_roberta strategy_b \
+  --silver-csv data/task3_silver_labeled_10k_fewshot.csv \
+  --sizes 2500 \
+  --sample-seeds 42 123 \
+  --train-seeds 42 123 2026 \
+  --no-class-weights \
+  --results-dir results/strategy_b_fewshot
+```
+
+On the common 296-row benchmark, class weights increased mean Macro-F1 from
+`0.6113` to `0.6179` (mean paired difference `+0.0066`). Weights-on was better in
+four of six paired runs. The main per-class change was higher `disagree` F1
+(`+0.0419` on average), while `statement` F1 decreased (`-0.0198`). There were no
+class-collapse runs in either configuration. Class weights are retained as the
+final configuration because they provide a modest observed improvement, not
+because statistical significance has been established.
+
+### Strategy B Interpretation Limits
+
+- The 300-row gold benchmark was repeatedly used for configuration comparison;
+  it is an exploratory fixed benchmark rather than a fully untouched final test.
+- Exact Parent-Reply overlap between gold and silver was removed. A later audit
+  recovered source roots for 276 gold rows and found that 262 of those rows share
+  a Reddit thread with the few-shot silver pool. Results therefore represent
+  in-domain evaluation and should not be claimed as unseen-thread performance.
+- The few-shot learning curve's 2500-row point has the highest observed mean; no
+  significance test established that it is better than the neighboring
+  1500/2000/5000 points.
+- Human spot-checking of few-shot silver-label accuracy remains future work.
+
 ## Strategy C: RoBERTa on Gold Labels
 
 Runs stratified 5-fold cross-validation with train seeds `42`, `123`, and `2026`.
