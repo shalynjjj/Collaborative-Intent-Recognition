@@ -1,7 +1,7 @@
 import argparse
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Tuple
 
 import pandas as pd
 
@@ -56,7 +56,7 @@ def evaluate_strategy_a(output_dir: Path) -> pd.DataFrame:
     return table
 
 
-def evaluate_strategy_b(result_dir: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
+def evaluate_strategy_b(result_dir: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
     rows = []
     for metrics_path in sorted(result_dir.glob("silver_*_sample*_train*_weights*_metrics.json")):
         with metrics_path.open(encoding="utf-8") as handle:

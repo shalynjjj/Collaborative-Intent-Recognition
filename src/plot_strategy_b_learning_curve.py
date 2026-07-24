@@ -1,7 +1,7 @@
 import argparse
 import json
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Tuple
 
 import pandas as pd
 
@@ -71,7 +71,7 @@ def collect_learning_curve(
     return table
 
 
-def save_learning_curve(table: pd.DataFrame, result_dir: Path, label: str) -> tuple[Path, Path]:
+def save_learning_curve(table: pd.DataFrame, result_dir: Path, label: str) -> Tuple[Path, Path]:
     import matplotlib
 
     matplotlib.use("Agg")

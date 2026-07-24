@@ -4,7 +4,7 @@ import json
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -73,7 +73,7 @@ def _make_inner_validation_split(
     train_df: pd.DataFrame,
     label_col: str,
     split_seed: int,
-    group_col: str | None = None,
+    group_col: Optional[str] = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     if group_col is not None:
         if group_col not in train_df.columns:
@@ -112,7 +112,7 @@ def _make_inner_validation_split(
 def _split_metadata(
     inner_train_df: pd.DataFrame,
     inner_val_df: pd.DataFrame,
-    group_col: str | None,
+    group_col: Optional[str],
 ) -> Dict:
     metadata = {
         "train_rows": int(len(inner_train_df)),
@@ -185,10 +185,10 @@ def _train_and_predict(
     eval_df: pd.DataFrame,
     seed: int,
     train_label_col: str,
-    freeze_layers: int | None = None,
-    split_seed: int | None = None,
-    group_col: str | None = None,
-    use_class_weights: bool | None = None,
+    freeze_layers: Optional[int] = None,
+    split_seed: Optional[int] = None,
+    group_col: Optional[str] = None,
+    use_class_weights: Optional[bool] = None,
 ) -> Tuple[List[str], Dict]:
     set_seed(seed)
     import torch
@@ -316,10 +316,10 @@ def _run_once(
     train_label_col: str,
     eval_label_col: str,
     dry_run: bool,
-    freeze_layers: int | None = None,
-    split_seed: int | None = None,
-    group_col: str | None = None,
-    use_class_weights: bool | None = None,
+    freeze_layers: Optional[int] = None,
+    split_seed: Optional[int] = None,
+    group_col: Optional[str] = None,
+    use_class_weights: Optional[bool] = None,
 ) -> Tuple[List[str], Dict, Dict]:
     if dry_run:
         inner_train_df, inner_val_df = _make_inner_validation_split(
@@ -352,7 +352,7 @@ def _sample_silver_subset(silver: pd.DataFrame, size: int, sample_seed: int) -> 
     return silver.sample(frac=1, random_state=sample_seed).head(size).reset_index(drop=True)
 
 
-def rebuild_strategy_b_summaries(results_dir: Path | None = None) -> pd.DataFrame:
+def rebuild_strategy_b_summaries(results_dir: Optional[Path] = None) -> pd.DataFrame:
     """Rebuild Strategy B summaries from the union of all saved per-run metrics."""
     results_dir = results_dir or STRATEGY_B_DIR
     records: Dict[Tuple, Dict] = {}
@@ -439,11 +439,11 @@ def rebuild_strategy_b_summaries(results_dir: Path | None = None) -> pd.DataFram
 def run_strategy_b(
     silver_csv: Path,
     sizes: List[int],
-    sample_seeds: List[int] | None = None,
-    train_seeds: List[int] | None = None,
+    sample_seeds: Optional[List[int]] = None,
+    train_seeds: Optional[List[int]] = None,
     dry_run: bool = False,
-    use_class_weights: bool | None = None,
-    results_dir: Path | None = None,
+    use_class_weights: Optional[bool] = None,
+    results_dir: Optional[Path] = None,
 ) -> pd.DataFrame:
     ensure_results_dirs()
     results_dir = results_dir or STRATEGY_B_DIR
@@ -710,10 +710,10 @@ def _tfidf_predictions(
 
 
 def run_strategy_c(
-    seeds: List[int] | None = None,
+    seeds: Optional[List[int]] = None,
     dry_run: bool = False,
     model_type: str = "roberta",
-    use_class_weights: bool | None = None,
+    use_class_weights: Optional[bool] = None,
     split_seed: int = 42,
 ) -> pd.DataFrame:
     ensure_results_dirs()

@@ -3,7 +3,7 @@ import csv
 import json
 import os
 from pathlib import Path
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional
 
 import pandas as pd
 from tqdm import tqdm
@@ -148,7 +148,7 @@ def annotate_dataframe(
     df: pd.DataFrame,
     mode: str,
     generator: Callable[[str], str],
-    output_csv: Path | None = None,
+    output_csv: Optional[Path] = None,
 ) -> pd.DataFrame:
     rows: List[Dict] = []
     writer = None
@@ -190,7 +190,7 @@ def annotate_dataframe(
     return pd.DataFrame(rows)
 
 
-def run_strategy_a(mode: str, limit: int | None = None, mock: bool = False) -> Dict:
+def run_strategy_a(mode: str, limit: Optional[int] = None, mock: bool = False) -> Dict:
     ensure_results_dirs()
     set_seed(42)
     df = load_gold_data()
@@ -271,7 +271,7 @@ def run_silver_annotation(
     input_csv: Path,
     output_csv: Path,
     mode: str,
-    limit: int | None = None,
+    limit: Optional[int] = None,
     mock: bool = False,
 ) -> Dict:
     ensure_results_dirs()
