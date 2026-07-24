@@ -201,6 +201,38 @@ the same benchmark is used to compare configurations, results should be interpre
 as comparisons on a fixed evaluation benchmark, not as performance on a fully
 untouched held-out test set. This limitation must be stated in the report.
 
+### Held-Out Test Set
+
+To address the fixed-benchmark limitation above, a held-out test set independent of
+`GOLD_CSV` was added. `GOLD_CSV` remains the dev set used for all tuning; `TEST_CSV`
+is only touched once per strategy, after that strategy's config is locked.
+
+```bash
+python3 -m src.prepare_gold_test_candidates
+```
+
+builds `data/cmv_test_candidates.csv` by sampling the Winning Arguments Corpus after
+excluding every gold and silver pair. The labeled pilot subset actually used for
+evaluation is `data/cmv_test_candidates_pilot80.csv` (`TEST_CSV` in `src/config.py`).
+
+Final configs, locked from gold-set (dev) results only, live in `src/config.py`:
+
+- Strategy A: `STRATEGY_A_FINAL_MODE = "fewshot"` (gold macro-F1 `0.5916` vs
+  zeroshot `0.5148`)
+- Strategy B: `STRATEGY_B_FINAL_CONFIG` — silver_size `2500`, sample_seed `123`,
+  class weights on
+- Strategy C: pending — RoBERTa collapses classes on gold OOF; TF-IDF currently
+  ahead, so no config is locked yet
+
+Run each strategy's held-out eval once, after its dev-side tuning is finished:
+
+```bash
+python3 -m src.llm_annotate --heldout
+python3 -m src.train_roberta strategy_b_heldout
+```
+
+Outputs are saved under `results/strategy_a_heldout/` and `results/strategy_b_heldout/`.
+
 ## Strategy C: RoBERTa on Gold Labels
 
 Runs stratified 5-fold cross-validation with train seeds `42`, `123`, and `2026`.

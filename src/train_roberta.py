@@ -17,9 +17,13 @@ from .config import (
     LABEL2ID,
     SAMPLE_SEEDS,
     SEEDS,
+    STRATEGY_B_FINAL_CONFIG,
+    STRATEGY_B_FINAL_SILVER_CSV,
     STRATEGY_B_SIZES,
     STRATEGY_B_DIR,
+    STRATEGY_B_HELDOUT_DIR,
     STRATEGY_C_DIR,
+    TEST_CSV,
     TRAINING,
 )
 from .data_loader import build_model_input, load_gold_data
@@ -507,6 +511,75 @@ def run_strategy_b(
     return rebuild_strategy_b_summaries(results_dir)
 
 
+def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
+    """One-shot confirmatory eval of the locked Strategy B config on TEST_CSV.
+
+    Trains on the single silver subset fixed by STRATEGY_B_FINAL_CONFIG and
+    evaluates against TEST_CSV instead of GOLD_CSV. Takes no size/seed-list
+    arguments on purpose -- this must not turn into a second sweep. Run once,
+    after the silver-size sweep against GOLD_CSV is finalized.
+    """
+    ensure_results_dirs()
+    STRATEGY_B_HELDOUT_DIR.mkdir(parents=True, exist_ok=True)
+    config = STRATEGY_B_FINAL_CONFIG
+    test_df = _prepare_labeled_frame(load_gold_data(TEST_CSV), "Dialogue_act")
+    silver = pd.read_csv(STRATEGY_B_FINAL_SILVER_CSV, encoding="latin1")
+    label_col = _infer_label_column(silver)
+    silver = _prepare_labeled_frame(silver, label_col)
+    train_base = _sample_silver_subset(silver, config["silver_size"], config["sample_seed"])
+
+    rows = []
+    for train_seed in SEEDS:
+        set_seed(train_seed)
+        predictions, metrics, split_metadata = _run_once(
+            train_base,
+            test_df,
+            train_seed,
+            label_col,
+            "Dialogue_act",
+            dry_run,
+            split_seed=config["sample_seed"],
+            group_col="source_root",
+            use_class_weights=config["use_class_weights"],
+        )
+        prediction_counts = {label: int(predictions.count(label)) for label in DIALOGUE_LABELS}
+        missing_classes = [label for label, count in prediction_counts.items() if count == 0]
+        metrics.update(
+            {
+                "strategy": "B",
+                "eval_set": "heldout_test",
+                "silver_size": config["silver_size"],
+                "sample_seed": config["sample_seed"],
+                "train_seed": train_seed,
+                "dry_run": dry_run,
+                "use_class_weights": config["use_class_weights"],
+                "prediction_counts": prediction_counts,
+                "missing_prediction_classes": missing_classes,
+                "class_collapse": bool(missing_classes),
+                **split_metadata,
+            }
+        )
+
+        run_tag = "_dryrun" if dry_run else ""
+        prefix = f"heldout_seed{train_seed}{run_tag}"
+        pred_df = test_df[["Parent", "Reply", "Dialogue_act"]].copy()
+        pred_df["pred_label"] = predictions
+        pred_df.to_csv(STRATEGY_B_HELDOUT_DIR / f"{prefix}_predictions.csv", index=False)
+        save_metrics(metrics, STRATEGY_B_HELDOUT_DIR / f"{prefix}_metrics.json")
+        save_confusion_matrix(metrics, STRATEGY_B_HELDOUT_DIR / f"{prefix}_confusion_matrix.csv")
+        rows.append(
+            {
+                "train_seed": train_seed,
+                "macro_f1": metrics["macro_f1"],
+                "cohen_kappa": metrics["cohen_kappa"],
+            }
+        )
+
+    summary = pd.DataFrame(rows)
+    summary.to_csv(STRATEGY_B_HELDOUT_DIR / "summary.csv", index=False)
+    return summary
+
+
 def _strategy_c_output_dir(model_type: str, use_class_weights: bool, dry_run: bool) -> Path:
     weight_tag = "weights" if use_class_weights else "no_weights"
     dry_tag = "_dryrun" if dry_run else ""
@@ -744,6 +817,12 @@ def main() -> None:
     b_parser.add_argument("--dry-run", action="store_true")
     b_parser.add_argument("--results-dir", type=Path, default=None)
 
+    b_heldout_parser = subparsers.add_parser(
+        "strategy_b_heldout",
+        help="One-shot eval of the locked STRATEGY_B_FINAL_CONFIG against TEST_CSV.",
+    )
+    b_heldout_parser.add_argument("--dry-run", action="store_true")
+
     c_parser = subparsers.add_parser("strategy_c")
     c_parser.add_argument("--seeds", type=int, nargs="+", default=SEEDS)
     c_parser.add_argument("--dry-run", action="store_true")
@@ -770,6 +849,8 @@ def main() -> None:
             args.class_weights,
             args.results_dir,
         )
+    elif args.strategy == "strategy_b_heldout":
+        summary = run_strategy_b_heldout_eval(args.dry_run)
     else:
         summary = run_strategy_c(
             args.seeds,

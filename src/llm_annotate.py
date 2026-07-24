@@ -15,6 +15,9 @@ from .config import (
     SILVER_CANDIDATES_CSV,
     SILVER_LABELED_CSV,
     STRATEGY_A_DIR,
+    STRATEGY_A_FINAL_MODE,
+    STRATEGY_A_HELDOUT_DIR,
+    TEST_CSV,
 )
 from .data_loader import load_gold_data
 from .evaluate import compute_metrics, save_confusion_matrix, save_metrics
@@ -214,6 +217,46 @@ def run_strategy_a(mode: str, limit: int | None = None, mock: bool = False) -> D
     return metrics
 
 
+def run_strategy_a_heldout(mock: bool = False) -> Dict:
+    """One-shot confirmatory run of the locked Strategy A config on TEST_CSV.
+
+    Always uses STRATEGY_A_FINAL_MODE -- this does not take a `mode` argument
+    on purpose, so it can't be pointed at a config that hasn't been locked in
+    config.py. Run this once, after prompt iteration is finished.
+    """
+    ensure_results_dirs()
+    set_seed(42)
+    mode = STRATEGY_A_FINAL_MODE
+    df = load_gold_data(TEST_CSV)
+
+    fewshot_pairs = {(ex["parent"], ex["reply"]) for ex in FEWSHOT_EXAMPLES}
+    df = df[~df.apply(lambda row: (row["Parent"], row["Reply"]) in fewshot_pairs, axis=1)]
+
+    pred_path = STRATEGY_A_HELDOUT_DIR / f"{mode}_predictions.csv"
+    generator = make_mock_generator() if mock else make_transformers_generator()
+    predictions = annotate_dataframe(df, mode, generator, output_csv=pred_path)
+    fallback_count = int(predictions["fallback_used"].sum())
+
+    metrics = compute_metrics(
+        predictions["gold_label"],
+        predictions["pred_label"],
+        fallback_count=fallback_count,
+    )
+    metrics.update(
+        {
+            "strategy": "A",
+            "eval_set": "heldout_test",
+            "prompting": mode,
+            "model": "mock" if mock else LLM.model_id,
+            "model_source": "mock" if mock else LLM.model_source,
+        }
+    )
+
+    save_metrics(metrics, STRATEGY_A_HELDOUT_DIR / f"{mode}_metrics.json")
+    save_confusion_matrix(metrics, STRATEGY_A_HELDOUT_DIR / f"{mode}_confusion_matrix.csv")
+    return metrics
+
+
 def run_silver_annotation(
     input_csv: Path,
     output_csv: Path,
@@ -257,9 +300,18 @@ def main() -> None:
     parser.add_argument("--mock", action="store_true", help="Use deterministic local mock labels.")
     parser.add_argument("--input-csv", type=Path, default=None)
     parser.add_argument("--output-csv", type=Path, default=None)
+    parser.add_argument(
+        "--heldout",
+        action="store_true",
+        help="Run the locked STRATEGY_A_FINAL_MODE config once against TEST_CSV. "
+        "Ignores --mode/--input-csv/--output-csv.",
+    )
     args = parser.parse_args()
 
-    if args.input_csv is not None:
+    if args.heldout:
+        metrics = run_strategy_a_heldout(mock=args.mock)
+        print(json.dumps(metrics, indent=2))
+    elif args.input_csv is not None:
         output_csv = args.output_csv or SILVER_LABELED_CSV
         summary = run_silver_annotation(
             input_csv=args.input_csv or SILVER_CANDIDATES_CSV,

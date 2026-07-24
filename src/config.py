@@ -11,9 +11,37 @@ RAW_UTTERANCES_JSONL = DATA_DIR / "winning-args-corpus" / "utterances.jsonl"
 SILVER_CANDIDATES_CSV = DATA_DIR / "task3_silver_candidates_10k.csv"
 SILVER_LABELED_CSV = DATA_DIR / "task3_silver_labeled_10k.csv"
 
+# Held-out test set: independent of GOLD_CSV, never used for tuning/model
+# selection. GOLD_CSV plays the dev role (training + hyperparameter/config
+# selection for all three strategies); TEST_CSV is only touched once per
+# strategy, after its config below has been locked in.
+TEST_CSV = DATA_DIR / "cmv_test_candidates_pilot80.csv"
+
 STRATEGY_A_DIR = RESULTS_DIR / "strategy_a"
 STRATEGY_B_DIR = RESULTS_DIR / "strategy_b_zeroshot"
 STRATEGY_C_DIR = RESULTS_DIR / "strategy_c"
+STRATEGY_A_HELDOUT_DIR = RESULTS_DIR / "strategy_a_heldout"
+STRATEGY_B_HELDOUT_DIR = RESULTS_DIR / "strategy_b_heldout"
+
+# Locked final configs, chosen from GOLD_CSV (dev) results. Each was picked
+# by macro_f1_mean in results/<strategy>/summary*.csv before TEST_CSV was
+# ever evaluated against. Do not add list-valued fields here — heldout eval
+# functions must only accept one fixed config, never a sweep.
+STRATEGY_A_FINAL_MODE = "fewshot"  # zeroshot=0.5148 F1, fewshot=0.5916 F1 on gold
+
+STRATEGY_B_FINAL_SILVER_CSV = DATA_DIR / "task3_silver_labeled_10k_fewshot.csv"
+STRATEGY_B_FINAL_CONFIG = {
+    "silver_size": 2500,
+    "sample_seed": 123,
+    "use_class_weights": True,
+}  # sample_seed=123 macro_f1_mean=0.6375 (vs sample_seed=42: 0.6064) on gold;
+# silver_size=2500 was the top overall (0.6220 avg across both sample_seeds)
+# in the fewshot-silver sweep in results/strategy_b_fewshot/summary.csv
+
+# Strategy C: pending. gold-OOF results currently favor TF-IDF+weights
+# (0.2485) over RoBERTa+weights (0.2208, class collapse on all 3 seeds) and
+# RoBERTa no-weights (0.1629, total collapse). No STRATEGY_C_FINAL_CONFIG
+# until this is resolved -- do not add a run_strategy_c_heldout_eval before then.
 
 DIALOGUE_LABELS = ["agree", "disagree", "question", "statement"]
 LABEL2ID = {label: idx for idx, label in enumerate(DIALOGUE_LABELS)}
