@@ -71,6 +71,9 @@ def resolve_model_path(model_id: str, source: str = "modelscope") -> str:
                 r"original/.*",
                 r".*\.pth",
                 r".*\.pth\.incomplete",
+                r".*\.h5",
+                r".*\.msgpack",
+                r".*\.ot",
             ]
         return snapshot_download(model_id, **kwargs)
 
