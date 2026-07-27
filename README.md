@@ -435,6 +435,43 @@ further tuning. This comparison was only run at this one (warmup=20,
 epochs=8) config, not across a full warmup x epochs x weights grid, so it's
 possible a different warmup/epochs combo changes this -- not verified.
 
+### Strategy C: Warmup/Epochs Grid (Dev-Only)
+
+Closes the "not verified" gap above with a small grid around the known-good
+(warmup=20, epochs=8) point. Runs only against the gold set (dev); `TEST_CSV`
+is not touched. `use_class_weights` stays fixed on, since that ablation is
+already settled above.
+
+```bash
+for warmup in 10 20 30; do
+  for epochs in 6 8 10; do
+    python3 -m src.train_roberta strategy_c \
+      --model roberta \
+      --seeds 42 123 2026 \
+      --split-seed 42 \
+      --class-weights \
+      --warmup-steps "$warmup" \
+      --epochs "$epochs"
+  done
+done
+```
+
+Each configuration writes to its own
+`results/strategy_c/roberta_weights_warmup<N>_epochs<N>/`, so the existing
+(20, 8) run is reused rather than overwritten. After the grid finishes,
+summarize every warmup/epochs configuration found under `results/strategy_c/`,
+ranked by OOF macro-F1:
+
+```bash
+python3 -m src.summarize_strategy_c_grid
+```
+
+This writes `results/strategy_c/warmup_epochs_grid_summary.csv`. If a
+configuration beats `0.5309` with zero class collapse, update
+`STRATEGY_C_FINAL_CONFIG` in `src/config.py` and rerun
+`strategy_c_heldout` once, matching the touch-held-out-once discipline
+already used for Strategy A and B.
+
 ### Previous Partial-Fine-Tuning Finding
 
 Earlier exploratory runs produced fold-averaged macro-F1 of approximately `0.20` for
