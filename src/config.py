@@ -22,6 +22,7 @@ STRATEGY_B_DIR = RESULTS_DIR / "strategy_b_zeroshot"
 STRATEGY_C_DIR = RESULTS_DIR / "strategy_c"
 STRATEGY_A_HELDOUT_DIR = RESULTS_DIR / "strategy_a_heldout"
 STRATEGY_B_HELDOUT_DIR = RESULTS_DIR / "strategy_b_heldout"
+STRATEGY_C_HELDOUT_DIR = RESULTS_DIR / "strategy_c_heldout"
 
 # Locked final configs, chosen from GOLD_CSV (dev) results. Each was picked
 # by macro_f1_mean in results/<strategy>/summary*.csv before TEST_CSV was
@@ -38,10 +39,20 @@ STRATEGY_B_FINAL_CONFIG = {
 # silver_size=2500 was the top overall (0.6220 avg across both sample_seeds)
 # in the fewshot-silver sweep in results/strategy_b_fewshot/summary.csv
 
-# Strategy C: pending. gold-OOF results currently favor TF-IDF+weights
-# (0.2485) over RoBERTa+weights (0.2208, class collapse on all 3 seeds) and
-# RoBERTa no-weights (0.1629, total collapse). No STRATEGY_C_FINAL_CONFIG
-# until this is resolved -- do not add a run_strategy_c_heldout_eval before then.
+STRATEGY_C_FINAL_CONFIG = {
+    "model_type": "roberta",
+    "use_class_weights": True,
+    "split_seed": 42,
+    "warmup_steps": 20,
+    "epochs": 8,
+}  # gold 5-fold OOF macro_f1_mean=0.5309 (std 0.0038), zero class collapse across
+# all 15 fold/seed runs, in results/strategy_c/roberta_weights_warmup20_epochs8/
+# summary_oof.csv. Beats TF-IDF+weights (0.2485) and weights-off at the same
+# warmup/epochs (0.3499, collapses on 8/15 runs). The warmup=20/epochs=8 fix
+# resolved the training-instability diagnosed in strategy_c_diagnose (models
+# were failing to fit their own training folds); earlier collapsed numbers
+# from before that fix (RoBERTa+weights 0.2208, no-weights 0.1629) no longer
+# apply and should not be cited.
 
 DIALOGUE_LABELS = ["agree", "disagree", "question", "statement"]
 LABEL2ID = {label: idx for idx, label in enumerate(DIALOGUE_LABELS)}

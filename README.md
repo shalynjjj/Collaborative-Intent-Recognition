@@ -233,6 +233,26 @@ python3 -m src.train_roberta strategy_b_heldout
 
 Outputs are saved under `results/strategy_a_heldout/` and `results/strategy_b_heldout/`.
 
+### IAA
+
+`TEST_CSV` was double-annotated (xin, xiaying), then reconciled by discussion.
+Raw pre-discussion agreement on 130 co-labeled rows: **87.7% (114/130), 16
+disagreements**. Kappa not computable — the pre-reconciliation file wasn't kept.
+
+### Held-Out Test Results
+
+| | Strategy A (fewshot) | Strategy B (silver 2500) |
+|---|---|---|
+| Gold (dev) macro-F1 | 0.5916 | 0.6375 |
+| **Held-out macro-F1** | **0.6985** | **0.6175 ± 0.0085** |
+| Held-out kappa | 0.60 | 0.511 ± 0.0096 |
+
+Per-class held-out F1 — agree/disagree/question/statement:
+A: 0.647 / 0.722 / 0.773 / 0.652. B (mean of 3 seeds): 0.689 / 0.449 / 0.803 / 0.529.
+
+Dev ranks B above A; held-out ranks A above B — the ranking flips depending on
+which set is used. B's `disagree` F1 is its weakest class in all 3 seeds.
+
 ### Common 296-Sample Evaluation
 
 The four gold examples used as few-shot prompt demonstrations are excluded when
@@ -339,7 +359,9 @@ missing predicted classes and class-collapse counts.
 Run both full-fine-tuning configurations with identical folds, split seed, and train
 seeds. The old `strategy_c_full_backup` cannot be reused because its fold 1-2 test
 membership differs from the current fixed split and its inner split was tied directly
-to the train seed.
+to the train seed. Same for `results/strategy_c/_legacy_preRefactor/` -- pre-refactor
+loose files (macro-F1 `0.169`, even worse than the collapsed baseline), moved there
+so they don't get read by mistake. Do not use either.
 
 ```bash
 python3 -m src.train_roberta strategy_c \
@@ -370,6 +392,40 @@ python3 -m src.train_roberta strategy_c \
 
 The current weighted TF-IDF baseline has OOF macro-F1 `0.2485`. The three seed-level
 scores are identical because this solver converged deterministically on these folds.
+
+### Train-Fit Diagnostic (Is It Data or Config?)
+
+`python3 -m src.train_roberta strategy_c_diagnose` trains each of the 5
+folds x 3 seeds once and additionally predicts on the training rows
+themselves, saved to `results/strategy_c_diagnose/summary_weights.csv`
+(per-run rows plus one `AGGREGATE` row).
+
+Current result: mean train-fit macro-F1 `0.326`, mean eval macro-F1 `0.239`,
+11/15 runs have train-fit below `0.35`, and train-fit correlates strongly
+with eval (`r=0.777`). This points to **training instability**, not
+insufficient data -- a working config should fit ~204 training rows far
+better than this most of the time; instead most runs fail to even fit their
+own training data, and eval quality just tracks whether that run happened to
+converge. Not yet possible to conclude "300 gold rows is insufficient" until
+training is stabilized (warmup, more epochs) and re-diagnosed.
+
+### Weights On/Off, Fixed Config
+
+Fixed the instability above by adding `--warmup-steps 20 --epochs 8` to
+`run_strategy_c` (roberta only, does not change TRAINING defaults used by
+Strategy B). Then tried this one config with weights on and with weights
+off, to see if weights still matter now that training is stable.
+
+- Weights on: OOF macro-F1 `0.5309 ± 0.0038`. No class collapse in any of
+  the 15 fold/seed runs. This beats TF-IDF (`0.2485`).
+- Weights off: OOF macro-F1 `0.3499 ± 0.0229`. Still collapses on 8/15
+  fold/seed runs. `statement` F1 is near zero; one seed predicted
+  `statement` zero times.
+
+Weights on is much better, so `use_class_weights=True` is kept for all
+further tuning. This comparison was only run at this one (warmup=20,
+epochs=8) config, not across a full warmup x epochs x weights grid, so it's
+possible a different warmup/epochs combo changes this -- not verified.
 
 ### Previous Partial-Fine-Tuning Finding
 

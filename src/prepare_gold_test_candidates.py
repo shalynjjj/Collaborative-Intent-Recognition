@@ -61,7 +61,25 @@ def load_excluded_pairs() -> set:
     return excluded
 
 
-def collect_data(excluded_pairs: set) -> pd.DataFrame:
+def load_excluded_utt_ids() -> set:
+    """Utterance ids already used anywhere (as parent or reply) in silver (10k).
+
+    Pair-level exclusion only blocks exact (Parent, Reply) duplicates. A single
+    utterance can appear as the Parent of one pair and the Reply of a different
+    pair, so it needs its own id-level check -- otherwise a test candidate's
+    Reply text can silently match a silver row's Parent text (or vice versa),
+    which is a milder but real train/test overlap that pair-level dedup misses.
+    """
+    excluded_ids = set()
+    if Path(SILVER_CANDIDATES_CSV).exists():
+        silver = pd.read_csv(SILVER_CANDIDATES_CSV, encoding="latin1")
+        for column in ("parent_id", "reply_id"):
+            if column in silver.columns:
+                excluded_ids |= set(silver[column].dropna())
+    return excluded_ids
+
+
+def collect_data(excluded_pairs: set, excluded_utt_ids: set) -> pd.DataFrame:
     corpus = Corpus(filename=download("winning-args-corpus"))
     rows = []
 
@@ -96,6 +114,9 @@ def collect_data(excluded_pairs: set) -> pd.DataFrame:
             continue
 
         if (_norm(parent_text), _norm(reply)) in excluded_pairs:
+            continue
+
+        if utt.id in excluded_utt_ids or parent.id in excluded_utt_ids:
             continue
 
         rows.append({
@@ -157,10 +178,12 @@ def build(df: pd.DataFrame) -> pd.DataFrame:
 def main():
     print("loading exclusion set (gold 300 + silver 10k)...")
     excluded = load_excluded_pairs()
+    excluded_utt_ids = load_excluded_utt_ids()
     print(f"excluding {len(excluded)} known parent/reply pairs")
+    print(f"excluding {len(excluded_utt_ids)} known silver utterance ids (parent or reply role)")
 
     print("collecting...")
-    df = collect_data(excluded)
+    df = collect_data(excluded, excluded_utt_ids)
 
     print("sampling...")
     sampled = sample_data(df, n=N, seed=SEED)

@@ -1,0 +1,98 @@
+{
+  "macro_f1": 0.30344585091420534,
+  "cohen_kappa": 0.15369649805447472,
+  "fallback_count": 0,
+  "classification_report": {
+    "agree": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 13.0
+    },
+    "disagree": {
+      "precision": 0.52,
+      "recall": 0.896551724137931,
+      "f1-score": 0.6582278481012658,
+      "support": 29.0
+    },
+    "question": {
+      "precision": 0.5555555555555556,
+      "recall": 0.5555555555555556,
+      "f1-score": 0.5555555555555556,
+      "support": 9.0
+    },
+    "statement": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "accuracy": 0.5166666666666667,
+    "macro avg": {
+      "precision": 0.2688888888888889,
+      "recall": 0.36302681992337166,
+      "f1-score": 0.30344585091420534,
+      "support": 60.0
+    },
+    "weighted avg": {
+      "precision": 0.3346666666666666,
+      "recall": 0.5166666666666667,
+      "f1-score": 0.40147679324894514,
+      "support": 60.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      0,
+      13,
+      0,
+      0
+    ],
+    [
+      0,
+      26,
+      3,
+      0
+    ],
+    [
+      0,
+      4,
+      5,
+      0
+    ],
+    [
+      1,
+      7,
+      1,
+      0
+    ]
+  ],
+  "labels": [
+    "agree",
+    "disagree",
+    "question",
+    "statement"
+  ],
+  "strategy": "C",
+  "model_type": "roberta",
+  "fold": 3,
+  "train_seed": 123,
+  "split_seed": 42,
+  "outer_fold_seed": 42,
+  "dry_run": false,
+  "use_class_weights": false,
+  "warmup_steps": 20,
+  "epochs": 8,
+  "prediction_counts": {
+    "agree": 1,
+    "disagree": 50,
+    "question": 9,
+    "statement": 0
+  },
+  "missing_prediction_classes": [
+    "statement"
+  ],
+  "class_collapse": true,
+  "train_rows": 204,
+  "validation_rows": 36
+}

@@ -1,0 +1,5 @@
+,agree,disagree,question,statement
+agree,3,4,0,6
+disagree,3,20,2,4
+question,0,1,6,1
+statement,1,4,0,5

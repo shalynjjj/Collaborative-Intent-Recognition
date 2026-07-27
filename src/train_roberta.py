@@ -15,6 +15,7 @@ from .config import (
     DIALOGUE_LABELS,
     ID2LABEL,
     LABEL2ID,
+    RESULTS_DIR,
     SAMPLE_SEEDS,
     SEEDS,
     STRATEGY_B_FINAL_CONFIG,
@@ -23,6 +24,8 @@ from .config import (
     STRATEGY_B_DIR,
     STRATEGY_B_HELDOUT_DIR,
     STRATEGY_C_DIR,
+    STRATEGY_C_FINAL_CONFIG,
+    STRATEGY_C_HELDOUT_DIR,
     TEST_CSV,
     TRAINING,
 )
@@ -132,7 +135,7 @@ def _split_metadata(
     return metadata
 
 
-def _training_args(output_dir: Path, seed: int, TrainingArguments):
+def _training_args(output_dir: Path, seed: int, TrainingArguments, overrides: Optional[Dict] = None):
     params = inspect.signature(TrainingArguments.__init__).parameters
     kwargs = {
         "output_dir": str(output_dir),
@@ -157,6 +160,12 @@ def _training_args(output_dir: Path, seed: int, TrainingArguments):
         kwargs["warmup_steps"] = TRAINING.warmup_steps
     if "logging_strategy" in params:
         kwargs["logging_strategy"] = "epoch"
+    # Diagnostic-only overrides (e.g. warmup_steps, num_train_epochs). Never
+    # set by Strategy A/B or the normal Strategy C path -- only
+    # diagnose_strategy_c_train_fit passes these, so default behavior for
+    # every other caller is unchanged.
+    if overrides:
+        kwargs.update(overrides)
     return TrainingArguments(**kwargs)
 
 
@@ -189,7 +198,9 @@ def _train_and_predict(
     split_seed: Optional[int] = None,
     group_col: Optional[str] = None,
     use_class_weights: Optional[bool] = None,
-) -> Tuple[List[str], Dict]:
+    also_predict_train: bool = False,
+    training_overrides: Optional[Dict] = None,
+) -> Tuple[List[str], Dict, Optional[Dict]]:
     set_seed(seed)
     import torch
     from torch.utils.data import Dataset
@@ -283,7 +294,7 @@ def _train_and_predict(
     tmp_root = Path("results") / "tmp_trainer"
     tmp_root.mkdir(parents=True, exist_ok=True)
     output_dir = Path(tempfile.mkdtemp(prefix=f"roberta_seed{seed}_", dir=tmp_root))
-    args = _training_args(output_dir, seed, TrainingArguments)
+    args = _training_args(output_dir, seed, TrainingArguments, training_overrides)
 
     class_weights = None
     weights_enabled = TRAINING.use_class_weights if use_class_weights is None else use_class_weights
@@ -302,7 +313,16 @@ def _train_and_predict(
         trainer.train()
         predictions = trainer.predict(TextDataset(eval_df, has_labels=False)).predictions
         pred_ids = np.argmax(predictions, axis=1)
-        return [ID2LABEL[int(idx)] for idx in pred_ids], split_metadata
+        pred_labels = [ID2LABEL[int(idx)] for idx in pred_ids]
+
+        train_metrics = None
+        if also_predict_train:
+            train_predictions = trainer.predict(TextDataset(inner_train_df, has_labels=False)).predictions
+            train_pred_ids = np.argmax(train_predictions, axis=1)
+            train_pred_labels = [ID2LABEL[int(idx)] for idx in train_pred_ids]
+            train_metrics = compute_metrics(inner_train_df[train_label_col], train_pred_labels)
+
+        return pred_labels, split_metadata, train_metrics
     finally:
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -320,7 +340,10 @@ def _run_once(
     split_seed: Optional[int] = None,
     group_col: Optional[str] = None,
     use_class_weights: Optional[bool] = None,
+    also_predict_train: bool = False,
+    training_overrides: Optional[Dict] = None,
 ) -> Tuple[List[str], Dict, Dict]:
+    train_metrics = None
     if dry_run:
         inner_train_df, inner_val_df = _make_inner_validation_split(
             train_df,
@@ -331,7 +354,7 @@ def _run_once(
         split_metadata = _split_metadata(inner_train_df, inner_val_df, group_col)
         predictions = _dry_run_predictions(train_df, eval_df, train_label_col)
     else:
-        predictions, split_metadata = _train_and_predict(
+        predictions, split_metadata, train_metrics = _train_and_predict(
             train_df,
             eval_df,
             seed,
@@ -340,8 +363,13 @@ def _run_once(
             split_seed,
             group_col,
             use_class_weights,
+            also_predict_train,
+            training_overrides,
         )
     metrics = compute_metrics(eval_df[eval_label_col], predictions)
+    if train_metrics is not None:
+        metrics["train_fit_macro_f1"] = train_metrics["macro_f1"]
+        metrics["train_fit_cohen_kappa"] = train_metrics["cohen_kappa"]
     return predictions, metrics, split_metadata
 
 
@@ -526,6 +554,21 @@ def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
     silver = pd.read_csv(STRATEGY_B_FINAL_SILVER_CSV, encoding="latin1")
     label_col = _infer_label_column(silver)
     silver = _prepare_labeled_frame(silver, label_col)
+
+    # Pair-level dedup (prepare_gold_test_candidates.py) doesn't catch a single
+    # utterance appearing as TEST_CSV's Reply and a different silver row's
+    # Parent (or vice versa). Filter those out of the sampling pool so no
+    # future silver_size/sample_seed choice can pull in a contaminated row.
+    if "utt_id" in test_df.columns and {"parent_id", "reply_id"}.issubset(silver.columns):
+        test_utt_ids = set(test_df["utt_id"])
+        before = len(silver)
+        silver = silver[
+            ~silver["parent_id"].isin(test_utt_ids) & ~silver["reply_id"].isin(test_utt_ids)
+        ]
+        excluded_count = before - len(silver)
+        if excluded_count:
+            print(f"excluded {excluded_count} silver rows overlapping TEST_CSV utterance ids")
+
     train_base = _sample_silver_subset(silver, config["silver_size"], config["sample_seed"])
 
     rows = []
@@ -576,14 +619,26 @@ def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
         )
 
     summary = pd.DataFrame(rows)
-    summary.to_csv(STRATEGY_B_HELDOUT_DIR / "summary.csv", index=False)
+    summary_name = "summary_dryrun.csv" if dry_run else "summary.csv"
+    summary.to_csv(STRATEGY_B_HELDOUT_DIR / summary_name, index=False)
     return summary
 
 
-def _strategy_c_output_dir(model_type: str, use_class_weights: bool, dry_run: bool) -> Path:
+def _strategy_c_output_dir(
+    model_type: str,
+    use_class_weights: bool,
+    dry_run: bool,
+    warmup_steps: Optional[int] = None,
+    epochs: Optional[int] = None,
+) -> Path:
     weight_tag = "weights" if use_class_weights else "no_weights"
     dry_tag = "_dryrun" if dry_run else ""
-    return STRATEGY_C_DIR / f"{model_type}_{weight_tag}{dry_tag}"
+    config_tag = ""
+    if warmup_steps is not None:
+        config_tag += f"_warmup{warmup_steps}"
+    if epochs is not None:
+        config_tag += f"_epochs{epochs}"
+    return STRATEGY_C_DIR / f"{model_type}_{weight_tag}{config_tag}{dry_tag}"
 
 
 def _prediction_diagnostics(predictions: List[str]) -> Tuple[Dict[str, int], List[str]]:
@@ -715,12 +770,25 @@ def run_strategy_c(
     model_type: str = "roberta",
     use_class_weights: Optional[bool] = None,
     split_seed: int = 42,
+    warmup_steps: Optional[int] = None,
+    epochs: Optional[int] = None,
 ) -> pd.DataFrame:
+    """warmup_steps/epochs override TRAINING's roberta defaults for this run
+    only (never touches the global TRAINING singleton), so Strategy B and any
+    other Strategy C run without these flags are unaffected. Results are
+    written to a config-tagged directory so they never mix with runs under
+    different hyperparameters (see _strategy_c_output_dir)."""
     ensure_results_dirs()
     seeds = seeds or SEEDS
     weights_enabled = TRAINING.use_class_weights if use_class_weights is None else use_class_weights
-    output_dir = _strategy_c_output_dir(model_type, weights_enabled, dry_run)
+    output_dir = _strategy_c_output_dir(model_type, weights_enabled, dry_run, warmup_steps, epochs)
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    training_overrides = {}
+    if warmup_steps is not None:
+        training_overrides["warmup_steps"] = warmup_steps
+    if epochs is not None:
+        training_overrides["num_train_epochs"] = epochs
     gold = _prepare_labeled_frame(load_gold_data(), "Dialogue_act").reset_index(drop=True)
     gold["gold_index"] = gold.index
     splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
@@ -751,6 +819,7 @@ def run_strategy_c(
                     dry_run,
                     split_seed=split_seed,
                     use_class_weights=weights_enabled,
+                    training_overrides=training_overrides or None,
                 )
             counts, missing = _prediction_diagnostics(predictions)
             metrics.update(
@@ -763,6 +832,8 @@ def run_strategy_c(
                     "outer_fold_seed": 42,
                     "dry_run": dry_run,
                     "use_class_weights": weights_enabled,
+                    "warmup_steps": warmup_steps,
+                    "epochs": epochs,
                     "prediction_counts": counts,
                     "missing_prediction_classes": missing,
                     "class_collapse": bool(missing),
@@ -798,6 +869,236 @@ def run_strategy_c(
         split_seed,
         dry_run,
     )
+
+
+def run_strategy_c_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
+    """One-shot confirmatory eval of the locked Strategy C config on TEST_CSV.
+
+    Trains on the full 300-row gold set (no outer CV split -- CV was only
+    needed to pick the config on GOLD_CSV) and evaluates against TEST_CSV
+    instead. Takes no seed-list/model/weight arguments on purpose -- this
+    must not turn into a second sweep. Run once, after STRATEGY_C_FINAL_CONFIG
+    is locked.
+    """
+    ensure_results_dirs()
+    STRATEGY_C_HELDOUT_DIR.mkdir(parents=True, exist_ok=True)
+    config = STRATEGY_C_FINAL_CONFIG
+    gold = _prepare_labeled_frame(load_gold_data(), "Dialogue_act").reset_index(drop=True)
+    test_df = _prepare_labeled_frame(load_gold_data(TEST_CSV), "Dialogue_act")
+
+    training_overrides = {}
+    if config.get("warmup_steps") is not None:
+        training_overrides["warmup_steps"] = config["warmup_steps"]
+    if config.get("epochs") is not None:
+        training_overrides["num_train_epochs"] = config["epochs"]
+
+    rows = []
+    for train_seed in SEEDS:
+        set_seed(train_seed)
+        if config["model_type"] == "tfidf":
+            predictions = _tfidf_predictions(
+                gold, test_df, train_seed, config["use_class_weights"]
+            )
+            metrics = compute_metrics(test_df["Dialogue_act"], predictions)
+            split_metadata = {"train_rows": len(gold), "validation_rows": 0}
+        else:
+            predictions, metrics, split_metadata = _run_once(
+                gold,
+                test_df,
+                train_seed,
+                "Dialogue_act",
+                "Dialogue_act",
+                dry_run,
+                split_seed=config["split_seed"],
+                use_class_weights=config["use_class_weights"],
+                training_overrides=training_overrides or None,
+            )
+        counts, missing = _prediction_diagnostics(predictions)
+        metrics.update(
+            {
+                "strategy": "C",
+                "eval_set": "heldout_test",
+                "model_type": config["model_type"],
+                "train_seed": train_seed,
+                "dry_run": dry_run,
+                "use_class_weights": config["use_class_weights"],
+                "warmup_steps": config.get("warmup_steps"),
+                "epochs": config.get("epochs"),
+                "prediction_counts": counts,
+                "missing_prediction_classes": missing,
+                "class_collapse": bool(missing),
+                **split_metadata,
+            }
+        )
+
+        run_tag = "_dryrun" if dry_run else ""
+        prefix = f"heldout_seed{train_seed}{run_tag}"
+        pred_df = test_df[["Parent", "Reply", "Dialogue_act"]].copy()
+        pred_df["pred_label"] = predictions
+        pred_df.to_csv(STRATEGY_C_HELDOUT_DIR / f"{prefix}_predictions.csv", index=False)
+        save_metrics(metrics, STRATEGY_C_HELDOUT_DIR / f"{prefix}_metrics.json")
+        save_confusion_matrix(metrics, STRATEGY_C_HELDOUT_DIR / f"{prefix}_confusion_matrix.csv")
+        rows.append(
+            {
+                "train_seed": train_seed,
+                "macro_f1": metrics["macro_f1"],
+                "cohen_kappa": metrics["cohen_kappa"],
+            }
+        )
+
+    summary = pd.DataFrame(rows)
+    summary_name = "summary_dryrun.csv" if dry_run else "summary.csv"
+    summary.to_csv(STRATEGY_C_HELDOUT_DIR / summary_name, index=False)
+    return summary
+
+
+def diagnose_strategy_c_train_fit(
+    fold: int = 1,
+    train_seed: int = 42,
+    use_class_weights: bool = True,
+    split_seed: int = 42,
+    save: bool = True,
+    warmup_steps: Optional[int] = None,
+    epochs: Optional[int] = None,
+) -> Dict:
+    """Strategy C diagnostic: does RoBERTa fit its own training fold?
+
+    Trains on one fold (same 5-fold split as run_strategy_c) and predicts
+    both on the held-out fold (normal eval) and on the training rows
+    themselves (also_predict_train). Low scores on both -> broken training
+    config (bad LR/warmup/epochs), not "not enough data" -- a model this
+    size should be able to fit ~240 rows if training is actually working.
+    High train-fit but low eval -> genuine overfitting, which does support
+    "300 gold rows isn't enough for full RoBERTa fine-tuning."
+
+    warmup_steps/epochs override TRAINING's defaults for this call only --
+    they are never touched globally, so Strategy A/B and the normal
+    Strategy C path are unaffected regardless of what's passed here.
+
+    Single fold/seed by design: this is a diagnostic, not a sweep. Not
+    wired into run_strategy_c's normal loop.
+    """
+    gold = _prepare_labeled_frame(load_gold_data(), "Dialogue_act").reset_index(drop=True)
+    splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    folds = list(splitter.split(gold["model_input"], gold["Dialogue_act"]))
+    train_idx, eval_idx = folds[fold - 1]
+    train_df = gold.iloc[train_idx].reset_index(drop=True)
+    eval_df = gold.iloc[eval_idx].reset_index(drop=True)
+
+    overrides = {}
+    if warmup_steps is not None:
+        overrides["warmup_steps"] = warmup_steps
+    if epochs is not None:
+        overrides["num_train_epochs"] = epochs
+
+    set_seed(train_seed)
+    predictions, metrics, split_metadata = _run_once(
+        train_df,
+        eval_df,
+        train_seed,
+        "Dialogue_act",
+        "Dialogue_act",
+        dry_run=False,
+        split_seed=split_seed,
+        use_class_weights=use_class_weights,
+        also_predict_train=True,
+        training_overrides=overrides or None,
+    )
+
+    result = {
+        "fold": fold,
+        "train_seed": train_seed,
+        "use_class_weights": use_class_weights,
+        "warmup_steps": warmup_steps,
+        "epochs": epochs,
+        "train_rows": split_metadata["train_rows"],
+        "validation_rows": split_metadata["validation_rows"],
+        "eval_rows": len(eval_df),
+        "train_fit_macro_f1": metrics.get("train_fit_macro_f1"),
+        "train_fit_cohen_kappa": metrics.get("train_fit_cohen_kappa"),
+        "eval_macro_f1": metrics["macro_f1"],
+        "eval_cohen_kappa": metrics["cohen_kappa"],
+    }
+    print(json.dumps(result, indent=2))
+    if save:
+        output_dir = RESULTS_DIR / "strategy_c_diagnose"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        weight_tag = "weights" if use_class_weights else "no_weights"
+        output_path = output_dir / f"fold{fold}_seed{train_seed}_{weight_tag}.json"
+        output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+        print(f"saved to: {output_path}")
+    return result
+
+
+def run_strategy_c_diagnose_sweep(
+    folds: Optional[List[int]] = None,
+    train_seeds: Optional[List[int]] = None,
+    use_class_weights: bool = True,
+    split_seed: int = 42,
+    warmup_steps: Optional[int] = None,
+    epochs: Optional[int] = None,
+) -> pd.DataFrame:
+    """Run diagnose_strategy_c_train_fit across every fold x seed combination.
+
+    Default is all 5 folds x the project's standard SEEDS (42, 123, 2026) --
+    same granularity as run_strategy_c's real sweep, so the "does this
+    fold/seed combo overfit vs fail to fit" pattern can be judged from more
+    than one anecdotal run before concluding whether Strategy C's problem is
+    training instability or genuine data insufficiency.
+
+    warmup_steps/epochs let this diagnostic be re-run with a fixed config
+    change (e.g. warmup_steps=20, epochs=8) to check whether that stabilizes
+    training, without touching the global TRAINING defaults used elsewhere.
+    """
+    folds = folds or [1, 2, 3, 4, 5]
+    train_seeds = train_seeds or SEEDS
+
+    rows = []
+    for fold in folds:
+        for train_seed in train_seeds:
+            result = diagnose_strategy_c_train_fit(
+                fold, train_seed, use_class_weights, split_seed, save=False,
+                warmup_steps=warmup_steps, epochs=epochs,
+            )
+            rows.append(result)
+
+    summary = pd.DataFrame(rows)
+    summary["gap"] = summary["train_fit_macro_f1"] - summary["eval_macro_f1"]
+
+    low_fit = int((summary["train_fit_macro_f1"] < 0.35).sum())
+    correlation = summary["train_fit_macro_f1"].corr(summary["eval_macro_f1"])
+    summary["low_train_fit_count"] = None
+    summary["train_fit_eval_correlation"] = None
+    stats_row = pd.DataFrame([{
+        "fold": "AGGREGATE",
+        "train_seed": f"n={len(summary)}",
+        "train_fit_macro_f1": summary["train_fit_macro_f1"].mean(),
+        "eval_macro_f1": summary["eval_macro_f1"].mean(),
+        "gap": summary["gap"].mean(),
+        "low_train_fit_count": low_fit,
+        "train_fit_eval_correlation": round(correlation, 3),
+    }])
+    summary_with_stats = pd.concat([summary, stats_row], ignore_index=True)
+
+    output_dir = RESULTS_DIR / "strategy_c_diagnose"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    weight_tag = "weights" if use_class_weights else "no_weights"
+    config_tag = ""
+    if warmup_steps is not None:
+        config_tag += f"_warmup{warmup_steps}"
+    if epochs is not None:
+        config_tag += f"_epochs{epochs}"
+    summary_path = output_dir / f"summary_{weight_tag}{config_tag}.csv"
+    summary_with_stats.to_csv(summary_path, index=False)
+
+    print(summary.to_string(index=False))
+    print(f"\nmean train_fit_macro_f1: {summary['train_fit_macro_f1'].mean():.3f}")
+    print(f"mean eval_macro_f1: {summary['eval_macro_f1'].mean():.3f}")
+    print(f"mean gap: {summary['gap'].mean():.3f}")
+    print(f"train_fit/eval correlation: {correlation:.3f}")
+    print(f"runs where train_fit itself is low (<0.35): {low_fit}/{len(summary)}")
+    print(f"saved to: {summary_path} (aggregate stats in the last row)")
+    return summary
 
 
 def main() -> None:
@@ -837,6 +1138,41 @@ def main() -> None:
         default=TRAINING.use_class_weights,
     )
     c_parser.add_argument("--split-seed", type=int, default=42)
+    c_parser.add_argument(
+        "--warmup-steps", type=int, default=None,
+        help="Override TRAINING.warmup_steps for this Strategy C run only (roberta only).",
+    )
+    c_parser.add_argument(
+        "--epochs", type=int, default=None,
+        help="Override TRAINING.epochs for this Strategy C run only (roberta only).",
+    )
+
+    c_heldout_parser = subparsers.add_parser(
+        "strategy_c_heldout",
+        help="One-shot eval of the locked STRATEGY_C_FINAL_CONFIG against TEST_CSV.",
+    )
+    c_heldout_parser.add_argument("--dry-run", action="store_true")
+
+    c_diagnose_parser = subparsers.add_parser(
+        "strategy_c_diagnose",
+        help="Does RoBERTa fit its own training data? Sweeps folds x seeds by default.",
+    )
+    c_diagnose_parser.add_argument("--folds", type=int, nargs="+", default=[1, 2, 3, 4, 5])
+    c_diagnose_parser.add_argument("--train-seeds", type=int, nargs="+", default=SEEDS)
+    c_diagnose_parser.add_argument(
+        "--class-weights",
+        action=argparse.BooleanOptionalAction,
+        default=TRAINING.use_class_weights,
+    )
+    c_diagnose_parser.add_argument("--split-seed", type=int, default=42)
+    c_diagnose_parser.add_argument(
+        "--warmup-steps", type=int, default=None,
+        help="Override TRAINING.warmup_steps for this diagnostic run only.",
+    )
+    c_diagnose_parser.add_argument(
+        "--epochs", type=int, default=None,
+        help="Override TRAINING.epochs for this diagnostic run only.",
+    )
 
     args = parser.parse_args()
     if args.strategy == "strategy_b":
@@ -851,6 +1187,18 @@ def main() -> None:
         )
     elif args.strategy == "strategy_b_heldout":
         summary = run_strategy_b_heldout_eval(args.dry_run)
+    elif args.strategy == "strategy_c_heldout":
+        summary = run_strategy_c_heldout_eval(args.dry_run)
+    elif args.strategy == "strategy_c_diagnose":
+        run_strategy_c_diagnose_sweep(
+            args.folds,
+            args.train_seeds,
+            args.class_weights,
+            args.split_seed,
+            args.warmup_steps,
+            args.epochs,
+        )
+        return
     else:
         summary = run_strategy_c(
             args.seeds,
@@ -858,6 +1206,8 @@ def main() -> None:
             args.model,
             args.class_weights,
             args.split_seed,
+            args.warmup_steps,
+            args.epochs,
         )
     print(summary.to_string(index=False))
 
