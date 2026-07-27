@@ -342,26 +342,34 @@ prediction file. Macro-F1 and kappa are computed once per seed on those 300 OOF 
 the final mean and standard deviation are calculated across the three seed-level
 scores, rather than treating 15 fold runs as independent observations.
 
-Outputs are isolated by model and weight configuration:
+Outputs are isolated by model, weight configuration, and (if overridden)
+warmup/epoch config, e.g. `<model>_<weights|no_weights>[_warmup<N>_epochs<N>]`. The
+locked final directories (see `STRATEGY_C_FINAL_CONFIG` in `src/config.py`) are:
 
 ```text
-results/strategy_c/roberta_weights/
-results/strategy_c/roberta_no_weights/
-results/strategy_c/tfidf_weights/
+results/strategy_c/roberta_weights_warmup20_epochs8/    # locked final config
+results/strategy_c/roberta_no_weights_warmup20_epochs8/  # weights-off ablation
+results/strategy_c/tfidf_weights/                        # baseline
 ```
 
 Each directory contains fold-level files, `fold_runs.csv`, per-seed OOF predictions
 and metrics, `summary_by_seed.csv`, and `summary_oof.csv`. Metrics explicitly record
 missing predicted classes and class-collapse counts.
 
+All superseded/closed Strategy C results live under `results/strategy_c/legacy/`:
+`pre_refactor/` (pre-refactor loose files, macro-F1 `0.169`), `pre_warmup_fix_weights/`
+and `pre_warmup_fix_no_weights/` (unstable runs before the warmup/epochs fix below,
+macro-F1 `0.2208`/`0.1629`), and `full_backup/`, `layers2/`, `layers4/` (closed
+partial-fine-tuning experiments, see below). Do not use anything under `legacy/`.
+
 ### Strategy C: Class-Weight Ablation
 
 Run both full-fine-tuning configurations with identical folds, split seed, and train
-seeds. The old `strategy_c_full_backup` cannot be reused because its fold 1-2 test
-membership differs from the current fixed split and its inner split was tied directly
-to the train seed. Same for `results/strategy_c/_legacy_preRefactor/` -- pre-refactor
-loose files (macro-F1 `0.169`, even worse than the collapsed baseline), moved there
-so they don't get read by mistake. Do not use either.
+seeds. The old `strategy_c_full_backup` (now `results/strategy_c/legacy/full_backup/`)
+cannot be reused because its fold 1-2 test membership differs from the current fixed
+split and its inner split was tied directly to the train seed. Same for
+`results/strategy_c/legacy/pre_refactor/` -- pre-refactor loose files (macro-F1
+`0.169`, even worse than the collapsed baseline). Do not use either.
 
 ```bash
 python3 -m src.train_roberta strategy_c \
@@ -433,7 +441,9 @@ Earlier exploratory runs produced fold-averaged macro-F1 of approximately `0.20`
 full fine-tuning, `0.16` with only the last 2 layers trainable, and `0.17` with only
 the last 4 layers trainable. None learned all four classes reliably. Partial
 fine-tuning is therefore closed as an experimental direction; it is not exposed in
-the current CLI. Full RoBERTa weights-on/off must be rerun under the standardized OOF
+the current CLI. (Results in `results/strategy_c/legacy/{full_backup,layers2,layers4}/`
+-- superseded once the warmup/epochs fix below solved the instability. Do not use.)
+Full RoBERTa weights-on/off must be rerun under the standardized OOF
 pipeline before comparison with TF-IDF and Strategy B.
 
 ## Notebook

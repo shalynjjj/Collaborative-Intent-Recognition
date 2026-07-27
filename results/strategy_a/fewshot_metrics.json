@@ -76,5 +76,21 @@
   "strategy": "A",
   "prompting": "fewshot",
   "model": "LLM-Research/Meta-Llama-3.1-8B-Instruct",
-  "model_source": "modelscope"
+  "model_source": "modelscope",
+  "bootstrap": {
+    "n_boot": 2000,
+    "boot_seed": 42,
+    "macro_f1_boot_mean": 0.5906842409185364,
+    "macro_f1_boot_std": 0.0268883598651698,
+    "macro_f1_ci95": [
+      0.5394000312632011,
+      0.6417045536126602
+    ],
+    "cohen_kappa_boot_mean": 0.41997370657997135,
+    "cohen_kappa_boot_std": 0.03631370343495945,
+    "cohen_kappa_ci95": [
+      0.35336187078612985,
+      0.48927312150878105
+    ]
+  }
 }

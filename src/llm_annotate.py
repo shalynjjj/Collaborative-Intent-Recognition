@@ -20,7 +20,7 @@ from .config import (
     TEST_CSV,
 )
 from .data_loader import load_gold_data
-from .evaluate import compute_metrics, save_confusion_matrix, save_metrics
+from .evaluate import bootstrap_ci, compute_metrics, save_confusion_matrix, save_metrics
 from .utils import ensure_results_dirs, parse_label, resolve_model_path, set_seed
 
 
@@ -267,6 +267,27 @@ def run_strategy_a_heldout(mock: bool = False) -> Dict:
     return metrics
 
 
+def add_bootstrap_ci(
+    predictions_csv: Path, metrics_json: Path, n_boot: int = 2000, seed: int = 42
+) -> Dict:
+    """Attach a bootstrap macro-F1/kappa CI to an already-saved metrics file.
+
+    Reads the (gold_label, pred_label) pairs already written by a prior run
+    and resamples them -- the LLM is temperature=0 (LLM.temperature in
+    config.py), so its output is deterministic and re-running it would only
+    reproduce the same predictions. This also means it never re-reads
+    TEST_CSV, so it does not count against the "TEST_CSV touched once"
+    rule for held-out runs.
+    """
+    predictions = pd.read_csv(predictions_csv)
+    metrics = json.loads(metrics_json.read_text(encoding="utf-8"))
+    metrics["bootstrap"] = bootstrap_ci(
+        predictions["gold_label"], predictions["pred_label"], n_boot=n_boot, seed=seed
+    )
+    save_metrics(metrics, metrics_json)
+    return metrics
+
+
 def run_silver_annotation(
     input_csv: Path,
     output_csv: Path,
@@ -316,9 +337,28 @@ def main() -> None:
         help="Run the locked STRATEGY_A_FINAL_MODE config once against TEST_CSV. "
         "Ignores --mode/--input-csv/--output-csv.",
     )
+    parser.add_argument(
+        "--bootstrap-existing",
+        action="store_true",
+        help="Attach a bootstrap macro-F1/kappa CI to an already-saved metrics "
+        "file by resampling its predictions.csv, instead of calling the LLM. "
+        "Combine with --heldout for the held-out metrics, or --mode for the "
+        "dev-set metrics.",
+    )
+    parser.add_argument("--n-boot", type=int, default=2000)
     args = parser.parse_args()
 
-    if args.heldout:
+    if args.bootstrap_existing:
+        if args.heldout:
+            mode = STRATEGY_A_FINAL_MODE
+            pred_path = STRATEGY_A_HELDOUT_DIR / f"{mode}_predictions.csv"
+            metrics_path = STRATEGY_A_HELDOUT_DIR / f"{mode}_metrics.json"
+        else:
+            pred_path = STRATEGY_A_DIR / f"{args.mode}_predictions.csv"
+            metrics_path = STRATEGY_A_DIR / f"{args.mode}_metrics.json"
+        metrics = add_bootstrap_ci(pred_path, metrics_path, n_boot=args.n_boot)
+        print(json.dumps(metrics["bootstrap"], indent=2))
+    elif args.heldout:
         metrics = run_strategy_a_heldout(mock=args.mock)
         print(json.dumps(metrics, indent=2))
     elif args.input_csv is not None:
