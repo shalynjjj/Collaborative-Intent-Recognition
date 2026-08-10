@@ -1,70 +1,70 @@
 {
-  "macro_f1": 0.5539982791535587,
-  "cohen_kappa": 0.5,
+  "macro_f1": 0.6269473683347799,
+  "cohen_kappa": 0.5461847389558233,
   "fallback_count": 0,
   "classification_report": {
     "agree": {
-      "precision": 0.5862068965517241,
-      "recall": 0.85,
-      "f1-score": 0.6938775510204082,
-      "support": 20.0
+      "precision": 0.6082474226804123,
+      "recall": 0.7108433734939759,
+      "f1-score": 0.6555555555555556,
+      "support": 83.0
     },
     "disagree": {
-      "precision": 0.5384615384615384,
-      "recall": 0.7,
-      "f1-score": 0.6086956521739131,
-      "support": 20.0
+      "precision": 0.5575221238938053,
+      "recall": 0.7590361445783133,
+      "f1-score": 0.6428571428571429,
+      "support": 83.0
     },
     "question": {
-      "precision": 0.75,
-      "recall": 0.9,
-      "f1-score": 0.8181818181818182,
-      "support": 20.0
+      "precision": 0.8061224489795918,
+      "recall": 0.9518072289156626,
+      "f1-score": 0.8729281767955801,
+      "support": 83.0
     },
     "statement": {
-      "precision": 1.0,
-      "recall": 0.05,
-      "f1-score": 0.09523809523809523,
-      "support": 20.0
+      "precision": 0.75,
+      "recall": 0.21686746987951808,
+      "f1-score": 0.3364485981308411,
+      "support": 83.0
     },
-    "accuracy": 0.625,
+    "accuracy": 0.6596385542168675,
     "macro avg": {
-      "precision": 0.7186671087533156,
-      "recall": 0.6249999999999999,
-      "f1-score": 0.5539982791535587,
-      "support": 80.0
+      "precision": 0.6804729988884524,
+      "recall": 0.6596385542168675,
+      "f1-score": 0.6269473683347799,
+      "support": 332.0
     },
     "weighted avg": {
-      "precision": 0.7186671087533156,
-      "recall": 0.625,
-      "f1-score": 0.5539982791535587,
-      "support": 80.0
+      "precision": 0.6804729988884525,
+      "recall": 0.6596385542168675,
+      "f1-score": 0.6269473683347799,
+      "support": 332.0
     }
   },
   "confusion_matrix": [
     [
-      17,
-      3,
-      0,
-      0
-    ],
-    [
-      1,
-      14,
-      5,
-      0
-    ],
-    [
-      2,
-      0,
+      59,
       18,
+      2,
+      4
+    ],
+    [
+      10,
+      63,
+      10,
       0
     ],
     [
-      9,
-      9,
       1,
-      1
+      1,
+      79,
+      2
+    ],
+    [
+      27,
+      31,
+      7,
+      18
     ]
   ],
   "labels": [
@@ -82,13 +82,29 @@
   "warmup_steps": 20,
   "epochs": 8,
   "prediction_counts": {
-    "agree": 29,
-    "disagree": 26,
-    "question": 24,
-    "statement": 1
+    "agree": 97,
+    "disagree": 113,
+    "question": 98,
+    "statement": 24
   },
   "missing_prediction_classes": [],
   "class_collapse": false,
+  "bootstrap": {
+    "n_boot": 2000,
+    "boot_seed": 42,
+    "macro_f1_boot_mean": 0.6245212573673503,
+    "macro_f1_boot_std": 0.02491631121359821,
+    "macro_f1_ci95": [
+      0.5746162985880932,
+      0.6719658337345085
+    ],
+    "cohen_kappa_boot_mean": 0.5442363881682959,
+    "cohen_kappa_boot_std": 0.03289464541456903,
+    "cohen_kappa_ci95": [
+      0.4800411037063057,
+      0.6069091972336967
+    ]
+  },
   "train_rows": 255,
   "validation_rows": 45
 }

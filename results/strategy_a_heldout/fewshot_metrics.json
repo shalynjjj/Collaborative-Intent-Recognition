@@ -1,70 +1,70 @@
 {
-  "macro_f1": 0.6985455578805964,
-  "cohen_kappa": 0.6,
+  "macro_f1": 0.6734190737423497,
+  "cohen_kappa": 0.5582329317269077,
   "fallback_count": 0,
   "classification_report": {
     "agree": {
-      "precision": 0.7857142857142857,
-      "recall": 0.55,
-      "f1-score": 0.6470588235294118,
-      "support": 20.0
+      "precision": 0.765625,
+      "recall": 0.5903614457831325,
+      "f1-score": 0.6666666666666666,
+      "support": 83.0
     },
     "disagree": {
-      "precision": 0.8125,
-      "recall": 0.65,
-      "f1-score": 0.7222222222222222,
-      "support": 20.0
+      "precision": 0.676056338028169,
+      "recall": 0.5783132530120482,
+      "f1-score": 0.6233766233766234,
+      "support": 83.0
     },
     "question": {
-      "precision": 0.7083333333333334,
-      "recall": 0.85,
-      "f1-score": 0.7727272727272727,
-      "support": 20.0
+      "precision": 0.8441558441558441,
+      "recall": 0.7831325301204819,
+      "f1-score": 0.8125,
+      "support": 83.0
     },
     "statement": {
-      "precision": 0.5769230769230769,
-      "recall": 0.75,
-      "f1-score": 0.6521739130434783,
-      "support": 20.0
+      "precision": 0.5,
+      "recall": 0.7228915662650602,
+      "f1-score": 0.5911330049261084,
+      "support": 83.0
     },
-    "accuracy": 0.7,
+    "accuracy": 0.6686746987951807,
     "macro avg": {
-      "precision": 0.720867673992674,
-      "recall": 0.7000000000000001,
-      "f1-score": 0.6985455578805964,
-      "support": 80.0
+      "precision": 0.6964592955460033,
+      "recall": 0.6686746987951807,
+      "f1-score": 0.6734190737423497,
+      "support": 332.0
     },
     "weighted avg": {
-      "precision": 0.7208676739926739,
-      "recall": 0.7,
-      "f1-score": 0.6985455578805964,
-      "support": 80.0
+      "precision": 0.6964592955460032,
+      "recall": 0.6686746987951807,
+      "f1-score": 0.6734190737423495,
+      "support": 332.0
     }
   },
   "confusion_matrix": [
     [
-      11,
-      1,
-      2,
-      6
-    ],
-    [
-      0,
-      13,
-      4,
-      3
-    ],
-    [
-      0,
-      1,
-      17,
-      2
-    ],
-    [
+      49,
       3,
+      2,
+      29
+    ],
+    [
+      5,
+      48,
+      4,
+      26
+    ],
+    [
       1,
-      1,
-      15
+      12,
+      65,
+      5
+    ],
+    [
+      9,
+      8,
+      6,
+      60
     ]
   ],
   "labels": [
@@ -77,21 +77,5 @@
   "eval_set": "heldout_test",
   "prompting": "fewshot",
   "model": "LLM-Research/Meta-Llama-3.1-8B-Instruct",
-  "model_source": "modelscope",
-  "bootstrap": {
-    "n_boot": 2000,
-    "boot_seed": 42,
-    "macro_f1_boot_mean": 0.6918383171624588,
-    "macro_f1_boot_std": 0.05375713340533686,
-    "macro_f1_ci95": [
-      0.5871465528071693,
-      0.7965764215692704
-    ],
-    "cohen_kappa_boot_mean": 0.5957771907786243,
-    "cohen_kappa_boot_std": 0.06972103762168168,
-    "cohen_kappa_ci95": [
-      0.45822971671910845,
-      0.7312053758924821
-    ]
-  }
+  "model_source": "modelscope"
 }
