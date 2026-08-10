@@ -221,17 +221,21 @@ Final configs, locked from gold-set (dev) results only, live in `src/config.py`:
   zeroshot `0.5148`)
 - Strategy B: `STRATEGY_B_FINAL_CONFIG` — silver_size `2500`, sample_seed `123`,
   class weights on
-- Strategy C: pending — RoBERTa collapses classes on gold OOF; TF-IDF currently
-  ahead, so no config is locked yet
+- Strategy C: `STRATEGY_C_FINAL_CONFIG` — RoBERTa, warmup `20`, epochs `8`,
+  class weights on (gold OOF macro-F1 `0.5309 ± 0.0038`, zero class collapse;
+  locked after the full warmup x epochs grid, see "Strategy C: Warmup/Epochs
+  Grid" below)
 
 Run each strategy's held-out eval once, after its dev-side tuning is finished:
 
 ```bash
 python3 -m src.llm_annotate --heldout
 python3 -m src.train_roberta strategy_b_heldout
+python3 -m src.train_roberta strategy_c_heldout
 ```
 
-Outputs are saved under `results/strategy_a_heldout/` and `results/strategy_b_heldout/`.
+Outputs are saved under `results/strategy_a_heldout/`, `results/strategy_b_heldout/`,
+and `results/strategy_c_heldout/`.
 
 ### IAA
 
@@ -471,6 +475,32 @@ configuration beats `0.5309` with zero class collapse, update
 `STRATEGY_C_FINAL_CONFIG` in `src/config.py` and rerun
 `strategy_c_heldout` once, matching the touch-held-out-once discipline
 already used for Strategy A and B.
+
+**Result: the grid is closed.** All 9 warmup x epochs combinations (plus the
+`no_weights` control at warmup=20/epochs=8) have been run; ranked by OOF
+macro-F1:
+
+| warmup | epochs | weights | macro-F1 (mean ± std) | class collapse |
+| --- | --- | --- | --- | --- |
+| 20 | 8  | on  | **0.5309 ± 0.0038** | 0/15 |
+| 10 | 10 | on  | 0.5231 ± 0.0406 | 0/15 |
+| 30 | 10 | on  | 0.5189 ± 0.0494 | 0/15 |
+| 20 | 10 | on  | 0.5166 ± 0.0516 | 0/15 |
+| 30 | 8  | on  | 0.5072 ± 0.0314 | 0/15 |
+| 10 | 8  | on  | 0.4904 ± 0.0602 | 0/15 |
+| 30 | 6  | on  | 0.4371 ± 0.0292 | 0/15 |
+| 20 | 6  | on  | 0.4278 ± 0.0511 | 0/15 |
+| 10 | 6  | on  | 0.4216 ± 0.0587 | 2/15 |
+| 20 | 8  | off | 0.3499 ± 0.0229 | 8/15 |
+
+No configuration beat `0.5309`, so `STRATEGY_C_FINAL_CONFIG` (warmup=20,
+epochs=8, weights on) stays locked as-is and `strategy_c_heldout` does not
+need to be rerun. Two secondary observations: `epochs=6` is undertrained
+across every warmup value (bottom three rows among weighted runs), and
+`epochs=10` is competitive on the mean but 8-13x higher variance across
+seeds than the locked (20, 8) config, i.e. less reproducible for the same
+or worse macro-F1. This also closes the "single ad hoc value, not yet
+grid-searched" caveat in `docs/stage1_conclusions_and_report_plan.md`.
 
 ### Previous Partial-Fine-Tuning Finding
 

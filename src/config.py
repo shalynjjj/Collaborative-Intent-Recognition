@@ -15,7 +15,17 @@ SILVER_LABELED_CSV = DATA_DIR / "task3_silver_labeled_10k.csv"
 # selection. GOLD_CSV plays the dev role (training + hyperparameter/config
 # selection for all three strategies); TEST_CSV is only touched once per
 # strategy, after its config below has been locked in.
-TEST_CSV = DATA_DIR / "cmv_test_candidates_pilot80.csv"
+# Expanded from the original 80-row pilot (pilot80 + batch2, double-annotated
+# with Cohen's kappa 0.9563) for the A-vs-B/A-vs-C power analysis. Batch2 was
+# collected via simple random sampling (natural class distribution), so the
+# 530-row union is class-imbalanced (disagree 188 / statement 164 / question
+# 95 / agree 83); src/prepare_heldout_balanced.py downsamples every class to
+# the smallest class's count (83) for a balanced 332-row set. Per-class macro-F1
+# precision is bottlenecked by the smallest class regardless, so this loses no
+# effective power. The full imbalanced set is still available as
+# cmv_test_candidates_heldout_expanded.csv. The pre-expansion *_heldout
+# results (n=80) remain in results/strategy_*_heldout for comparison.
+TEST_CSV = DATA_DIR / "cmv_test_candidates_heldout_balanced.csv"
 
 STRATEGY_A_DIR = RESULTS_DIR / "strategy_a"
 STRATEGY_B_DIR = RESULTS_DIR / "strategy_b_zeroshot"

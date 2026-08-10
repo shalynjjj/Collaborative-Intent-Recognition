@@ -12,10 +12,15 @@ report. Not a ranking of "which strategy is best" — see below for why.
    B-vs-C stays unresolvable even at n=250/class (~24% power) — a dead end
    regardless of sample size, not a data gap to fix.
 2. **Tuning-budget asymmetry.** B was swept the most on dev (silver size ×
-   sample_seed × train_seed × class_weights). C's warmup/epochs is a single
-   ad hoc value, not yet grid-searched (see README's "Strategy C:
-   Warmup/Epochs Grid"). A has ~no tuning surface (2 prompting modes,
-   temperature fixed at 0). A claim about C is only as strong as that grid.
+   sample_seed × train_seed × class_weights). C's warmup/epochs grid (see
+   README's "Strategy C: Warmup/Epochs Grid") is now complete: 9 warmup x
+   epochs combinations plus the weights-off control, all class-weighted
+   except the control. The locked config (warmup=20, epochs=8, weights on,
+   macro-F1 `0.5309 ± 0.0038`) was already the best point tested and held up
+   against the full grid, so no relock was needed. A has ~no tuning surface
+   (2 prompting modes, temperature fixed at 0). The asymmetry in raw config
+   count vs. B still exists, but the "claim about C is only as strong as an
+   ad hoc value" caveat no longer applies.
 3. **Model-family confound.** A uses an LLM (Llama-3.1-8B-Instruct,
    decoder-only, zero/few-shot); B and C use RoBERTa-base (encoder,
    fine-tuned). Strategy and backbone vary together. A full
@@ -86,8 +91,12 @@ Limitations, 7. Conclusion.
 - [ ] Re-run all three `*_heldout` evals on the expanded set.
 - [ ] Add bootstrap CI (ideally paired, across A/B/C on the same rows) to B
       and C's held-out metrics — only A has one today.
-- [ ] Run the Strategy C warmup/epochs grid; relock `STRATEGY_C_FINAL_CONFIG`
+- [x] Run the Strategy C warmup/epochs grid; relock `STRATEGY_C_FINAL_CONFIG`
       and re-run `strategy_c_heldout` once if a better config turns up.
+      Done: full 9-combo grid (+ weights-off control) confirms (warmup=20,
+      epochs=8, weights on) is still the best config, so no relock or
+      heldout re-run was needed. See README's "Strategy C: Warmup/Epochs
+      Grid" for the ranked table.
 - [ ] Write the "Scope of Model Comparison" paragraph for Methodology.
 - [ ] Optional/time-permitting: swap `roberta-base` → `roberta-large` for
       B/C's already-locked configs only (no new grid), and/or run A's

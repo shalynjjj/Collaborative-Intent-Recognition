@@ -30,7 +30,7 @@ from .config import (
     TRAINING,
 )
 from .data_loader import build_model_input, load_gold_data
-from .evaluate import compute_metrics, save_confusion_matrix, save_metrics, summarize_runs
+from .evaluate import bootstrap_ci, compute_metrics, save_confusion_matrix, save_metrics, summarize_runs
 from .utils import ensure_results_dirs, resolve_model_path, set_seed
 
 
@@ -599,6 +599,7 @@ def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
                 "prediction_counts": prediction_counts,
                 "missing_prediction_classes": missing_classes,
                 "class_collapse": bool(missing_classes),
+                "bootstrap": bootstrap_ci(test_df["Dialogue_act"], predictions),
                 **split_metadata,
             }
         )
@@ -927,6 +928,7 @@ def run_strategy_c_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
                 "prediction_counts": counts,
                 "missing_prediction_classes": missing,
                 "class_collapse": bool(missing),
+                "bootstrap": bootstrap_ci(test_df["Dialogue_act"], predictions),
                 **split_metadata,
             }
         )
