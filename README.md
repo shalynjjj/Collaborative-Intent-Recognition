@@ -575,3 +575,69 @@ Full RoBERTa experiments use `AI-ModelScope/roberta-base`, learning rate `2e-5`,
 Each training run reserves an inner validation split and loads the checkpoint with the best validation `macro_f1`.
 Strategy B retains class-weighted cross-entropy. Strategy C reports a paired
 weights-on/off ablation under identical folds and seeds.
+
+## Stage 2: Multi-Module Affective Reasoning (TODO)
+
+Stage 2: a modular LLM-based pipeline that predicts sentiment, emotion, and communicative intent for each CMV reply, using the reply, its parent comment, and the Stage 1 dialogue-act label as input. Two research questions: 
+(1) does decomposing the task into separate
+modules beat a single unified prompt, and 
+(2) which information-sharing strategy
+between modules gives the best intent-recognition performance.
+
+`data/cmv_300_gold_final.csv` already has full `Sentiment`, `Sarcasm`, `Hostility`,
+`Contempt`, `Neutral`, `Curiosity`, `Appreciation`, and `Intent` columns for all 300
+rows, so the Stage 2 gold-standard annotation required by the proposal's Task 2 is
+already done. No new annotation is required for the experiments below.
+
+### Open decisions
+
+- [ ] Decide the dialogue-act feature source for Stage 2: gold `Dialogue_act`
+      (oracle) vs. Strategy A's predicted labels (realistic end-to-end pipeline).
+      Strategy A's dev predictions (`results/strategy_a/fewshot_predictions.csv`)
+      only cover 296 of the 300 gold rows — decide how to handle the missing 4.
+- [ ] Decide the eval protocol: use all 300 gold rows as eval-only (no
+      training/fine-tuning happens in Stage 2), or hold out a small subset for
+      prompt iteration so the full 300 rows are not "peeked at" while designing
+      prompts.
+- [ ] Check whether pre-reconciliation per-annotator labels exist for
+      `Sentiment`/emotion columns/`Intent`. If not (same gap as Stage 1's
+      `Dialogue_act`), Cohen's kappa (required by the proposal, target > 0.6)
+      cannot be computed and only raw agreement can be reported.
+
+### Pipeline code
+
+- [ ] Sentiment module: prompt + LLM call function (3-class: positive / negative /
+      neutral).
+- [ ] Emotion module: prompt + LLM call function (6-category multi-label binary
+      output: appreciation, hostility, contempt, curiosity_confusion, sarcasm,
+      neutral).
+- [ ] Intent module: prompt + LLM call function (5-class: Information seeking /
+      Challenge / Counter-argue / Support / Others).
+- [ ] Single-prompt baseline: one LLM call that outputs sentiment, emotion, and
+      intent together.
+- [ ] Multi-module orchestration: three independent sequential LLM calls (one per
+      module above).
+
+### Experiment 1 — Single-Prompt Baseline vs. Multi-Module Pipeline
+
+- [ ] Run both architectures on the gold-300 set, compute macro-F1 per label type.
+- [ ] Write multi-label evaluation code for emotion (per-category precision /
+      recall / F1, then macro-averaged across the 6 categories). This cannot reuse
+      Stage 1's single-label confusion-matrix evaluation code.
+
+### Experiment 2 — Information-Sharing Strategy Between Modules
+
+- [ ] Build the 7 input-combination sweep for intent prediction (reply+parent as
+      base, adding dialogue act / sentiment / emotion in the combinations listed
+      in the proposal).
+- [ ] Run the sweep, report Intent macro-F1 per input combination against the
+      text-only baseline, identify the best module execution order.
+
+### Error analysis and write-up
+
+- [ ] Sample and manually review misclassified examples, categorized by source as
+      the proposal requires: incorrect DA prediction, undetected sarcasm, or
+      insufficient conversational context.
+- [ ] Extend `docs/full-report-draft.tex` and `docs/stage1_full_report.md` (or new
+      Stage 2-specific files) with Stage 2 Methodology, Experiments, and Results
+      sections, matching the style already used for Stage 1.
