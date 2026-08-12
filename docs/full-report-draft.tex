@@ -1,0 +1,903 @@
+% =====================================================================
+% FULL REPORT DRAFT — Stage 1 complete, Stage 2 placeholders marked TODO
+% Requires: \usepackage{amsmath}. Tables use plain \hline (no booktabs).
+% Formatted for the UZH thesis template: \chapter top-level, \section next,
+% \subsection below that. Cross-references use \autoref. Acronyms are not
+% yet wrapped in \gls{}/\glspl{} — that requires the actual keys defined in
+% your resources/glossary.tex, which this session does not have access to.
+% =====================================================================
+
+
+% =====================================================================
+% 0-abstract-en.tex
+% =====================================================================
+\chapter*{Abstract}
+
+We compare three strategies for dialogue-act classification of Reddit
+ChangeMyView (CMV) parent-reply pairs into four classes (\texttt{agree},
+\texttt{disagree}, \texttt{question}, \texttt{statement}): (A) direct
+annotation with a decoder-only LLM (Llama-3.1-8B-Instruct, few-shot
+prompting), (B) a RoBERTa-base encoder fine-tuned on LLM-generated silver
+labels, and (C) a RoBERTa-base encoder fine-tuned directly on 300
+human-labeled gold parent-reply pairs. All three are tuned on the same
+gold set and evaluated once on an independent, expanded 332-pair balanced
+held-out set.
+Strategy A and B are statistically indistinguishable on held-out
+(macro-F1 0.673 vs.\ 0.669, paired-bootstrap effect size $\Delta=0.004$,
+practically a tie rather than an underpowered comparison), while Strategy C
+trails both (macro-F1 0.586) with seed-to-seed variance an order of
+magnitude larger than originally estimated from three seeds. Across all
+three strategies, \texttt{question} is consistently the easiest class and
+\texttt{statement} the hardest. A detailed error analysis finds a
+bidirectional \texttt{agree}/\texttt{disagree} confusion specific to the two
+RoBERTa-based strategies (B and C) and absent in the LLM-based strategy (A),
+suggesting a backbone-specific limitation rather than inherently ambiguous
+text. This report covers Stage 1 in full. Stage 2 is in progress, and its
+plan is outlined in the Future Work chapter.
+
+
+% =====================================================================
+% 1-introduction.tex
+% =====================================================================
+\chapter{Introduction}
+\label{k:einleitung}
+
+Understanding the function of a reply in an online argumentative discussion
+--- whether it agrees, disagrees, asks a question, or simply states a claim
+--- is a prerequisite for downstream analysis of persuasion and disagreement
+dynamics. Reddit's r/ChangeMyView (CMV) is a natural testbed for this:
+parent-reply pairs are argumentative by design, and the four-class scheme
+used here (\texttt{agree}, \texttt{disagree}, \texttt{question},
+\texttt{statement}) captures the coarse dialogue act of a reply relative to
+its parent.
+
+Three practical routes exist for building a classifier of this kind.
+(A) Prompt a large pretrained LLM directly, with no task-specific training
+data. (B) Use that LLM to label a larger pool of unlabeled data, then
+fine-tune a small, fast encoder on those \emph{silver} labels. (C) Skip
+the LLM entirely and fine-tune the small encoder directly on a limited
+pool of \emph{gold} (human-labeled) data. Each route makes a different
+trade-off
+between annotation cost, inference cost, and expected accuracy, and it is
+not obvious in advance which wins for a task with only a few hundred gold
+pairs available.
+
+This report addresses three research questions: (RQ1, data efficiency) is
+300 gold pairs enough for direct fine-tuning to match LLM annotation? (RQ2,
+distillation) does distilling an LLM's own labels into a fine-tuned model
+improve on using the LLM directly? (RQ3, label source) given a fixed
+encoder backbone, does fine-tuning on gold labels or LLM-generated silver
+labels perform better? All three strategies are tuned on the same
+300-pair gold set and evaluated once, after locking each strategy's final
+configuration, on an independent held-out set --- expanded during this
+project from an initial 80-pair pilot to a 332-pair balanced set
+specifically to gain enough statistical power to address these questions.
+
+This project proceeds in two stages. \textbf{Stage 1}, reported here in
+full, establishes and evaluates the three strategies above. \textbf{Stage 2}
+is in progress. Its plan is described in the Future Work chapter and will
+be integrated into the Methodology and Experiments chapters once complete.
+
+
+% =====================================================================
+% 3-related-work.tex
+% =====================================================================
+\chapter{Related Work}
+\label{k:relatedwork}
+
+% TODO: this chapter is a topic skeleton, not a literature review — no
+% citations have been verified in this session and none should be
+% fabricated. Please fill in citations for each area below, using
+% \textcite{} / \parencite{}.
+
+\section{Dialogue Act / Speech Act Classification}
+% TODO: cite prior dialogue-act tagging work (e.g., Switchboard-style
+% schemes, argument-mining dialogue-act taxonomies) and situate the
+% agree/disagree/question/statement scheme used here relative to them.
+
+\section{LLM Zero-/Few-Shot Annotation}
+% TODO: cite work on using LLMs as annotators/labelers, prompt-based
+% classification without task-specific fine-tuning, and known failure
+% modes of few-shot prompting for classification tasks.
+
+\section{Knowledge Distillation via Silver Labels}
+% TODO: cite work on training smaller models on LLM-generated labels
+% (silver-label distillation), and any prior findings on when a distilled
+% student matches or fails to match its LLM teacher.
+
+\section{Fine-Tuning Encoders on Small Labeled Sets}
+% TODO: cite RoBERTa/BERT fine-tuning literature, especially work on
+% training instability and warmup/epoch sensitivity with small (~hundreds
+% of instances) datasets, relevant to the instability found in Strategy C
+% (\autoref{sec:strategyc}).
+
+\section{Argument Mining on r/ChangeMyView}
+% TODO: cite prior CMV-specific work (e.g., the Winning Arguments Corpus
+% this project's data is drawn from) and any existing dialogue-act or
+% persuasion-related annotation schemes used on this corpus.
+
+
+% =====================================================================
+% 4-methodology.tex
+% =====================================================================
+\chapter{Methodology}
+\label{k:methodology}
+
+\section{Stage 1 Methodology}
+
+\subsection{Task and Label Scheme}
+
+Stage 1 classifies the dialogue act of each reply in a CMV (Winning
+Arguments Corpus) parent-reply pair, using a four-label scheme:
+\texttt{agree}, \texttt{disagree}, \texttt{question}, and
+\texttt{statement}. These labels capture the surface communicative
+function of a reply relative to its parent. We compare three modelling
+strategies:
+
+\begin{itemize}
+\item \textbf{Direct LLM Annotation} (Strategy A): LLM-predicted
+      dialogue-act labels are used directly, via zero-/few-shot
+      prompting, with no fine-tuning. This establishes whether prompting
+      alone is sufficient for this classification.
+\item \textbf{Silver-Standard Fine-Tuning} (Strategy B): the LLM is
+      used to label a larger pool of unlabeled CMV data, and the
+      resulting silver-standard annotations are used to fine-tune a
+      RoBERTa-base classifier. This tests whether distilling the LLM's
+      own annotations into a smaller model matches or exceeds using the
+      LLM directly, at lower inference cost.
+\item \textbf{Gold-Standard Fine-Tuning} (Strategy C): RoBERTa is
+      fine-tuned directly on the 300-pair gold-standard annotations,
+      using cross-validation. This provides a data-efficiency reference:
+      whether 300 human-labeled pairs alone are enough to train a usable
+      classifier, without an LLM in the loop.
+\end{itemize}
+
+All three strategies are tuned on the gold-standard set and evaluated
+once, after locking each configuration, on an independent held-out set
+(\autoref{sec:data}). Model choices, hyperparameters, and results for
+each strategy are reported in \autoref{sec:experiments}.
+
+\subsection{Gold Set (Dev) and Held-Out Test Set}
+\label{sec:data}
+
+The gold set (\texttt{dev}) consists of 300 parent-reply pairs: 145
+disagree, 64 agree, 47 statement, and 44 question. It is used exclusively
+for tuning, and all three strategies select their final configuration on
+it. The pairs were double-annotated by two annotators and reconciled by
+discussion (\autoref{sec:iaa}).
+
+The held-out test set (\texttt{TEST\_CSV}) is touched only once per
+strategy, after configuration lock. It was expanded from an 80-pair pilot
+(\textbf{pilot80}) to a 332-pair, 83-pairs-per-class balanced set for
+statistical power (\autoref{sec:no-ranking}): candidates were sampled
+from the Winning Arguments Corpus excluding gold/silver overlaps, labeled
+into a 530-pair pool, then downsampled to the smallest class
+(\texttt{statement}).
+
+No identical (Parent, Reply) pair appears across gold, silver, and
+held-out (verified programmatically). Different replies to the same
+parent/thread are intentionally permitted, reflecting real Reddit
+structure. An audit found 262 of 276 traceable gold pairs share a thread
+with the silver pool, so Strategy B results reflect in-domain, same-topic
+performance rather than unseen-topic performance.
+
+\subsection{Inter-Annotator Agreement}
+\label{sec:iaa}
+
+Both gold-300 and held-out were double-annotated by two annotators and
+reconciled by discussion. In both cases, the pre-reconciliation labels
+were not retained, so only raw agreement can be reported. Cohen's kappa is
+not computable. Raw agreement was 89.67\% on gold-300 (300 pairs) and
+95.18\% on held-out (332 pairs, 16 disagreements).
+
+\section{Stage 2 Methodology}
+
+% TODO: to be written once Stage 2's design is finalized. Expected to
+% extend the protocol above (see Future Work, \autoref{sec:future-work})
+% rather than replace it.
+
+
+% =====================================================================
+% 5-experiments.tex
+% =====================================================================
+\chapter{Experiments}
+\label{sec:experiments}
+
+\section{Stage 1 Experiments}
+
+All results in this section are Stage 1, for the three strategies
+introduced in \autoref{k:methodology}. Scores are reported side by side
+but should not be read as a ranking of ``best'' strategy --- see
+\autoref{sec:no-ranking}.
+
+\subsection{Strategy A: LLM Annotation}
+
+% TODO: touvron2023llama is the Llama 2 paper (arXiv 2307.09288).
+% Replace with the correct Llama 3.1 technical report citation once
+% available. This is a placeholder, not a verified match.
+Strategy A uses Llama-3.1-8B-Instruct \parencite{touvron2023llama} at
+temperature 0, comparing zero-shot against few-shot prompting. Few-shot
+clearly wins on the gold set and is locked as the final configuration,
+reaching macro-F1 0.673 on held-out (\autoref{table:strategya-results}).
+
+The dominant error, on both dev and held-out, is that \texttt{disagree}
+pairs are frequently misclassified as \texttt{statement}, while
+\texttt{question} is comparatively easy (per-class breakdown in
+\autoref{table:strategya-results} and \autoref{table:strategya-heldout-cm}).
+Notably, \texttt{agree} and \texttt{disagree} are rarely confused with
+each other on held-out --- both instead leak into \texttt{statement}
+--- a pattern that differs qualitatively from Strategies B and C
+(\autoref{sec:error-analysis}).
+
+\subsection{Strategy B: RoBERTa on Silver Labels}
+
+Strategy B fine-tunes RoBERTa-base on silver labels generated by
+Strategy A's LLM. Two settings control this: \texttt{sample\_seed} picks
+which pairs are drawn from the silver pool, and \texttt{train\_seed}
+controls training randomness. The train/validation split is grouped by
+\texttt{source\_root}, so no Reddit thread appears on both sides.
+
+To choose how much silver data to use, we tested pool sizes from 500 to
+10{,}000 pairs (full curve in \autoref{app:extra-matrices}). Macro-F1
+rises sharply up to 1000 pairs, peaks at 2500 pairs, then declines slowly
+--- more silver data does not keep helping. We locked the configuration
+at 2500 pairs, \texttt{sample\_seed} 123, with class weights enabled.
+Class weights give a small, consistent improvement over no weights
+(0.6179 vs.\ 0.6113 macro-F1), though this difference has not been
+tested for significance. Full results are in
+\autoref{table:strategyb-results}, and the dev confusion matrix is in
+\autoref{table:strategyb-dev-cm}.
+
+On held-out, macro-F1 is 0.6686 (kappa 0.5649), averaged across three
+training seeds. Its weakest class is now \texttt{statement}, not
+\texttt{disagree} as on the earlier, smaller held-out set --- so B's
+weakest class is not stable across evaluation sets (full confusion
+matrix in \autoref{table:strategyb-heldout-cm}).
+
+Because most gold pairs and the silver pool come from the same Reddit
+threads (\autoref{sec:data}), these results reflect in-domain
+performance, not performance on genuinely unseen topics.
+
+\subsection{Strategy C: RoBERTa on Gold Labels}
+\label{sec:strategyc}
+
+Strategy C uses 5-fold cross-validation on the 300 gold pairs: the data
+is split into 5 parts, and each part is predicted once by a model
+trained on the other 4. Each seed's 5 predicted parts are combined into
+one 300-pair \emph{out-of-fold (OOF)} set, and macro-F1 is computed once
+on that combined set, not averaged across the 5 parts separately.
+
+Early attempts failed: the model would ignore one or more classes
+entirely (\emph{class collapse}), giving macro-F1 of only 0.16--0.20. To
+diagnose this, we checked whether each model could even fit its own
+training data --- mostly, it could not (train-fit macro-F1 0.326,
+strongly correlated with eval quality). This points to unstable
+training, not too little data. Adding a warmup period before ramping up
+the learning rate (20 steps), and training longer (8 epochs instead of
+fewer), fixed this: with class weights enabled, no run collapsed a
+class, and OOF macro-F1 reached 0.5309 (3 seeds). Without class weights,
+training was still unstable (8 of 15 runs collapsed a class).
+
+A full grid search over 9 warmup/epoch combinations confirmed
+warmup=20, epochs=8 as the best setting, and it was locked as final.
+Training for only 6 epochs is undertrained at every warmup value tested.
+10 epochs scores about as well on average but is 8--13$\times$ noisier
+across seeds, so less reproducible.
+
+To check whether the agree/disagree confusion in
+\autoref{sec:error-analysis} was just bad luck with one seed, we ran 5
+more seeds on the same locked configuration
+(\autoref{table:strategyc-variance}). Across all 8 seeds, macro-F1
+averages 0.543 with a standard deviation of 0.037 --- about ten times
+larger than the original 3-seed estimate. The original three seeds
+happened to land unusually close together by chance, and the true
+variance is much bigger. The warmup/epoch choice is unaffected (still
+the best mean, still no class collapse), but the earlier figure,
+``0.5309 $\pm$ 0.0038,'' should not be read as evidence that training is
+highly stable. Dev-vs-held-out results are compared in
+\autoref{table:strategyc-dev-vs-heldout}.
+
+On held-out, the original three seeds average macro-F1 0.5859, but
+spread widely: 0.4874 (95\% CI [0.43, 0.54]), 0.6269 ([0.58, 0.67]), and
+0.6435 ([0.59, 0.69]). The worst seed here is the same seed that scored
+worst on dev, which fits the 8-seed variance above --- not a one-off
+anomaly (full held-out confusion matrices per seed in
+\autoref{app:extra-matrices}).
+
+\subsection{Cross-Strategy Comparison}
+\label{sec:no-ranking}
+
+The ranking is not stable across evaluation sets (\autoref{table:cross-strategy-comparison}).
+On gold, B $>$ A $>$ C. On the earlier 80-pair held-out set, A $>$ C $>$ B.
+On the new 332-pair held-out set, A $\approx$ B $>$ C, with A's and B's
+confidence intervals overlapping almost completely.
+
+\texttt{question} is the easiest class and \texttt{statement} the hardest for
+all three strategies, consistently across both held-out sets
+(\autoref{table:per-class-f1}).
+
+To check whether these differences are likely real, rather than just
+random noise from which 332 pairs happened to be drawn, we use a test
+called a \emph{paired bootstrap}: the 332 held-out pairs are repeatedly
+re-sampled at random, and each strategy's macro-F1 is recalculated on
+every re-sample. Comparing two strategies on the same re-sampled pairs
+(rather than as if they were two unrelated samples) makes the test more
+sensitive, since it cancels out the effect of some pairs simply being
+harder than others.
+
+\autoref{table:power-analysis} reports, for each pair of strategies: the
+observed difference in macro-F1 ($\Delta$), a 95\% confidence interval
+for that difference (the range within which the true difference most
+likely falls), whether the difference is statistically significant, the
+test's current \emph{power} (roughly, the probability that a test this
+size would detect a real difference of this magnitude if one exists),
+and how many labeled pairs per class would be needed to reach the
+conventional 80\% power threshold (that last column is an analytical
+projection from the current sample, not a new experiment).
+
+None of the three comparisons is statistically significant yet, but for
+two different reasons. A and B differ by almost nothing ($\Delta =
+0.0041$): reaching 80\% power for this comparison would require about
+34,900 labeled pairs per class, which is not realistic for this project.
+The honest reading is that A and B perform about the same, not that more
+data would eventually reveal a difference. A-vs-C and B-vs-C, in
+contrast, show a real, if modest, gap ($\Delta \approx 0.04$--$0.05$)
+that would become detectable at roughly 330--350 labeled pairs per
+class --- well above an earlier estimate of 60--70, but still within
+reach of further annotation. \autoref{c:conclusions} discusses why these
+results are not condensed into a single ranking.
+
+\subsection{Error Analysis: Confusion Overview}
+\label{sec:error-overview}
+
+Pooling errors across all three held-out seeds for each strategy (996
+predictions per strategy), the single largest error types are not
+\texttt{agree}/\texttt{disagree} confusions, but two other pairs:
+\texttt{disagree}$\to$\texttt{statement} (Strategy B's largest error
+type, 62 instances) and \texttt{statement}$\to$\texttt{agree} (Strategy
+C's largest, 84 instances; also present in B, 56 instances). Reading a
+sample of each, together with simple text statistics (word count, and
+the rate of hedge words like ``but''/``however'' and negation words like
+``not''/``never''), suggests three distinct, specific patterns.
+
+\textbf{\texttt{disagree}$\to$\texttt{statement} (Strategy B).} These
+replies disagree by stating a counter-fact or counter-hypothetical, not
+by using disagreement language: hedge-word rate is 0.03 (vs.\ 0.13 for
+\texttt{disagree} generally) and negation rate is 0.31 (vs.\ 0.51).
+For example: \emph{``There is no such thing as cultural decay, only
+change.''}; \emph{``Consider this: if this effect did not occur, we
+would be heading towards a Malthusian catastrophe.''} The disagreement
+is carried entirely by the content, not by any lexical marker, so the
+model defaults to reading these as neutral statements.
+
+\textbf{\texttt{statement}$\to$\texttt{agree} (Strategies B and C).} 36\%
+of these misclassified replies are five words or fewer, far above
+baseline. These are short, reactive replies --- thanks, corrections,
+brief asides --- that carry a positive or polite tone without
+substantively engaging the argument. For example: \emph{``Whoops,
+thanks!''}; \emph{``changed.''}; \emph{``Ahh. Yes I misinterpreted your
+comment. Thanks for the clarification.''} The model appears to read
+positive or polite tone in a short reply as \texttt{agree}, regardless
+of whether it substantively agrees with anything.
+
+\textbf{\texttt{statement}$\to$\texttt{disagree} (Strategy C, 75
+instances).} These replies are longer than baseline (15.1 vs.\ 12.7
+words) with elevated hedge-word (0.23 vs.\ 0.17) and negation (0.31 vs.\
+0.25) rates --- they read as skeptical or challenging in tone (embedded
+rhetorical questions, ``but'' qualifiers) without being a genuine
+disagreement with the parent's core claim.
+
+Together with the \texttt{agree}/\texttt{disagree} pattern below, this
+points to a broader theme: all of B's and C's largest error types
+involve replies where the dialogue act is carried by tone, structure, or
+implication rather than by an explicit lexical marker, and RoBERTa
+fine-tuned on 300--2500 pairs struggles specifically with this class of
+example.
+
+\subsection{Error Analysis: Additional Text-Feature Checks}
+\label{sec:error-textfeatures}
+
+To complete the negation/contractions/length/spelling check, a
+contraction rate and a spelling-error rate (nltk words-corpus heuristic:
+a token not found in the corpus and not capitalized) were computed the
+same way as the negation and hedge-word rates above, comparing each
+error pair against its class baseline.
+
+\textbf{Contractions and spelling: no effect.} Neither rate differs
+consistently between misclassified and baseline groups, across any of
+the confusion pairs checked
+(\texttt{disagree}$\to$\texttt{statement}, \texttt{statement}
+$\to$\texttt{agree}, \texttt{statement}$\to$\texttt{disagree},
+\texttt{agree}$\leftrightarrow$\texttt{disagree}) or across strategies
+overall. This rules out contractions and spelling as drivers of these
+errors.
+
+\textbf{Very long replies ($\geq$30 words): elevated specifically for
+Strategy A.} 7.3\% of A's misclassified held-out pairs are $\geq$30
+words, vs.\ 0.9\% of its correctly classified pairs (roughly 8$\times$)
+--- a pattern not present for B (0.9\% vs.\ 4.0\%, inverted) and only
+mild for C's \texttt{statement}$\to$\texttt{disagree} pair (6.7\% vs.\
+2.4\% baseline, which confirms the ``longer than baseline'' description
+above quantitatively).
+
+\textbf{Very short replies ($\leq$5 words): confirms the
+\texttt{statement}$\to$\texttt{agree} finding above.} 35.7\% (B) and
+32.1\% (C) of \texttt{statement}$\to$\texttt{agree} misclassifications
+are $\leq$5 words, vs.\ 25.3\% baseline --- consistent with the
+$\sim$36\% figure already reported. Not elevated for Strategy A overall
+(12.7\% vs.\ 18.9\% for correctly classified pairs).
+
+\textbf{Ambiguous wording} remains a qualitative judgment. No reliable
+automatic proxy was found, so this criterion is assessed only through
+the manually read examples above, not a quantitative metric.
+
+This completes the full negation/contractions/length/spelling/ambiguous-
+wording checklist: negation and short-reply length show real effects
+(above), contractions and spelling do not, very-long-reply length shows
+an effect specific to Strategy A, and ambiguous wording is assessed
+qualitatively only.
+
+\subsection{Error Analysis: Agree/Disagree Confusion}
+\label{sec:error-analysis}
+
+Beyond the confusion pairs above, a smaller but more \emph{reproducible}
+problem stands out: a bidirectional
+\texttt{agree}/\texttt{disagree} confusion, present in all 8 of Strategy
+C's seeds without exception and, to a lesser degree, in Strategy B.
+Severity varies by seed (Strategy C's \texttt{agree} recall ranges
+0.36--0.59), but direction is constant: \texttt{agree} misclassifies
+mainly as \texttt{disagree} in every seed, and vice versa.
+
+This rules out seed-ensembling as a fix: ensembling averages out errors
+that are independent across members, but here every seed errs in the same
+direction, so a majority vote would preserve the shared bias rather than
+cancel it.
+
+To test whether this reflects the text itself or the RoBERTa training
+approach, the 27 gold pairs misclassified by all or most of Strategy C's 8
+seeds were checked against Strategy A and B's predictions on the same
+text (\autoref{table:hard-pairs-accuracy}).
+
+Strategy A performs on these pairs as well as on its overall baseline
+(51.9\% vs.\ 49.8\%) --- no elevated difficulty. Strategy B performs 16
+points worse than its own baseline (39.5\% vs.\ 55.7\%), and Strategy C
+fails on all of them by construction. Since only the RoBERTa-based
+strategies are affected, this points to a limitation of RoBERTa
+fine-tuning itself rather than inherently ambiguous text --- unlabelable
+text should have hurt Strategy A too.
+
+A closer reading suggests a candidate explanation: many pairs show a
+concede-then-pivot structure, e.g.\ ``I understand that I'm simplifying...
+\emph{But} my view is...'' or ``Fair enough... \emph{Though} I
+believe...'', where the true stance is in the second clause. RoBERTa-base,
+fine-tuned on only 300--2500 pairs, may lack signal to weight the pivot
+over the opening concession. Errors persist even with explicit markers
+(``I agree'', ``Indeed''), suggesting an attention-allocation failure
+rather than pure ambiguity.
+
+Two alternatives were checked. Sarcasm, hostility, and contempt
+annotations show no meaningful difference between the 27 hard pairs and
+the overall population ($\sim$14--15\% sarcasm both), ruling this out.
+Class imbalance (145 \texttt{disagree} vs.\ 64 \texttt{agree}, 2.3:1) has
+not been ruled out, and may independently explain lower \texttt{agree}
+recall.
+
+This is a model-cross-validation proxy, not a direct test of these 27
+pairs. Gold-300 has measured overall IAA (89.67\%, \autoref{sec:iaa}),
+but pre-reconciliation labels were not retained, so these specific pairs
+cannot be checked against known disagreements. A blind re-labeling
+(Future Work, \autoref{sec:future-work}) is the direct test.
+
+\section{Stage 2 Experiments}
+
+% TODO: to be written once Stage 2 runs are complete.
+
+
+% =====================================================================
+% 8-conclusion.tex
+% =====================================================================
+\chapter{Conclusion}
+\label{c:conclusions}
+
+Stage 1 compared three strategies for four-class dialogue-act
+classification of CMV reply pairs on an expanded, balanced, independent
+held-out set, but the comparison is not yet complete: of the three
+pairwise comparisons (\autoref{sec:no-ranking}), only one is
+resolved.
+
+\textbf{A vs.\ B} (does distillation pay off?) is resolved: despite
+receiving by far the largest tuning budget of the three strategies, B
+ties rather than loses to A (macro-F1 0.669 vs.\ 0.673). The effect size
+is near zero, so this is a genuine tie, not a result waiting on more
+data --- silver distillation does not detectably beat direct LLM
+annotation.
+
+\textbf{A vs.\ C} (data efficiency) and \textbf{B vs.\ C} (silver vs.\
+gold source) remain open. Both show a real effect (macro-F1 gaps of
+0.087 and 0.083, respectively) but are not yet statistically significant
+at the current held-out size (83 pairs/class). Closing them would
+require annotating toward $\sim$330--350 confirmed pairs/class
+(\autoref{sec:no-ranking}), a substantial effort that is not planned
+within the current timeline. Both comparisons are therefore expected to
+remain open in this report. The compute-only follow-ups in Future Work
+(additional seeds, backbone swaps) can still sharpen the picture without
+new annotation.
+
+Two further findings qualify how these numbers should be read. Strategy
+C's seed-to-seed variance was understated by roughly $10\times$ when
+estimated from only three seeds, a caution for how future small-sample
+variance estimates in this project, including Stage 2, should be
+interpreted. And a systematic bidirectional \texttt{agree}/\texttt{disagree}
+confusion appears in both RoBERTa-based strategies but not in A, evidence
+that model backbone --- not just label source --- drives part of what
+looks like a strategy-level effect (\autoref{c:limitations}).
+
+
+% =====================================================================
+% 7-future-work.tex
+% =====================================================================
+\chapter{Future Work}
+\label{sec:future-work}
+
+\section{Stage 1 Follow-Ups}
+
+Compute-only follow-ups (no new annotation required):
+
+\begin{itemize}
+\item Add more seeds/runs to Strategies A and B to check for previously
+      underestimated variance, mirroring what was found for Strategy C.
+\item Test the class-imbalance hypothesis: oversample \texttt{agree} and
+      rerun Strategy C, check whether the confusion eases.
+\item Swap \texttt{roberta-base} for \texttt{roberta-large} in Strategies B
+      and C (no new grid search), and/or evaluate a second LLM for
+      Strategy A, to test whether the A-vs-B/A-vs-C comparison is
+      sensitive to backbone choice.
+\end{itemize}
+
+Annotation-dependent follow-ups (not currently planned, given time
+constraints):
+
+\begin{itemize}
+\item Blind re-label the 27 agree/disagree ``hard'' pairs
+      (\autoref{sec:error-analysis}) to test whether real annotation
+      disagreement exists, or whether the confusion is purely a model
+      limitation --- small-scale (27 pairs) relative to the item below.
+\item Annotate toward the $\sim$330--350 confirmed pairs/class identified by
+      the power analysis (\autoref{sec:no-ranking}) as the threshold
+      needed to resolve A-vs-C and B-vs-C at 80\% power. Note this
+      threshold is not expected to resolve A-vs-B, whose effect size is
+      near zero. This is the only way to make A-vs-C and B-vs-C
+      conclusive. Without it, both remain open questions in this report.
+\end{itemize}
+
+\section{Stage 2}
+
+Stage 2 is not yet complete. Its plan will be detailed here once finalized.
+
+
+% =====================================================================
+% 6-limitations.tex
+% =====================================================================
+\chapter{Limitations}
+\label{c:limitations}
+
+\begin{itemize}
+\item \textbf{Gold/silver domain overlap (Strategy B).} See
+      \autoref{sec:data} --- held-out results reflect in-domain
+      (same-thread) performance, not fully unseen-topic performance.
+\item \textbf{Gold-300's IAA is aggregate-only.} 89.67\% raw agreement is
+      known (\autoref{sec:iaa}), but pre-reconciliation labels were not
+      retained, so pair-level annotator disagreements cannot be recovered
+      --- the agree/disagree ``ambiguity'' analysis
+      (\autoref{sec:error-analysis}) remains a model-cross-validation
+      proxy, not a rigorous per-pair IAA test.
+\item \textbf{Model family is bound to strategy.} Strategy A uses a
+      decoder-only LLM. B and C fine-tune the same encoder (RoBERTa-base)
+      on different label sources. A gap between A and \{B, C\} is
+      therefore consistent with the LLM being better suited to the task,
+      a different encoder closing the gap, or a different LLM performing
+      differently --- this design cannot distinguish between them. The
+      agree/disagree confusion shared by B and C but absent from A
+      (\autoref{sec:error-analysis}) tracks this same RoBERTa/LLM
+      split, suggesting part of the ``strategy'' effect is really a
+      backbone effect. Any claim involving A is scoped to this specific
+      pairing, not a general LLM-vs-fine-tuning claim.
+\item \textbf{Strategy C's seed variance was underestimated at $n=3$.} The
+      original 3-seed standard deviation (0.0038) understated the true
+      variance by roughly $10\times$ (0.037 across 8 seeds). Strategies A
+      and B have not been checked with the same scrutiny.
+\item \textbf{Held-out set, though expanded, is still drawn from the same
+      corpus family as dev} (the Winning Arguments Corpus) --- not tested
+      against a genuinely different conversational data distribution.
+\item \textbf{Class imbalance in gold-300} (145 \texttt{disagree} vs.\ 64
+      \texttt{agree}) is a candidate confound for the agree/disagree
+      confusion finding that has not been ruled out.
+\end{itemize}
+
+
+% =====================================================================
+% A-appendix.tex
+% =====================================================================
+\appendix
+\chapter{Supplementary Tables}
+\label{app:extra-matrices}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrr}
+\hline
+\textbf{}&\textbf{Dev (gold-300)}&\textbf{Held-out (332)}\\ \hline
+macro-F1& 0.5916& \textbf{0.6734}\\
+Cohen's $\kappa$& 0.420& 0.558\\
+95\% bootstrap CI& ---& [0.622, 0.720]\\
+\hline
+\end{tabular}
+}
+\caption{Strategy A: dev and held-out results}
+\label{table:strategya-results}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrr}
+\hline
+\textbf{True $\backslash$ Pred}&\textbf{agree}&\textbf{disagree}&\textbf{question}&\textbf{statement}\\ \hline
+agree& 49& 3& 2& 29\\
+disagree& 5& 48& 4& 26\\
+question& 1& 12& 65& 5\\
+statement& 9& 8& 6& 60\\
+\hline
+\end{tabular}
+}
+\caption{Strategy A: held-out confusion matrix (few-shot, 332 pairs)}
+\label{table:strategya-heldout-cm}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrr}
+\hline
+\textbf{}&\textbf{Dev (3 train seeds, mean)}&\textbf{Held-out (3 seeds, mean)}\\ \hline
+macro-F1& 0.6375& \textbf{0.6686 $\pm$ 0.0012}\\
+Cohen's $\kappa$& 0.4935& 0.5649\\
+\hline
+\end{tabular}
+}
+\caption{Strategy B: dev and held-out results (locked configuration)}
+\label{table:strategyb-results}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrr}
+\hline
+\textbf{True $\backslash$ Pred}&\textbf{agree}&\textbf{disagree}&\textbf{question}&\textbf{statement}\\ \hline
+agree& 50& 12& 6& 15\\
+disagree& 3& 51& 10& 19\\
+question& 1& 3& 79& 0\\
+statement& 17& 20& 2& 44\\
+\hline
+\end{tabular}
+}
+\caption{Strategy B: held-out confusion matrix (seed 123, representative)}
+\label{table:strategyb-heldout-cm}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrr}
+\hline
+\textbf{True $\backslash$ Pred}&\textbf{agree}&\textbf{disagree}&\textbf{question}&\textbf{statement}\\ \hline
+agree& 47& 3& 1& 13\\
+disagree& 19& 60& 17& 49\\
+question& 1& 0& 43& 0\\
+statement& 7& 10& 3& 27\\
+\hline
+\end{tabular}
+}
+\caption{Strategy B: dev confusion matrix (train\_seed 123, representative)}
+\label{table:strategyb-dev-cm}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lr}
+\hline
+\textbf{Seeds}&\textbf{macro-F1 (mean $\pm$ std)}\\ \hline
+Original 3 (42, 123, 2026)& 0.5309 $\pm$ 0.0038\\
+All 8& \textbf{0.543 $\pm$ 0.037}\\
+\hline
+\end{tabular}
+}
+\caption{Strategy C: dev OOF variance, 3 vs.\ 8 seeds}
+\label{table:strategyc-variance}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrr}
+\hline
+\textbf{}&\textbf{Dev OOF (3 seeds)}&\textbf{Dev OOF (8 seeds)}&\textbf{Held-out (3 seeds)}\\ \hline
+macro-F1& 0.5309 $\pm$ 0.0038& 0.543 $\pm$ 0.037& \textbf{0.5859 $\pm$ 0.0699}\\
+Cohen's $\kappa$& ---& ---& 0.483 $\pm$ 0.084\\
+\hline
+\end{tabular}
+}
+\caption{Strategy C: dev OOF vs.\ held-out results}
+\label{table:strategyc-dev-vs-heldout}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrr}
+\hline
+\textbf{}&\textbf{A (few-shot)}&\textbf{B (silver 2500)}&\textbf{C (gold)}\\ \hline
+Dev macro-F1& 0.5916& 0.6375& 0.531 (3 seeds) / 0.543 (8 seeds)\\
+Held-out macro-F1 (332)& \textbf{0.673}& \textbf{0.669}& \textbf{0.586}\\
+Held-out 95\% CI& [0.622, 0.720]& $\approx$[0.615, 0.719]& wide, seed-dependent\\
+Old held-out (pilot80, $n{=}80$)& 0.699& 0.618& 0.569\\
+\hline
+\end{tabular}
+}
+\caption{Cross-strategy macro-F1 comparison}
+\label{table:cross-strategy-comparison}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrr}
+\hline
+\textbf{Class}&\textbf{A}&\textbf{B}&\textbf{C}\\ \hline
+agree& 0.667& 0.654& 0.580\\
+disagree& 0.623& 0.590& 0.565\\
+question& 0.812& 0.877& 0.837\\
+statement& 0.591& 0.554& 0.362\\
+\hline
+\end{tabular}
+}
+\caption{Per-class F1 on held-out (332 pairs)}
+\label{table:per-class-f1}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrrr}
+\hline
+\textbf{Comparison}&\textbf{Observed $\Delta$}&\textbf{95\% CI of $\Delta$}&\textbf{Significant?}&\textbf{Power at $n{=}332$}&\textbf{$n$ needed (80\% power)}\\ \hline
+A vs.\ B& 0.0041& [$-0.057$, 0.063]& No& 5\%& $\sim$34,900 pairs/class\\
+A vs.\ C& 0.0465& [$-0.020$, 0.111]& No& 29\%& $\sim$330 pairs/class\\
+B vs.\ C& 0.0424& [$-0.018$, 0.102]& No& 28\%& $\sim$350 pairs/class\\
+\hline
+\end{tabular}
+}
+\caption{Paired bootstrap power analysis ($n{=}332$, $n_{\text{boot}}{=}5000$)}
+\label{table:power-analysis}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrl}
+\hline
+\textbf{Strategy}&\textbf{Accuracy on 27 hard pairs}&\textbf{Own agree/disagree baseline}\\ \hline
+A& 51.9\%& 49.8\% (no elevation)\\
+B& 39.5\%& 55.7\% ($-16$ pts)\\
+C& 0\% (by construction)& $\sim$47\%\\
+\hline
+\end{tabular}
+}
+\caption{Accuracy on the 27 ``hard'' agree/disagree pairs vs.\ each
+strategy's own baseline}
+\label{table:hard-pairs-accuracy}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrr}
+\hline
+\textbf{True $\backslash$ Pred}&\textbf{agree}&\textbf{disagree}&\textbf{question}&\textbf{statement}\\ \hline
+agree& 43& 3& 0& 17\\
+disagree& 6& 60& 16& 62\\
+question& 0& 5& 31& 7\\
+statement& 2& 8& 3& 33\\
+\hline
+\end{tabular}
+}
+\caption{Strategy A: dev confusion matrix (few-shot)}
+\label{table:strategya-dev-cm}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{rrr}
+\hline
+\textbf{Silver size}&\textbf{Dev macro-F1 (mean $\pm$ std)}&\textbf{Runs}\\ \hline
+500& 0.4155 $\pm$ 0.0865& 6\\
+1000& 0.5814 $\pm$ 0.0189& 6\\
+1500& 0.6143 $\pm$ 0.0275& 6\\
+2000& 0.6184 $\pm$ 0.0187& 6\\
+\textbf{2500}& \textbf{0.6220 $\pm$ 0.0274}& 6\\
+5000& 0.6092 $\pm$ 0.0207& 6\\
+8000& 0.5951 $\pm$ 0.0122& 6\\
+10000& 0.5849 $\pm$ 0.0059& 3\\
+\hline
+\end{tabular}
+}
+\caption{Strategy B learning curve (few-shot-labeled silver pool, mean
+$\pm$ std across sample\_seed $\times$ train\_seed runs)}
+\label{table:strategyb-learning-curve}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrr}
+\hline
+\textbf{Seed}&\textbf{agree row}&\textbf{disagree row}&\textbf{question row}&\textbf{statement row}\\ \hline
+42& 37,29,11,6& 20,37,20,6& 3,0,78,2& 30,19,15,19\\
+123& 59,18,2,4& 10,63,10,0& 1,1,79,2& 27,31,7,18\\
+2026& 61,8,3,11& 15,51,12,5& 0,0,81,2& 27,25,4,27\\
+\hline
+\end{tabular}
+}
+\caption{Strategy C: held-out confusion matrices by seed}
+\label{table:strategyc-heldout-cm-byseed}
+\end{table}
+
+\section{Strategy C: Full 8-Seed Dev OOF Confusion Matrices}
+
+\begin{table}[htb]
+\centering
+\noindent\makebox[\textwidth]{%
+\begin{tabular}{lrrrr}
+\hline
+\textbf{Seed}&\textbf{agree row [a,d,q,s]}&\textbf{disagree row}&\textbf{question row}&\textbf{statement row}\\ \hline
+42& 24,30,0,10& 24,88,13,20& 1,5,35,3& 7,17,5,18\\
+123& 34,20,1,9& 38,84,13,10& 1,6,35,2& 12,22,0,13\\
+2026& 26,22,0,16& 19,95,16,15& 0,6,34,4& 5,26,1,15\\
+7& 24,29,1,10& 26,98,12,9& 0,9,31,4& 12,17,1,17\\
+99& 38,17,2,7& 27,93,13,12& 1,4,38,1& 9,21,3,14\\
+777& 35,21,1,7& 21,95,13,16& 0,7,35,2& 7,23,0,17\\
+1234& 35,16,1,12& 25,81,18,21& 0,2,41,1& 9,17,1,20\\
+5555& 23,22,2,17& 40,69,16,20& 0,8,33,3& 11,16,1,19\\
+\hline
+\end{tabular}
+}
+\caption{Strategy C dev OOF confusion matrices, all 8 seeds (locked
+configuration: warmup=20, epochs=8, weights on)}
+\label{table:strategyc-8seed-devoof-cm}
+\end{table}
+
+In every one of the 8 seeds, the largest misclassification destination for
+the \texttt{agree} row is \texttt{disagree}, and vice versa --- the basis
+for the ``present in all 8 seeds without exception'' claim in
+\autoref{sec:error-analysis}.
+
+\section{Example Misclassified Pairs}
+
+Representative concede-then-pivot examples referenced in
+\autoref{sec:error-analysis} (true label $\to$ predicted label):
+
+\begin{itemize}
+\item \textbf{disagree $\to$ agree} (Strategy C): ``I understand that I'm
+      simplifying...But my view is that right-wing ideas are inherently
+      selfish...''
+\item \textbf{disagree $\to$ agree} (Strategy C): ``Fair enough, you're
+      entitled to your own opinion. Though I believe you're limiting
+      yourself musically...''
+\item \textbf{agree $\to$ disagree} (Strategy C): ``Based on that, which I
+      agree with, you could also easily argue the case for Britney
+      Spears.''
+\end{itemize}
