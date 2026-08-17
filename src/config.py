@@ -90,6 +90,13 @@ EMOTION_LABELS = ["Sarcasm", "Hostility", "Contempt", "Neutral", "Curiosity", "A
 INTENT_LABELS = ["Information seeking", "Challenge", "Counter-argue", "Support", "Others"]
 FALLBACK_INTENT = "Others"
 
+# Strategy A's LLM.max_new_tokens=8 is sized for a single dialogue-act word
+# and truncates Stage 2 output -- the emotion module's comma-separated
+# category list and single_prompt_baseline's 3 stacked lines both need more
+# room. 64 covers the worst case (all 6 emotion categories + a two-word
+# intent label) with headroom.
+STAGE2_MAX_NEW_TOKENS = 64
+
 SEEDS = [42, 123, 2026]
 SAMPLE_SEEDS = [42, 123]
 SILVER_CANDIDATE_SIZE = 10000

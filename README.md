@@ -637,25 +637,9 @@ Predicted-label fallbacks (`FALLBACK_SENTIMENT = "Neutral"`,
 `FALLBACK_INTENT = "Others"`) and a per-field `*_fallback` flag are recorded
 the same way Strategy A tracks `fallback_used`.
 
-Run either mode over the dev or eval split from `prepare_stage2_split`:
 
-```bash
-python3 -m src.stage2_pipeline --mode multi_module --split dev
-python3 -m src.stage2_pipeline --mode single_prompt --split dev
-```
-
-Smoke test without loading the LLM:
-
-```bash
-python3 -m src.stage2_pipeline --mode multi_module --split dev --limit 5 --mock
-```
-
-Outputs are saved to `results/stage2/<mode>_<split>_predictions.csv`.
-
-### Experiment 1 — Single-Prompt Baseline vs. Multi-Module Pipeline
-
-- [x] Run both architectures on the gold-300 set, compute macro-F1 per label type.
-- [x] Write multi-label evaluation code for emotion (per-category precision /
+- [ ] Run both architectures on the gold-300 set, compute macro-F1 per label type.
+- [ ] Write multi-label evaluation code for emotion (per-category precision /
       recall / F1, then macro-averaged across the 6 categories). This cannot reuse
       Stage 1's single-label confusion-matrix evaluation code.
 

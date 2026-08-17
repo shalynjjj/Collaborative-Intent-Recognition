@@ -15,6 +15,7 @@ from .config import (
     STAGE2_DEV_CSV,
     STAGE2_DIR,
     STAGE2_EVAL_CSV,
+    STAGE2_MAX_NEW_TOKENS,
 )
 from .llm_annotate import make_transformers_generator
 from .utils import ensure_results_dirs, set_seed
@@ -346,7 +347,11 @@ def run_stage2(mode: str, split: str = "dev", limit: Optional[int] = None, mock:
     if limit is not None:
         df = df.head(limit).copy()
 
-    generator = make_stage2_mock_generator() if mock else make_transformers_generator()
+    generator = (
+        make_stage2_mock_generator()
+        if mock
+        else make_transformers_generator(max_new_tokens=STAGE2_MAX_NEW_TOKENS)
+    )
     pred_path = STAGE2_DIR / f"{mode}_{split}_predictions.csv"
     return annotate_stage2_dataframe(df, mode, generator, output_csv=pred_path)
 

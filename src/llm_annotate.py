@@ -112,7 +112,7 @@ def make_mock_generator() -> Callable[[str], str]:
     return generate
 
 
-def make_transformers_generator() -> Callable[[str], str]:
+def make_transformers_generator(max_new_tokens: Optional[int] = None) -> Callable[[str], str]:
     load_env()
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -127,11 +127,12 @@ def make_transformers_generator() -> Callable[[str], str]:
         torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
         **auth_kwargs,
     )
+    resolved_max_new_tokens = max_new_tokens if max_new_tokens is not None else LLM.max_new_tokens
 
     def generate(prompt: str) -> str:
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
         generation_kwargs = {
-            "max_new_tokens": LLM.max_new_tokens,
+            "max_new_tokens": resolved_max_new_tokens,
             "do_sample": LLM.temperature > 0,
             "pad_token_id": tokenizer.eos_token_id,
         }
