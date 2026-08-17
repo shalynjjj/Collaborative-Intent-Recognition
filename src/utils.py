@@ -39,6 +39,7 @@ def parse_label(raw_output: str) -> Tuple[str, bool]:
 
 def ensure_results_dirs() -> None:
     from .config import (
+        STAGE2_DIR,
         STRATEGY_A_DIR,
         STRATEGY_A_HELDOUT_DIR,
         STRATEGY_B_DIR,
@@ -52,6 +53,7 @@ def ensure_results_dirs() -> None:
         STRATEGY_B_DIR,
         STRATEGY_B_HELDOUT_DIR,
         STRATEGY_C_DIR,
+        STAGE2_DIR,
     ):
         path.mkdir(parents=True, exist_ok=True)
 

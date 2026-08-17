@@ -9,9 +9,11 @@ from sklearn.metrics import (
     cohen_kappa_score,
     confusion_matrix,
     f1_score,
+    precision_score,
+    recall_score,
 )
 
-from .config import DIALOGUE_LABELS
+from .config import DIALOGUE_LABELS, EMOTION_LABELS
 
 
 def compute_metrics(
@@ -81,6 +83,31 @@ def bootstrap_ci(
         "cohen_kappa_boot_std": float(kappa_samples.std(ddof=1)),
         "cohen_kappa_ci95": [float(kappa_lo), float(kappa_hi)],
     }
+
+
+def compute_emotion_metrics(
+    df: pd.DataFrame,
+    labels: Optional[List[str]] = None,
+    gold_prefix: str = "gold_",
+    pred_prefix: str = "emotion_",
+) -> Dict:
+    """Per-category precision/recall/F1 for the 6 emotion columns, then
+    macro-averaged. A row can match zero, one, or several categories at
+    once, so this can't reuse compute_metrics' single-label confusion matrix.
+    """
+    label_names = labels or EMOTION_LABELS
+    per_category = {}
+    for label in label_names:
+        y_true = df[f"{gold_prefix}{label.lower()}"].astype(bool)
+        y_pred = df[f"{pred_prefix}{label.lower()}"].astype(bool)
+        per_category[label] = {
+            "precision": precision_score(y_true, y_pred, zero_division=0),
+            "recall": recall_score(y_true, y_pred, zero_division=0),
+            "f1": f1_score(y_true, y_pred, zero_division=0),
+            "support": int(y_true.sum()),
+        }
+    macro_f1 = float(np.mean([category["f1"] for category in per_category.values()]))
+    return {"per_category": per_category, "macro_f1": macro_f1, "labels": label_names}
 
 
 def save_metrics(metrics: Dict, output_path: Path) -> None:

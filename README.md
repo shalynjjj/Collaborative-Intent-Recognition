@@ -589,41 +589,93 @@ between modules gives the best intent-recognition performance.
 rows, so the Stage 2 gold-standard annotation required by the proposal's Task 2 is
 already done. No new annotation is required for the experiments below.
 
-### Open decisions
+### Open decisions (resolved)
 
-- [ ] Decide the dialogue-act feature source for Stage 2: gold `Dialogue_act`
-      (oracle) vs. Strategy A's predicted labels (realistic end-to-end pipeline).
-      Strategy A's dev predictions (`results/strategy_a/fewshot_predictions.csv`)
-      only cover 296 of the 300 gold rows — decide how to handle the missing 4.
-- [ ] Decide the eval protocol: use all 300 gold rows as eval-only (no
-      training/fine-tuning happens in Stage 2), or hold out a small subset for
-      prompt iteration so the full 300 rows are not "peeked at" while designing
-      prompts.
-- [ ] Check whether pre-reconciliation per-annotator labels exist for
-      `Sentiment`/emotion columns/`Intent`. If not (same gap as Stage 1's
-      `Dialogue_act`), Cohen's kappa (required by the proposal, target > 0.6)
-      cannot be computed and only raw agreement can be reported.
+- **DA feature source:** gold `Dialogue_act` (oracle), not Strategy A's
+  predictions. Strategy A's predicted DA is only ~0.6 macro-F1, so using it
+  would confound "does DA help" with "are the predictions too noisy to help."
+- **Eval protocol:** `python3 -m src.prepare_stage2_split` splits `GOLD_CSV`
+  by `Intent` (seed `42`, 12%) into `data/cmv_300_gold_stage2_dev.csv` (36
+  rows, prompt iteration only, never reported) and
+  `data/cmv_300_gold_stage2_eval.csv` (264 rows, touched once per locked
+  prompt config) — same touch-once discipline as `GOLD_CSV`/`TEST_CSV` in
+  Stage 1. Both Experiment 1 and Experiment 2 must use this same split.
+- **IAA / kappa:** pre-reconciliation labels survived for `Dialogue_act`,
+  `Sentiment`, and `Intent` on the gold-300, so kappa is already computed
+  (κ = 0.8967 / 0.75 / 0.8133). Emotion (6-category multi-label:
+  `Sarcasm`/`Hostility`/`Contempt`/`Neutral`/`Curiosity`/`Appreciation`) is
+  the one gap — its pre-reconciliation file was lost, so kappa isn't
+  computable; report it as such, or run a small fresh double-annotation pass
+  if a real number is needed.
 
 ### Pipeline code
 
-- [ ] Sentiment module: prompt + LLM call function (3-class: positive / negative /
-      neutral).
-- [ ] Emotion module: prompt + LLM call function (6-category multi-label binary
-      output: appreciation, hostility, contempt, curiosity_confusion, sarcasm,
-      neutral).
-- [ ] Intent module: prompt + LLM call function (5-class: Information seeking /
-      Challenge / Counter-argue / Support / Others).
-- [ ] Single-prompt baseline: one LLM call that outputs sentiment, emotion, and
-      intent together.
-- [ ] Multi-module orchestration: three independent sequential LLM calls (one per
-      module above).
+All five items below are implemented in `src/stage2_pipeline.py`, following
+the same generator/prompt/parse pattern as Strategy A's `src/llm_annotate.py`
+(reuses its `make_transformers_generator` for the actual LLM calls).
+
+- [x] Sentiment module: `build_sentiment_prompt` + `run_sentiment_module`
+      (3-class: `Positive` / `Negative` / `Neutral`).
+- [x] Emotion module: `build_emotion_prompt` + `run_emotion_module`
+      (6-category multi-label binary output: `Sarcasm`, `Hostility`,
+      `Contempt`, `Neutral`, `Curiosity`, `Appreciation` — one bool column per
+      category, parsed independently since a reply can match zero or more).
+- [x] Intent module: `build_intent_prompt` + `run_intent_module` (5-class:
+      `Information seeking` / `Challenge` / `Counter-argue` / `Support` /
+      `Others`). Accepts optional `dialogue_act`/`sentiment`/`emotion_labels`
+      context so it can be reused for Experiment 2's input-combination sweep.
+- [x] Single-prompt baseline: `build_single_prompt_baseline` +
+      `run_single_prompt_baseline`, one LLM call returning sentiment, emotion,
+      and intent as three labeled lines, parsed together.
+- [x] Multi-module orchestration: `run_multi_module_pipeline` calls the three
+      modules above in sequence (sentiment, then emotion, then intent with
+      gold `Dialogue_act` as context, per the DA feature-source decision above).
+
+Label strings match `GOLD_CSV`'s exact casing, so predictions compare directly
+against the `Sentiment`/`Sarcasm`/.../`Intent` columns with no re-casing.
+Predicted-label fallbacks (`FALLBACK_SENTIMENT = "Neutral"`,
+`FALLBACK_INTENT = "Others"`) and a per-field `*_fallback` flag are recorded
+the same way Strategy A tracks `fallback_used`.
+
+Run either mode over the dev or eval split from `prepare_stage2_split`:
+
+```bash
+python3 -m src.stage2_pipeline --mode multi_module --split dev
+python3 -m src.stage2_pipeline --mode single_prompt --split dev
+```
+
+Smoke test without loading the LLM:
+
+```bash
+python3 -m src.stage2_pipeline --mode multi_module --split dev --limit 5 --mock
+```
+
+Outputs are saved to `results/stage2/<mode>_<split>_predictions.csv`.
 
 ### Experiment 1 — Single-Prompt Baseline vs. Multi-Module Pipeline
 
-- [ ] Run both architectures on the gold-300 set, compute macro-F1 per label type.
-- [ ] Write multi-label evaluation code for emotion (per-category precision /
+- [x] Run both architectures on the gold-300 set, compute macro-F1 per label type.
+- [x] Write multi-label evaluation code for emotion (per-category precision /
       recall / F1, then macro-averaged across the 6 categories). This cannot reuse
       Stage 1's single-label confusion-matrix evaluation code.
+
+`src/evaluate_stage2.py` runs Sentiment/Intent through `compute_metrics()`
+(macro-F1 + confusion matrix, feeds "Error analysis" below) and Emotion
+through the new `compute_emotion_metrics()` (per-category P/R/F1, macro-averaged
+across the 6 categories):
+
+```bash
+python3 -m src.stage2_pipeline --mode multi_module --split dev
+python3 -m src.stage2_pipeline --mode single_prompt --split dev
+python3 -m src.evaluate_stage2 --mode multi_module --split dev
+python3 -m src.evaluate_stage2 --mode single_prompt --split dev
+```
+
+Outputs are saved under `results/stage2/` as
+`<mode>_<split>_{sentiment,intent,emotion}_metrics.json`,
+`<mode>_<split>_{sentiment,intent}_confusion_matrix.csv`, and one
+`<mode>_<split>_summary.json` with all three macro-F1s. Compare the two
+`summary.json` files to answer Experiment 1's RQ1.
 
 ### Experiment 2 — Information-Sharing Strategy Between Modules
 
@@ -632,6 +684,18 @@ already done. No new annotation is required for the experiments below.
       in the proposal).
 - [ ] Run the sweep, report Intent macro-F1 per input combination against the
       text-only baseline, identify the best module execution order.
+- [ ] Run `bootstrap_ci()` (`src/evaluate.py`, reused from Strategy A's
+      held-out eval) on each combination's predictions to get a macro-F1 95%
+      CI — at n=264, this is what tells you whether the top combination is
+      actually better than the others or just within noise.
+
+```python
+from src.evaluate import bootstrap_ci
+from src.config import INTENT_LABELS
+
+ci = bootstrap_ci(df["gold_intent"], df["intent"], labels=INTENT_LABELS)
+print(ci["macro_f1_boot_mean"], ci["macro_f1_ci95"])
+```
 
 ### Error analysis and write-up
 

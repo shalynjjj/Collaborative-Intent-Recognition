@@ -27,6 +27,14 @@ SILVER_LABELED_CSV = DATA_DIR / "task3_silver_labeled_10k.csv"
 # results (n=80) remain in results/strategy_*_heldout for comparison.
 TEST_CSV = DATA_DIR / "cmv_test_candidates_heldout_balanced.csv"
 
+# Stage 2 dev/eval split of GOLD_CSV, stratified by Intent. dev is for prompt
+# iteration only and is never reported; eval is touched once per locked
+# prompt config, mirroring the GOLD_CSV/TEST_CSV touch-once discipline above.
+STAGE2_DEV_CSV = DATA_DIR / "cmv_300_gold_stage2_dev.csv"
+STAGE2_EVAL_CSV = DATA_DIR / "cmv_300_gold_stage2_eval.csv"
+STAGE2_DEV_FRACTION = 0.12
+STAGE2_SPLIT_SEED = 42
+
 STRATEGY_A_DIR = RESULTS_DIR / "strategy_a"
 STRATEGY_B_DIR = RESULTS_DIR / "strategy_b_zeroshot"
 STRATEGY_C_DIR = RESULTS_DIR / "strategy_c"
@@ -68,6 +76,19 @@ DIALOGUE_LABELS = ["agree", "disagree", "question", "statement"]
 LABEL2ID = {label: idx for idx, label in enumerate(DIALOGUE_LABELS)}
 ID2LABEL = {idx: label for label, idx in LABEL2ID.items()}
 FALLBACK_LABEL = "statement"
+
+# Stage 2 label schemes, matching the exact casing used in GOLD_CSV's
+# Sentiment/Sarcasm/Hostility/Contempt/Neutral/Curiosity/Appreciation/Intent
+# columns so predictions can be compared to gold without re-casing either side.
+STAGE2_DIR = RESULTS_DIR / "stage2"
+
+SENTIMENT_LABELS = ["Positive", "Negative", "Neutral"]
+FALLBACK_SENTIMENT = "Neutral"
+
+EMOTION_LABELS = ["Sarcasm", "Hostility", "Contempt", "Neutral", "Curiosity", "Appreciation"]
+
+INTENT_LABELS = ["Information seeking", "Challenge", "Counter-argue", "Support", "Others"]
+FALLBACK_INTENT = "Others"
 
 SEEDS = [42, 123, 2026]
 SAMPLE_SEEDS = [42, 123]

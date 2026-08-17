@@ -1,0 +1,94 @@
+{
+  "macro_f1": 0.18,
+  "cohen_kappa": 0.16666666666666674,
+  "fallback_count": 0,
+  "classification_report": {
+    "Information seeking": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "Challenge": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1.0
+    },
+    "Counter-argue": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "Support": {
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.5,
+      "support": 3.0
+    },
+    "Others": {
+      "precision": 0.25,
+      "recall": 1.0,
+      "f1-score": 0.4,
+      "support": 1.0
+    },
+    "accuracy": 0.4,
+    "macro avg": {
+      "precision": 0.25,
+      "recall": 0.26666666666666666,
+      "f1-score": 0.18,
+      "support": 5.0
+    },
+    "weighted avg": {
+      "precision": 0.65,
+      "recall": 0.4,
+      "f1-score": 0.38,
+      "support": 5.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  "labels": [
+    "Information seeking",
+    "Challenge",
+    "Counter-argue",
+    "Support",
+    "Others"
+  ]
+}
