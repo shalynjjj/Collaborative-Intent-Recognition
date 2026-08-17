@@ -637,9 +637,10 @@ Predicted-label fallbacks (`FALLBACK_SENTIMENT = "Neutral"`,
 `FALLBACK_INTENT = "Others"`) and a per-field `*_fallback` flag are recorded
 the same way Strategy A tracks `fallback_used`.
 
+### Experiment 1 — Single-Prompt Baseline vs. Multi-Module Pipeline
 
-- [ ] Run both architectures on the gold-300 set, compute macro-F1 per label type.
-- [ ] Write multi-label evaluation code for emotion (per-category precision /
+- [x] Run both architectures on the gold-300 set, compute macro-F1 per label type.
+- [x] Write multi-label evaluation code for emotion (per-category precision /
       recall / F1, then macro-averaged across the 6 categories). This cannot reuse
       Stage 1's single-label confusion-matrix evaluation code.
 
@@ -660,6 +661,39 @@ Outputs are saved under `results/stage2/` as
 `<mode>_<split>_{sentiment,intent}_confusion_matrix.csv`, and one
 `<mode>_<split>_summary.json` with all three macro-F1s. Compare the two
 `summary.json` files to answer Experiment 1's RQ1.
+
+**Result (eval, 264 rows, touched once, prompts locked before running):**
+
+| | multi_module | single_prompt |
+| --- | ---: | ---: |
+| Sentiment macro-F1 | 0.572 | 0.532 |
+| Intent macro-F1 | **0.464** | 0.360 |
+| Emotion macro-F1 | 0.372 | 0.357 |
+| 3-way average | **0.469** | 0.416 |
+
+`multi_module` wins on all three label types, most on Intent (+0.105). **RQ1
+answer: decomposing into separate modules beats a single unified prompt**,
+especially for the higher-reasoning Intent task. `single_prompt`'s Intent
+result is identical before and after the Others/Challenge/Counter-argue
+prompt revision below, because `build_single_prompt_baseline` never included
+those per-category definitions in the first place (kept compact by design,
+unlike each `multi_module` module's dedicated prompt) — itself part of what
+this RQ is comparing, not a bug.
+
+On the 36-row dev split, the two architectures looked much closer (and briefly
+appeared to favor `single_prompt` on Emotion) after fixing a real parsing bug
+(`parse_single_label` matched labels in fixed list order instead of by
+first-occurrence position in the text, so a model that answered correctly in
+its first word could still get mis-scored if it rambled into unrelated text
+mentioning another label word later — see `_first_line` in
+`src/stage2_pipeline.py`). Spot-checking dev errors also surfaced 3 prompt
+issues, fixed before the eval run: the `Others` intent category was defined
+too vaguely (model never predicted it) and got concrete positive cues
+(off-topic / meta-commentary about the thread itself); `Challenge` vs.
+`Counter-argue` was blurry (any pushback defaulted to `Counter-argue`) and now
+explicitly hinges on whether the reply presents its own reasoning; and the
+Emotion prompt's `neutral`/`"none"` ambiguity (two ways to say "no strong
+emotion", parser only recognized one) was collapsed to one canonical answer.
 
 ### Experiment 2 — Information-Sharing Strategy Between Modules
 
@@ -700,6 +734,34 @@ Smoke test without loading the LLM:
 ```bash
 python3 -m src.stage2_intent_sweep --split dev --limit 5 --mock
 ```
+
+**Result (eval, 264 rows, touched once):**
+
+| combination | macro-F1 | 95% CI | kappa |
+| --- | ---: | --- | ---: |
+| `dialogue_act` | **0.464** | [0.401, 0.527] | 0.392 |
+| `dialogue_act+sentiment` | 0.411 | [0.347, 0.470] | 0.335 |
+| `emotion+sentiment` | 0.408 | [0.340, 0.472] | 0.307 |
+| `dialogue_act+emotion` | 0.404 | [0.340, 0.463] | 0.331 |
+| `emotion` | 0.403 | [0.341, 0.461] | 0.331 |
+| `sentiment` | 0.390 | [0.329, 0.447] | 0.291 |
+| `dialogue_act+emotion+sentiment` | 0.388 | [0.325, 0.448] | 0.304 |
+| `base` (text-only) | 0.387 | [0.322, 0.444] | 0.282 |
+
+**RQ2 answer: `dialogue_act` alone is the best-performing input combination**,
+clearly and reproducibly above the rest (same top rank on both the 36-row dev
+sweep and the 264-row eval sweep). Stacking sentiment or emotion on top of
+`dialogue_act` makes it *worse* than `dialogue_act` alone (0.411/0.404 vs.
+0.464) — best module execution order is DA → Intent directly, without
+computing Sentiment/Emotion first. The other 7 combinations cluster tightly
+together (0.387–0.411) with heavily overlapping CIs, i.e. statistically
+indistinguishable from the text-only baseline and from each other.
+
+This is also a worked example of why dev/eval are kept separate: the 36-row
+dev sweep showed a much starker pattern (`sentiment` clearly hurting,
+all-three-combined clearly worst) that did not fully replicate at n=264 — most
+of that apparent effect was dev-sample noise, not a real signal, and only
+`dialogue_act`'s advantage held up.
 
 ### Error analysis and write-up
 

@@ -1,0 +1,8 @@
+{
+  "mode": "multi_module",
+  "split": "eval",
+  "rows": 264,
+  "sentiment_macro_f1": 0.5717952071854068,
+  "intent_macro_f1": 0.464463687932855,
+  "emotion_macro_f1": 0.37225495176295426
+}

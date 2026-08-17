@@ -1,87 +1,87 @@
 {
-  "macro_f1": 0.0,
-  "cohen_kappa": 0.0,
+  "macro_f1": 0.39064841968067776,
+  "cohen_kappa": 0.27855711422845686,
   "fallback_count": 0,
   "classification_report": {
     "Information seeking": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+      "precision": 0.2222222222222222,
+      "recall": 1.0,
+      "f1-score": 0.36363636363636365,
+      "support": 2.0
     },
     "Challenge": {
       "precision": 0.0,
       "recall": 0.0,
       "f1-score": 0.0,
-      "support": 1.0
+      "support": 11.0
     },
     "Counter-argue": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+      "precision": 0.5263157894736842,
+      "recall": 0.8333333333333334,
+      "f1-score": 0.6451612903225806,
+      "support": 12.0
     },
     "Support": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 2.0
+      "precision": 1.0,
+      "recall": 0.2857142857142857,
+      "f1-score": 0.4444444444444444,
+      "support": 7.0
     },
     "Others": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1-score": 0.5,
+      "support": 4.0
     },
-    "accuracy": 0.0,
+    "accuracy": 0.4444444444444444,
     "macro avg": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
+      "precision": 0.4497076023391813,
+      "recall": 0.5238095238095238,
+      "f1-score": 0.39064841968067776,
+      "support": 36.0
     },
     "weighted avg": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 3.0
+      "precision": 0.43778427550357374,
+      "recall": 0.4444444444444444,
+      "f1-score": 0.3772310922848557,
+      "support": 36.0
     }
   },
   "confusion_matrix": [
     [
-      0,
+      2,
       0,
       0,
       0,
       0
     ],
     [
+      4,
       0,
-      0,
-      0,
+      6,
       0,
       1
     ],
     [
       0,
+      1,
+      10,
       0,
-      0,
-      0,
+      1
+    ],
+    [
+      3,
+      1,
+      1,
+      2,
       0
     ],
     [
       0,
       0,
-      0,
+      2,
       0,
       2
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0
     ]
   ],
   "labels": [
@@ -94,17 +94,17 @@
   "bootstrap": {
     "n_boot": 2000,
     "boot_seed": 42,
-    "macro_f1_boot_mean": 0.0,
-    "macro_f1_boot_std": 0.0,
+    "macro_f1_boot_mean": 0.3701648831126997,
+    "macro_f1_boot_std": 0.08446410150211829,
     "macro_f1_ci95": [
-      0.0,
-      0.0
+      0.2040322580645161,
+      0.5309615068839207
     ],
-    "cohen_kappa_boot_mean": 0.0,
-    "cohen_kappa_boot_std": 0.0,
+    "cohen_kappa_boot_mean": 0.27477231047731004,
+    "cohen_kappa_boot_std": 0.09337759994153465,
     "cohen_kappa_ci95": [
-      0.0,
-      0.0
+      0.09051590514748398,
+      0.46835816804544994
     ]
   }
 }

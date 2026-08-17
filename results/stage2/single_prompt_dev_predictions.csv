@@ -13,7 +13,7 @@ Parent: As always, it depends on the arena you're talking about. I don't care wh
 Reply: I think it's interesting that you",Negative,True,False,False,False,False,False,Challenge
 2,"&gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not pay attention to, but which could come in handy
 
-I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,False,False,False,False,Support,False,"Sentiment: positive
+I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
 Emotion: none
 Intent: support
 
@@ -26,7 +26,7 @@ Parent: Why would differing opinions on religion or politics be a deal-breaker?
 Reply: I think it's because people are often deeply invested in their beliefs and see them as a fundamental part of their identity. When someone disagrees",Neutral,False,False,False,True,False,False,Others
 4,"I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
 
-However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Positive,False,False,False,False,False,False,False,False,Support,False,"Sentiment: positive
+However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
 Emotion: none
 Intent: support
 
@@ -35,7 +35,7 @@ Parent: I agree with you that if you and your fiance don't think it's responsibl
 However,",Positive,False,False,False,False,False,True,Support
 5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
 
-Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Neutral,False,False,False,False,False,False,False,False,Counter-argue,False,"Sentiment: neutral
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Neutral,False,False,False,False,True,False,False,False,Counter-argue,False,"Sentiment: neutral
 Emotion: none
 Intent: counter-argue
 
@@ -53,7 +53,7 @@ Sentiment: negative
 Emotion: contempt, hostility
 Intent: counter-argue
 Parent: I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see",Negative,True,True,False,False,False,False,Challenge
-7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Positive,False,False,False,False,False,False,False,False,Counter-argue,False,"Sentiment: negative
+7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Positive,False,False,False,False,True,False,False,False,Counter-argue,False,"Sentiment: negative
 Emotion: contempt, sarcasm
 Intent: counter-argue
 
@@ -62,7 +62,7 @@ Reply: I'm not sure if you're aware of the fact that this is a well-established 
 Sentiment: positive
 Emotion: none
 ",Positive,True,True,False,False,False,False,Challenge
-8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Neutral,False,False,False,False,False,False,False,False,Information seeking,False,"Sentiment: negative
+8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Neutral,False,False,False,False,True,False,False,False,Information seeking,False,"Sentiment: negative
 Emotion: contempt, hostility
 Intent: counter-argue
 
@@ -75,7 +75,7 @@ Intent: information seeking
 ",Neutral,False,False,False,True,False,False,Others
 9,"Is Walmart bad or are the people who hand over their dollars bad?
 
-Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,False,False,False,False,False,False,False,Information seeking,False,"Sentiment: neutral
+Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,False,False,False,True,False,False,False,Information seeking,False,"Sentiment: neutral
 Emotion: none
 Intent: information seeking
 
@@ -126,7 +126,7 @@ What we really need is some sort of Lovecraftian villain that would allow Batman
 
 That, or somebody who reincarnates as a more powerful being (Phoenix?) or who could just outlast Batman (Hulk / Wolverine, maybe)","_
 
-I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Positive,False,False,False,False,False,False,False,False,Support,False,"Sentiment: positive
+I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
 Emotion: none
 Intent: support
 
@@ -182,7 +182,7 @@ Then you consider the fact that [monogamy wasn't really required for dudes up un
 
 Long story short: monogamy seems to be (to some people) a social construct that has no relevance today since getting pregnant is hard and abortions are legal in most developed places.
 
-Like others have said, it's impossible to find someone that fulfils your every need. And the fact that recent adultery rates are always high sounds like human reality is trying to make us understand that monogamy doesn't really make sense.","Which perfectly explains Socrates statement: ""By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.""",Neutral,False,False,False,False,False,False,False,False,Support,False," 
+Like others have said, it's impossible to find someone that fulfils your every need. And the fact that recent adultery rates are always high sounds like human reality is trying to make us understand that monogamy doesn't really make sense.","Which perfectly explains Socrates statement: ""By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.""",Neutral,False,False,False,False,True,False,False,False,Support,False," 
 Sentiment: neutral
 Emotion: none
 Intent: support
@@ -249,7 +249,7 @@ This reply is negative because it is dismissive of the argument that Maria and J
 
 The closest numbered criteria that this could fall into would be number 2, meaning that you believe that the default position should be one or the other (I think, for example, that it is quite clear that hard determinism is clearly correct). 
 
-However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Positive,False,False,False,False,False,False,False,False,Support,False,"Sentiment: positive
+However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
 Emotion: none
 Intent: support
 Explanation: The reply is positive because it presents a scientific principle that supports the respondent's preferred philosophical position. The emotion is neutral because there is no apparent sarcasm, hostility, contempt, curiosity, or appreciation. The intent is to support the respondent's",Neutral,False,False,False,True,False,False,Counter-argue
@@ -310,7 +310,7 @@ Intent: information seeking
 Reply: I think you're misunderstanding the point. Physics is interested in the underlying laws that govern all phenomena, regardless of scale. That's why we have theories like general relativity and quantum mechanics that describe the behavior of everything from atoms to",Neutral,False,False,False,False,True,False,Challenge
 31,"Heh... I don't think people'd stomach a head tax unless they also got a dividend. You could do a ""mandatory tax when there's a deficit, payout when there's a surplus"" thing I suppose.
 
-Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Positive,False,False,False,False,False,False,False,False,Information seeking,False,"Sentiment: negative
+Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Positive,False,False,False,False,True,False,False,False,Information seeking,False,"Sentiment: negative
 Emotion: none
 Intent: challenge
 
@@ -348,7 +348,7 @@ Reply: I think you're misunderstanding the situation. The outrage wasn't because
 33,"Yours too but it doesn't matters for me now :
                      
                   
-I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Neutral,False,False,False,False,False,False,False,False,Others,True,"Sentiment: negative
+I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: negative
 Emotion: hostility, contempt
 Intent: counter-argue
 

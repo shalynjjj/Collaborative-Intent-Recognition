@@ -1,0 +1,8 @@
+{
+  "mode": "single_prompt",
+  "split": "eval",
+  "rows": 264,
+  "sentiment_macro_f1": 0.5319818939245843,
+  "intent_macro_f1": 0.35974912979397283,
+  "emotion_macro_f1": 0.35740522126001983
+}

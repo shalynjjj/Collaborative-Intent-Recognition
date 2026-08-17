@@ -19,9 +19,9 @@
       "support": 4
     },
     "Neutral": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0,
+      "precision": 0.5,
+      "recall": 0.3333333333333333,
+      "f1": 0.4,
       "support": 18
     },
     "Curiosity": {
@@ -37,7 +37,7 @@
       "support": 5
     }
   },
-  "macro_f1": 0.30357142857142855,
+  "macro_f1": 0.3702380952380952,
   "labels": [
     "Sarcasm",
     "Hostility",
