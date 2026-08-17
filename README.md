@@ -663,22 +663,42 @@ Outputs are saved under `results/stage2/` as
 
 ### Experiment 2 — Information-Sharing Strategy Between Modules
 
-- [ ] Build the 7 input-combination sweep for intent prediction (reply+parent as
+- [x] Build the 7 input-combination sweep for intent prediction (reply+parent as
       base, adding dialogue act / sentiment / emotion in the combinations listed
       in the proposal).
-- [ ] Run the sweep, report Intent macro-F1 per input combination against the
+- [x] Run the sweep, report Intent macro-F1 per input combination against the
       text-only baseline, identify the best module execution order.
-- [ ] Run `bootstrap_ci()` (`src/evaluate.py`, reused from Strategy A's
+- [x] Run `bootstrap_ci()` (`src/evaluate.py`, reused from Strategy A's
       held-out eval) on each combination's predictions to get a macro-F1 95%
       CI — at n=264, this is what tells you whether the top combination is
       actually better than the others or just within noise.
 
-```python
-from src.evaluate import bootstrap_ci
-from src.config import INTENT_LABELS
+`src/stage2_intent_sweep.py` runs `run_intent_module()` 8 times per row (the
+text-only baseline plus all 7 non-empty subsets of
+`{dialogue_act, sentiment, emotion}`), always using the **gold** DA/Sentiment/
+Emotion columns as oracle context (same reasoning as the DA feature-source
+decision above: noisy predicted features would confound "does this
+information help" with "is the prediction noisy"):
 
-ci = bootstrap_ci(df["gold_intent"], df["intent"], labels=INTENT_LABELS)
-print(ci["macro_f1_boot_mean"], ci["macro_f1_ci95"])
+```bash
+python3 -m src.stage2_intent_sweep --split dev
+```
+
+This writes `results/stage2/intent_sweep_dev_predictions.csv` (one
+`intent_<combo>` column per combination), one
+`intent_sweep_dev_<combo>_metrics.json` per combination (macro-F1, kappa,
+confusion matrix, bootstrap CI), and a ranked
+`intent_sweep_dev_summary.csv`. To re-score an existing predictions file
+without calling the LLM again (e.g. after a parsing fix):
+
+```bash
+python3 -m src.stage2_intent_sweep --split dev --eval-only
+```
+
+Smoke test without loading the LLM:
+
+```bash
+python3 -m src.stage2_intent_sweep --split dev --limit 5 --mock
 ```
 
 ### Error analysis and write-up

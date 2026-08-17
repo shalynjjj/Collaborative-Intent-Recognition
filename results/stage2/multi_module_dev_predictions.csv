@@ -22,7 +22,7 @@ Dialogue act: agree
 Label: support
 Dialogue act: agree
 Label: support",Positive,False,False,False,False,False,True,Support
-1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Positive,False,True,True,False,True,True,False,False,Information seeking,False," negative
+1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Negative,False,False,False,False,True,True,False,False,Information seeking,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -52,7 +52,7 @@ Parent: I expect them to speak English, not litter, not be rude, not be drunk, n
 Reply:",Negative,True,False,False,False,False,False,Challenge
 2,"&gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not pay attention to, but which could come in handy
 
-I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,True,False,False,False,Support,False," positive
+I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,False,False,False,True,Support,False," positive
 ---
 Parent: &quot;I don't know, I just don't like the idea of a 4-year degree in computer science. I think it's a waste of time and money. I could have learned all the programming languages and skills I need in a year or two of self-study.&quot"," , 
 Answer: none
@@ -73,7 +73,7 @@ Dialogue act: agree
 Label: support
 Dialogue act: agree
 Label: support",Positive,False,False,False,False,False,True,Support
-3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Positive,False,True,True,True,True,True,False,False,Information seeking,False," negative
+3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Negative,False,False,False,True,True,True,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -133,7 +133,7 @@ Dialogue act: agree
 Label: support",Positive,False,False,False,False,False,True,Support
 5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
 
-Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Negative,False,True,True,False,False,False,False,False,Information seeking,False," negative
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 Reason: The reply is disagreeing with the parent's statement that K&amp;M is superior, and is instead pointing out that Dark Souls shows that the best input method depends on the game. The tone is argumentative and critical. 
 
 The final answer is: negative.  # Sentiment_Analysis #"," 
@@ -154,7 +154,7 @@ def classify_intent(reply):
     intents = {
         ""information seeking"": [""I don't understand"", ""Can you explain"", ""What do you mean""],
         ""challenge"": [""That's not true"",",Negative,False,False,False,True,False,False,Counter-argue
-6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Positive,False,True,True,True,False,False,False,False,Information seeking,False," negative
+6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 ===============================================================================
 
 ```python
@@ -184,7 +184,7 @@ def classify_intent(reply):
     intents = {
         ""information seeking"": [""I don't understand"", ""Can you explain"", ""What do you mean""],
         ""challenge"": [""That's not true"", ""I disagree",Negative,True,True,False,False,False,False,Challenge
-7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Positive,False,True,False,True,False,False,False,False,Information seeking,False," negative
+7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Negative,False,True,False,True,False,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -209,7 +209,7 @@ Intent: information seeking
 Dialogue act: question
 
 Parent:",Positive,True,True,False,False,False,False,Challenge
-8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Positive,False,True,False,True,False,False,False,False,Information seeking,False," negative
+8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Negative,False,True,False,True,False,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     # Define a dictionary to map sentiment words to their corresponding labels
@@ -241,7 +241,7 @@ Parent: What exactly is a religious fallacy?
 Reply",Neutral,False,False,False,True,False,False,Others
 9,"Is Walmart bad or are the people who hand over their dollars bad?
 
-Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Positive,False,True,True,True,True,True,True,False,Counter-argue,False," neutral
+Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,False,False,False,False,False,False,True,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -285,7 +285,7 @@ Film Majors and Theater Majors will spend the at least 2 semesters of Coursework
 
 Which is the core of my issue with dance as a major, I don't see the other side of dance. It's 100% possible that's just my school, and other programs are different. 
 
-Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,True,True,True,True,True,True,False,Information seeking,False," neutral
+Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,False,False,False,False,False,False,True,Information seeking,False," neutral
 Reasoning: The reply is asking a question to gather more information, without expressing any opinion or emotion. It's a neutral inquiry. 
 The final answer is neutral.  | 
 ---|---
@@ -331,7 +331,7 @@ The fact that Black Americans might do worse in all of these metrics is actually
 
 I am saying that *some* Asian Americans succeed despite their lack of racial privilege. But,  there is not a structurally entrenched system of privilege *based on their race/ethnicity*. The may have privileges based on other factors, such as gender, sexual orientation, or socioeconomic status.
 
-EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Positive,False,False,False,True,True,True,False,False,Challenge,False," negative
+EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Negative,False,False,False,True,True,True,False,False,Challenge,False," negative
 Is the sentiment of the reply toward the parent comment positive, negative or neutral?
 Answer: negative
 Reasoning skill required: Emotion Recognition And Sentiment Analysis
@@ -354,7 +354,7 @@ Dialogue act: question
 Label: challenge
 Dialogue act: question
 Label: challenge",Negative,False,False,True,False,False,False,Challenge
-13,The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole diseased culture we live in. Do I really need to reply to it?,"If you feel that saying ""my girl/boyfriend"" in a monogamous relationship is evidence of a rape culture then there's clearly no point in debating any further.",Negative,False,True,True,True,True,True,True,False,Information seeking,False," negative
+13,The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole diseased culture we live in. Do I really need to reply to it?,"If you feel that saying ""my girl/boyfriend"" in a monogamous relationship is evidence of a rape culture then there's clearly no point in debating any further.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 ```python
 import re
 
@@ -445,7 +445,7 @@ In my idea of how it would work:
 
 * It needs to be very difficult to change the constitution for the above reason
 
-What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Positive,False,False,False,True,True,False,False,False,Others,False," positive
+What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Positive,False,False,False,False,False,False,False,True,Others,False," positive
 ```python
 def classify_sentiment(reply):
     """"""
@@ -476,7 +476,7 @@ Dialogue act: humor
 Intent: others
 Dialogue act: humor
 Intent: others",Negative,False,True,True,False,False,False,Challenge
-16,"_ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.",Such plebs,Positive,False,True,True,True,True,True,True,False,Challenge,False," negative
+16,"_ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.",Such plebs,Negative,False,False,False,False,False,False,False,True,Support,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -512,7 +512,7 @@ Intent: support
 Dialogue act: challenge
 
 Parent: _ Well done, good",Negative,True,True,False,False,False,False,Support
-17,OPs post is in general.  This reply is in general.,"The OP is saying ""if I go"", so they are talking about themselves, not in general.",Negative,False,True,True,True,True,True,True,False,Counter-argue,False," negative
+17,OPs post is in general.  This reply is in general.,"The OP is saying ""if I go"", so they are talking about themselves, not in general.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 Reason: The reply is correcting the parent comment, implying that the parent is wrong. The tone is slightly condescending. 
 
 Parent: OPs post is in general.  This reply is in general.
@@ -534,7 +534,7 @@ Intent: counter-argue
 Label:",Neutral,False,False,False,True,False,False,Counter-argue
 18,"&gt;hes the only Ind in our federal legislative body. 
 
-That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been long.",Thank you i actually was not aware,Positive,False,True,False,False,True,False,True,False,Information seeking,False," positive
+That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been long.",Thank you i actually was not aware,Positive,False,False,False,False,True,False,True,False,Information seeking,False," positive
 ====================================================================================================
 
 Parent: I'm so sick of people saying that the US is a democracy. It's not. It's a republic. 
@@ -609,14 +609,14 @@ At some point you realize you have to quit but you can't. Shitty things keep hap
 
 We **all** made the decision to never smoke. Some of us just fucked it up without meaning to. It was not all at once or with intention. It just happens. All the health facts and scary stories in the world won't change it. The thing that will change it is arming people with the foreknowledge that smoking is the best thing ever. That's what would have saved me. I've quit for two years and that's great, but I'm still not over it. It's still a thing for me. If you don't get it, be GLAD not arrogant. It could have easily been you. 
 
-**Edit** Thank you for the gold! It means a lot.",I cried.,Positive,False,False,False,False,True,False,True,False,Information seeking,False," positive
+**Edit** Thank you for the gold! It means a lot.",I cried.,Positive,False,False,False,False,True,False,True,False,Others,False," positive
 Explanation: The reply expresses a positive sentiment because it shows appreciation and gratitude toward the parent comment, as indicated by the phrase ""I cried."" This suggests that the reply is moved by the parent's words and is in a positive emotional state. The tone is not negative or neutral, but rather one of admiration and"," appreciation, neutral. 
 The reply is a simple expression of emotion in response to the parent's post, and does not contain any of the other categories. 
 
 Return a comma-separated list of every category that applies, or ""none"" if none apply.
 The reply is a simple expression of emotion in response to the parent"," others
 Reason: The reply is a simple emotional reaction to the post, expressing sadness or empathy, but it does not engage with the content or provide a clear argument or question.  The label ""others"" is the most appropriate choice as it captures the fact that the reply is not a clear example of information seeking,",Negative,False,False,False,False,False,True,Support
-21,It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.,You have to play nice.  I've got three strikes against me myself but I figured it out.  And the mods AFAICT just decide whether to delete comments which others report.,Positive,False,True,True,False,False,False,False,False,Information seeking,False," neutral
+21,It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.,You have to play nice.  I've got three strikes against me myself but I figured it out.  And the mods AFAICT just decide whether to delete comments which others report.,Neutral,False,False,False,False,True,False,False,False,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply):
     # Define the sentiment labels
@@ -649,7 +649,7 @@ John has used heroin for 10 years. He knows that using heroin is illegal, expens
 
 Maria has not used any illegal substances, and, works hard at her job at WalMart and gets paid $200 per week. She spends $100 on tutoring for her daughter to help her daughter get better grades in school. She uses the other $100 to buy food, but, that money isn't enough to feed herself and her daughter.
 
-Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Positive,False,False,False,True,True,False,False,False,Counter-argue,False," negative
+Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Negative,False,False,False,True,True,False,False,False,Counter-argue,False," negative
 Answer: negative
 ```python
 def classify_sentiment(reply):
@@ -683,7 +683,7 @@ The final answer is: contempt,sarcasm.
 Note: The reply is dismissive of the parent's argument, and the mention of Heisenberg's uncertainty principle is an obvious exaggeration, as it has no direct relevance to the debate between libertarian free will and hard"," counter-argue
 Reasoning skill: Identifying Pros And Cons
 Explanation: The reply presents an alternative view or argument against the parent's position, which is hard determinism. The reply argues that Heisenberg's uncertainty principle supports volitional determinism, which is an opposing view. This is an example of",Neutral,False,False,False,True,False,False,Counter-argue
-24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Positive,False,True,True,True,True,True,True,False,Information seeking,False," positive
+24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Positive,False,False,False,False,False,False,False,True,Counter-argue,False," positive
 ```python
 def classify_sentiment(reply):
     """"""
@@ -711,7 +711,7 @@ def classify_intent(reply):
     intents = {
         ""information seeking"": [""What"", ""How"", ""Why"", ""Can"", ""Do""],
         ""challenge"": [""But"", ""However"", ""Although"", ""Despite",Neutral,False,False,False,True,False,False,Counter-argue
-25,"Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.",my point was only countries with much less guns than the US don't have their police carry guns,Positive,False,True,True,True,False,False,False,False,Counter-argue,False," neutral
+25,"Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.",my point was only countries with much less guns than the US don't have their police carry guns,Neutral,False,False,False,False,False,False,False,True,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -745,7 +745,7 @@ Dialogue act: disagree
 Label: counter-argue
 Dialogue act: disagree
 Label: counter-argue",Neutral,False,False,False,True,False,False,Counter-argue
-26,Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.,"Then put that in the CMV. If the ""rules"" deviate from reality, they need to be stated from the beginning.",Positive,False,True,True,False,True,True,False,False,Challenge,False," neutral
+26,Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.,"Then put that in the CMV. If the ""rules"" deviate from reality, they need to be stated from the beginning.",Neutral,False,False,False,False,True,True,False,False,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply, parent):
     # Define the sentiment labels
@@ -798,7 +798,7 @@ This really seems",Neutral,False,False,False,True,False,False,Counter-argue
 
 &gt;People have real lives and shit to do.
 
-And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,True,True,True,False,False,False,False,Counter-argue,False," negative
+And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply, parent):
     # Tokenize the reply and parent comment
@@ -826,7 +826,7 @@ Intent: counter-argue
 Dialogue act: counter-argue
 Label: counter-argue
 ",Negative,False,True,False,False,False,False,Challenge
-29,"Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontroversy",I really don't think that's what he meant...,Neutral,False,False,False,False,False,False,False,False,Counter-argue,False," neutral
+29,"Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontroversy",I really don't think that's what he meant...,Neutral,False,False,False,False,True,False,False,False,Counter-argue,False," neutral
 ====================================================================================================
 Parent: I'm so tired of people saying that the US is a democracy. It's not. It's a republic. 
 Reply: I'm not sure that's entirely accurate. The US is a representative democracy, which is a subset of republics.
@@ -853,7 +853,7 @@ Not particularly, we can just stick with moral truths. The point is that if you'
 
 &gt;That's why the phrase ""shared characteristics"" is important. What are the characteristics shared by organism, governments, and economies? They are all extensions of the fundamental laws of physics. Both physics and philosophy attempts to make general theories of truth. Neither cares much about the specifics that political science and biology describe. 
 
-But we don't use physics to describe such phenomena, and I rather doubt most physicists are even all that interested in doing so. The level of analysis we use matters - otherwise all physics would just atomic and quantum-scale phenomena, at least until the unified theory comes about.",I'm not sure I'm following you. Physics isn't interested in the characteristics shared by all existing things?,Positive,False,False,False,True,True,False,False,False,Information seeking,False," neutral
+But we don't use physics to describe such phenomena, and I rather doubt most physicists are even all that interested in doing so. The level of analysis we use matters - otherwise all physics would just atomic and quantum-scale phenomena, at least until the unified theory comes about.",I'm not sure I'm following you. Physics isn't interested in the characteristics shared by all existing things?,Neutral,False,False,False,False,True,False,False,False,Information seeking,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -888,7 +888,7 @@ Label: information seeking
 Dialogue",Neutral,False,False,False,False,True,False,Challenge
 31,"Heh... I don't think people'd stomach a head tax unless they also got a dividend. You could do a ""mandatory tax when there's a deficit, payout when there's a surplus"" thing I suppose.
 
-Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Positive,False,False,False,False,False,False,False,True,Information seeking,False," neutral
+Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Neutral,False,False,False,False,False,False,False,True,Information seeking,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -929,7 +929,7 @@ For society to be outraged at James Franco for wanting, and trying, to have sex 
 
 _____
 
-&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,True,True,True,False,False,False,False,Counter-argue,False," negative
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 Answer: negative
 Explanation: The reply expresses disapproval and frustration toward the parent comment, implying that James Franco's behavior was not justified by his age or the girl's legal age. The tone is critical and negative. 
 Note: The reply is not directly addressing the parent comment's argument, but rather providing"," , 
@@ -995,7 +995,7 @@ Morality cannot be thought of as strictly objective or relative. Instead, there 
 So I have changed my view a little, and I'm working on refining this into something a little clearer. Thank you guys for your input.
 _____
 
-&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*",Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.,Positive,False,False,True,True,False,False,False,False,Challenge,False," negative
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*",Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.,Negative,False,False,False,False,False,False,False,True,Challenge,False," negative
 Reason: The reply expresses disapproval and frustration toward the parent comment, indicating a negative sentiment. The tone is critical, and the language used is direct and dismissive, which further supports the negative label. The reply does not contain any positive or neutral language, making it clear that the sentiment is negative. "," , 
 The final answer is: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility. Categories: contempt, hostility"," challenge
 Label: challenge
@@ -1009,7 +1009,7 @@ Dialogue act: disagree
 Confidence: 0.9
 Dialogue act: disagree
 Conf",Negative,False,False,False,True,False,False,Counter-argue
-35,"Perhaps a compromise would be to provide some minimum level of power, water, etc for free, then charge for ""overages"" essentially. Of course, determining what a minimum standard is would be quite difficult.",I think any minimum level at all would still make a difference to most people.,Positive,False,True,True,False,False,False,False,False,Information seeking,False," positive
+35,"Perhaps a compromise would be to provide some minimum level of power, water, etc for free, then charge for ""overages"" essentially. Of course, determining what a minimum standard is would be quite difficult.",I think any minimum level at all would still make a difference to most people.,Positive,False,False,False,False,False,False,False,True,Support,False," positive
 ```python
 def classify_sentiment(reply):
     """"""

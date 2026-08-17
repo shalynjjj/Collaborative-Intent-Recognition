@@ -37,18 +37,39 @@ GOLD_COLUMNS = [
 # ---------------------------------------------------------------------------
 
 
+def _first_line(raw_output: str) -> str:
+    """The model's actual answer is always the first line -- anything after
+    that is unconstrained rambling (observed: hallucinated Python docstrings
+    that restate all candidate labels, e.g. "Returns: positive, negative, or
+    neutral"). Scoping to the first line avoids matching label words that
+    only appear in that rambling continuation.
+    """
+    stripped = (raw_output or "").strip()
+    return stripped.splitlines()[0] if stripped else ""
+
+
 def parse_single_label(raw_output: str, labels: List[str], fallback: str) -> Tuple[str, bool]:
-    text = (raw_output or "").strip().lower()
+    text = _first_line(raw_output).lower()
+    best_label, best_pos = None, None
     for label in labels:
-        if label.lower() in text:
-            return label, False
+        pos = text.find(label.lower())
+        if pos != -1 and (best_pos is None or pos < best_pos):
+            best_label, best_pos = label, pos
+    if best_label is not None:
+        return best_label, False
     return fallback, True
 
 
 def parse_emotion_labels(raw_output: str) -> Tuple[Dict[str, bool], bool]:
-    text = (raw_output or "").strip().lower()
+    text = _first_line(raw_output).lower()
     result = {label: (label.lower() in text) for label in EMOTION_LABELS}
-    fallback_used = not any(result.values()) and "none" not in text
+    if "none" in text and not any(result.values()):
+        # Defensive synonym: the prompt asks for "neutral", but the model may
+        # still occasionally answer "none" -- treat them as equivalent rather
+        # than falling back.
+        result["Neutral"] = True
+        return result, False
+    fallback_used = not any(result.values())
     return result, fallback_used
 
 
@@ -83,7 +104,7 @@ Sentiment:"""
 
 
 def build_emotion_prompt(parent: str, reply: str) -> str:
-    return f"""Identify which of the following categories apply to the Reddit CMV reply. Zero, one, or multiple categories may apply.
+    return f"""Identify which of the following categories apply to the Reddit CMV reply. One or more categories may apply.
 Categories: sarcasm, hostility, contempt, curiosity, appreciation, neutral.
 
 Definitions:
@@ -92,9 +113,10 @@ Definitions:
 - contempt: the reply is dismissive or belittling toward the parent or its argument.
 - curiosity: the reply asks for clarification, evidence, or more information out of genuine interest.
 - appreciation: the reply thanks, praises, or acknowledges the parent's point positively.
-- neutral: none of the above apply; the reply is emotionally flat.
+- neutral: none of the other categories apply; the reply is emotionally flat. Always include this
+  category by itself if no other category applies -- do not answer "none".
 
-Return a comma-separated list of every category that applies, or "none" if none apply.
+Return a comma-separated list of every category that applies.
 
 Parent: {parent}
 Reply: {reply}
@@ -122,10 +144,15 @@ Allowed labels: information seeking, challenge, counter-argue, support, others.
 
 Definitions:
 - information seeking: the reply primarily asks a question to get clarification or evidence.
-- challenge: the reply pushes back on a specific claim or asks the parent to justify it, without offering a full counter-argument.
-- counter-argue: the reply presents an alternative view or argument against the parent's position.
+- challenge: the reply pushes back, dismisses, or mocks the parent's claim WITHOUT presenting its
+  own reasoning or alternative claim -- short rebuttals, sarcastic jabs, or "prove it" pushback with
+  no new argument all count here, even if they read as confident or dismissive.
+- counter-argue: the reply pushes back AND presents its own reasoning, evidence, or alternative
+  claim to support that pushback -- there must be actual argument content beyond disagreement itself.
 - support: the reply agrees with and reinforces the parent's position.
-- others: the reply does not clearly fit any of the above (e.g. off-topic, meta-commentary, humor only).
+- others: the reply does not engage with the parent's argument at all -- off-topic remarks, jokes
+  with no argumentative point, or meta-commentary about the thread/forum itself (e.g. mentioning
+  mods, bots, deltas, or other posts) all count here, even if they are on-topic in subject matter.
 
 Return only one label.
 {context}

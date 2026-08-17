@@ -2,7 +2,7 @@
   "mode": "multi_module",
   "split": "dev",
   "rows": 36,
-  "sentiment_macro_f1": 0.3402067348678602,
-  "intent_macro_f1": 0.3503921568627451,
-  "emotion_macro_f1": 0.30839403253196357
+  "sentiment_macro_f1": 0.6465260017050299,
+  "intent_macro_f1": 0.4428571428571429,
+  "emotion_macro_f1": 0.26655982905982906
 }

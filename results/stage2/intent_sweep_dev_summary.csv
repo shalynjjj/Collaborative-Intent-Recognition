@@ -1,0 +1,9 @@
+combination,macro_f1,macro_f1_ci95_lo,macro_f1_ci95_hi,cohen_kappa
+base,0.0,0.0,0.0,0.0
+dialogue_act,0.0,0.0,0.0,0.0
+sentiment,0.0,0.0,0.0,0.0
+emotion,0.0,0.0,0.0,0.0
+dialogue_act+sentiment,0.0,0.0,0.0,0.0
+dialogue_act+emotion,0.0,0.0,0.0,0.0
+emotion+sentiment,0.0,0.0,0.0,0.0
+dialogue_act+emotion+sentiment,0.0,0.0,0.0,0.0
