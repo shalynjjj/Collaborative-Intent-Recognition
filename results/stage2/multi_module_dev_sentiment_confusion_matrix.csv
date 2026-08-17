@@ -1,4 +1,4 @@
 ,Positive,Negative,Neutral
-Positive,2,0,1
-Negative,0,0,1
-Neutral,0,0,1
+Positive,6,1,0
+Negative,3,10,2
+Neutral,1,5,8

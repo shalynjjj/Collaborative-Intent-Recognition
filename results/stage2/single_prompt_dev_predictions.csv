@@ -1,20 +1,222 @@
 row_id,Parent,Reply,sentiment,sentiment_fallback,emotion_sarcasm,emotion_hostility,emotion_contempt,emotion_neutral,emotion_curiosity,emotion_appreciation,emotion_fallback,intent,intent_fallback,raw_output,gold_sentiment,gold_sarcasm,gold_hostility,gold_contempt,gold_neutral,gold_curiosity,gold_appreciation,gold_intent
-0,I thought it was an argument for avoiding being next to the guy the police are shooting at.,"A very good point, I will keep it in mind.",Positive,False,False,False,False,False,False,True,False,Others,False,"Sentiment: positive
-Emotion: appreciation
-Intent: others",Positive,False,False,False,False,False,True,Support
-1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Neutral,False,False,False,False,False,False,False,False,Others,False,"Sentiment: neutral
-Emotion: none
-Intent: others",Negative,True,False,False,False,False,False,Challenge
+0,I thought it was an argument for avoiding being next to the guy the police are shooting at.,"A very good point, I will keep it in mind.",Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Positive,False,False,False,False,False,True,Support
+1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,True,False,False,False,False,False,Challenge
 2,"&gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not pay attention to, but which could come in handy
 
-I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Neutral,False,False,False,False,False,False,False,False,Others,False,"Sentiment: neutral
-Emotion: none
-Intent: others",Positive,False,False,False,False,False,True,Support
-3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Neutral,False,False,False,False,False,False,False,False,Others,False,"Sentiment: neutral
-Emotion: none
-Intent: others",Neutral,False,False,False,True,False,False,Others
+I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Positive,False,False,False,False,False,True,Support
+3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Others
 4,"I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
 
-However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Positive,False,False,False,False,False,False,False,False,Support,False,"Sentiment: positive
-Emotion: none
-Intent: support",Positive,False,False,False,False,False,True,Support
+However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Positive,False,False,False,False,False,True,Support
+5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
+
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: neutral
+Emotion:",Negative,False,False,False,True,False,False,Counter-argue
+6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Neutral,True,False,False,False,False,False,False,True,Others,True,[Image of a graph showing a decline,Negative,True,True,False,False,False,False,Challenge
+7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Positive,True,True,False,False,False,False,Challenge
+8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Others
+9,"Is Walmart bad or are the people who hand over their dollars bad?
+
+Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: neutral
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+10,"My exposure to dance (Dancers I know) would lead me to believe that a) Dance isn't an Art in the same way that say Theater/ Film is, or b) my school simply doesnt emphasize that side of dance (which in my mind is the reason to study art of any kind at a university level)
+
+Film Majors and Theater Majors will spend the at least 2 semesters of Coursework on Theory, History, and Analysis. The dance majors I'm friends with say they don't have to do any of that.
+
+Which is the core of my issue with dance as a major, I don't see the other side of dance. It's 100% possible that's just my school, and other programs are different. 
+
+Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: neutral
+Emotion:",Neutral,False,False,False,False,True,False,Information seeking
+11,Your name had better not be a Game of Thrones spoiler.,"No, I'm just an advocate for gavelkind succession laws, even in fantasy worlds.  ;)",Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: neutral
+Emotion:",Positive,False,False,False,True,False,False,Others
+12,"&gt; Would it be fair to say that the blacks doing worse in all those metrics (crime, violence, poverty, disease, out of wedlock childbirth) also is not related to the real structural privilege? Or that it applies to blacks but not to asians?
+
+The fact that Black Americans might do worse in all of these metrics is actually directly related to the structural privilege. White people have the structural advantage at *the expense* of Black American's welfare, health, etc.
+
+&gt; You are saying that Asians succeed despite their lack of privilege and would do even better in a non-racist world?
+
+I am saying that *some* Asian Americans succeed despite their lack of racial privilege. But,  there is not a structurally entrenched system of privilege *based on their race/ethnicity*. The may have privileges based on other factors, such as gender, sexual orientation, or socioeconomic status.
+
+EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,False,True,False,False,False,Challenge
+13,The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole diseased culture we live in. Do I really need to reply to it?,"If you feel that saying ""my girl/boyfriend"" in a monogamous relationship is evidence of a rape culture then there's clearly no point in debating any further.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,False,True,False,False,False,Challenge
+14,"The OP is actually much more clever than you all are giving her credit for
+
+OP has only made a comment about what happens IF Batman can escape the first fight - so any crazy-powerful superbeing wins but is not relevant to the discussion.
+
+What we really need is some sort of Lovecraftian villain that would allow Batman to escape the first fight, but which would nevertheless gradually take over and *become* insurmountable (maybe zombies, in general, although tbh I don't know if they count)
+
+That, or somebody who reincarnates as a more powerful being (Phoenix?) or who could just outlast Batman (Hulk / Wolverine, maybe)","_
+
+I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Neutral,False,False,False,True,False,False,Others
+15,"I don't know much of ancient Greece and how they toyed with it, however I feel that if our nation has established a constitution that works (as ours seems to, when correctly followed), abolishment of both the Electoral branch and decision making powers given to the Legislative branch would be the best thing the country could do.
+
+In my idea of how it would work:
+
+* Congress can write, advocate, and argue for and against laws
+
+* Congress cannot decide on these laws, they can merely campaign for them
+
+* Every six months, all proposed bills, etc., will be put up to vote. Every citizen may vote, or not
+
+* Majority rule is enforced, no more than 51% is needed, thus eliminating the need for recasting the vote, tus eliminating postponement of a law
+
+* Constitutional law may need to be **Slightly** expanded on to set some ground rules for all further law
+
+* It needs to be very difficult to change the constitution for the above reason
+
+What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,True,True,False,False,False,Challenge
+16,"_ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.",Such plebs,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,True,True,False,False,False,False,Support
+17,OPs post is in general.  This reply is in general.,"The OP is saying ""if I go"", so they are talking about themselves, not in general.",Neutral,True,False,False,False,False,False,False,True,Others,True,"The OP is saying ""if I go",Neutral,False,False,False,True,False,False,Counter-argue
+18,"&gt;hes the only Ind in our federal legislative body. 
+
+That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been long.",Thank you i actually was not aware,Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Positive,False,False,False,False,False,True,Support
+19,"Check out [this video](http://www.ted.com/talks/christopher_ryan_are_we_designed_to_be_sexual_omnivores) that conveys a theory on how monogamy is not really as ingrained in us as most people think it is. There are theories that claim we (and by we I mean men) invented monogamy after coming up with agriculture to insure property inheritance (how do I know which one's my kid if she's fucking the whole town? who the hell gets my house then after I die?)
+
+Then you consider the fact that [monogamy wasn't really required for dudes up until like 60 years ago](https://www.youtube.com/watch?v=w8SOQEitsJI). Instead of choosing to let women behave like men, we chose to lock ourselves up in monogamy along with them. 6O years ago.
+
+Long story short: monogamy seems to be (to some people) a social construct that has no relevance today since getting pregnant is hard and abortions are legal in most developed places.
+
+Like others have said, it's impossible to find someone that fulfils your every need. And the fact that recent adultery rates are always high sounds like human reality is trying to make us understand that monogamy doesn't really make sense.","Which perfectly explains Socrates statement: ""By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.""",Neutral,False,False,False,False,True,False,False,False,Others,True," 
+Sentiment: neutral
+Emotion",Negative,True,False,False,False,False,False,Challenge
+20,"Here's the thing that no one ever tells you about smoking: 
+
+**Smoking is the best thing in the whole world**
+
+No lies. It is the BEST thing. It creates a problem and it solves it. It is like winning the lottery fifteen times a day. 
+
+I knew about heroin. I knew about cocaine. I knew heroin would feel like the best orgasm I've ever had times a thousand. I knew cocaine would make me feel sexier than god but also like, if I got in a fight with god, I would win. I knew X would make every weekend better so long as I had it. I stayed FAR FAR away from that shit. Good things are good until you don't have them and then life sucks beyond the telling of it. I had a handle on that. 
+
+The only thing people told me about cigarettes was how much they sucked. Kissing a smoker was like licking an ashtray. They'll rob you blind. You'll die early. You'll smell bad. You'll talk through a hole in your throat. I watched them slowly march my father closer to death. Don't smoke.easy enough. 
+
+Here's the problem: if cigarettes are so nasty and terrible you have nothing to worry about. Have one. Have another. You'd never be *stupid* enough to fall into that trap, right? You can be that magic unicorn that can just have one socially with your friends, right? After all, people who get hooked get hooked before they turn 18 and you're nineteen so you're past the cutoff? Plus you're so *smart*! You'd never do something as dumb as getting addicted to the dumbest, most loserish drug on the market, right?
+
+It's never going to be you. Because smoking seems so innocuous. You know that 1/3 people who try heroin are addicted the first time out, but how can smoking, something so stupid, be so dangerous? It's just one cigarette.and the first time that's true! The first time you don't like it and it was as awful as you were expecting and you're completely disarmed for what's coming for you. 
+
+Then it's a long weekend of drinking in college and your friends smoke and they keep going outside to do so and you get curious again or you want to be ""in"" and the first one did NOTHING do you have the second. Then the eighth. And then it's only on the weekends. And then it's only while you drink. And then you ""cut back"" and only smoke when your friends have them (and they ALWAYS have them). You kind of know, in the back of your head, that you want them but you'd have to be stupid (remember?) to fall in that pit. You're crazy smart and good at life and you know all the facts and you'd never be that kid. 
+
+**Here's where it gets serious**: something terrible happens. You get broken up with, your dog gets hit by a car, you fail a class, something goes to hell in a hand basket. So you reward yourself with this self-destructive thing. Just for now. Just because this shitty thing has befallen you. So you go and buy some and you feel dirty doing it but feeling dirty is part and parcel with the shitty thing that happened. And you feel like an adult. And you feel like you're coping even though you're doing anything but. 
+
+Cigarettes are the best part of your day. The feeling of wanting one and then getting one is straight up euphoria. In a world of turmoil and despair, they become your favorite life raft. They make everything better, they make everything that sucks immediately suck less. And that's why they are IMPOSSIBLE to quit. You know you're sinking, and you will do nothing. You'll suddenly come to the realization that you've become a smoker (how the fuck did that happen?) but you won't care. Because the best part of your day is this shitty, expensive, debilitating thing. It's like having a crush on someone who doesn't love you back or having a really arrogant best friend. You love them all the more for how much the situation sucks. 
+
+At some point you realize you have to quit but you can't. Shitty things keep happening. Your job sucks, your relationship sucks, your classes suck. Finals are coming, your taxes are due, your friend is imploding in front of your face. Any stress, any little thing, becomes unbearable and you need that solution/problem in one to make it seem surmountable. You'll feel like your whole life is caving in and then you have a smoke and you're fine again. For twenty minutes. And twenty minutes is really all you need...for now. Until that time passes and you need it again. And in the back of your head you are RANTING at yourself about how dumb this is and how much you hate yourself for being this person but the pleasure, the relief, drowns it out. 
+
+**You don't get it**. You can't. If you never went down the rabbit hole, it won't make sense to you. If you have gone down the rabbit hole, it won't really make sense either. But you will get why you do it to a certain extent. 
+
+We **all** made the decision to never smoke. Some of us just fucked it up without meaning to. It was not all at once or with intention. It just happens. All the health facts and scary stories in the world won't change it. The thing that will change it is arming people with the foreknowledge that smoking is the best thing ever. That's what would have saved me. I've quit for two years and that's great, but I'm still not over it. It's still a thing for me. If you don't get it, be GLAD not arrogant. It could have easily been you. 
+
+**Edit** Thank you for the gold! It means a lot.",I cried.,Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Negative,False,False,False,False,False,True,Support
+21,It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.,You have to play nice.  I've got three strikes against me myself but I figured it out.  And the mods AFAICT just decide whether to delete comments which others report.,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+22,"I agree with you, but, will try to change your view.
+
+John has used heroin for 10 years. He knows that using heroin is illegal, expensive, and he spends $100 of the $200 he gets paid weekly working at Pizza Hut to pay for his heroin. He uses the other $100 to buy food, but, that money isn't enough to feed himself and his son.
+
+Maria has not used any illegal substances, and, works hard at her job at WalMart and gets paid $200 per week. She spends $100 on tutoring for her daughter to help her daughter get better grades in school. She uses the other $100 to buy food, but, that money isn't enough to feed herself and her daughter.
+
+Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,False,False,True,False,False,Counter-argue
+23,"I am most concerned about the debate between the theories of libertarian free will and hard determinism, because I believe that this debate has philosophical consequences that should tend to be important to people, affecting moral responsibility and reactions of moral contempt and meritocracy. 
+
+The closest numbered criteria that this could fall into would be number 2, meaning that you believe that the default position should be one or the other (I think, for example, that it is quite clear that hard determinism is clearly correct). 
+
+However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+25,"Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.",my point was only countries with much less guns than the US don't have their police carry guns,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+26,Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.,"Then put that in the CMV. If the ""rules"" deviate from reality, they need to be stated from the beginning.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,False,False,True,False,False,Challenge
+27,"&gt;Someone with Down's does not possess the tools to pull himself out of his own issues. Someone that just isn't trying does.
+
+This really seems like it's drawing an arbitrary line. If someone has an IQ of 75 we declare them helpless, but not IQ 100, say. What about 90? 85? 77? Where do we draw the line? Why do we draw a line? Why not just treat all of the people as having medical problems, rather than moral ones?",Because we don't use IQ to diagnose mental illness. The line is drawn when there is a distinct physiological difference in one persons brain compared to a normal one.,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+28,"Hardly reckless? You seriously underestimate how much damage a 4000+ pound machine can do, even driving at 40 mph, which is a relatively low speed.
+
+&gt;People have real lives and shit to do.
+
+And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,True,False,False,False,False,Challenge
+29,"Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontroversy",I really don't think that's what he meant...,Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: neutral
+Emotion:",Negative,False,False,True,False,False,False,Challenge
+30,"&gt;Do you have a different type of truth in mind?
+
+Not particularly, we can just stick with moral truths. The point is that if you're open to more than one kind of truth, then unless physics studies them all equally well, it is only one particular tool in the toolbox.
+
+
+&gt;That's why the phrase ""shared characteristics"" is important. What are the characteristics shared by organism, governments, and economies? They are all extensions of the fundamental laws of physics. Both physics and philosophy attempts to make general theories of truth. Neither cares much about the specifics that political science and biology describe. 
+
+But we don't use physics to describe such phenomena, and I rather doubt most physicists are even all that interested in doing so. The level of analysis we use matters - otherwise all physics would just atomic and quantum-scale phenomena, at least until the unified theory comes about.",I'm not sure I'm following you. Physics isn't interested in the characteristics shared by all existing things?,Neutral,False,False,False,False,True,False,False,False,Others,True," 
+Sentiment: neutral
+Emotion",Neutral,False,False,False,False,True,False,Challenge
+31,"Heh... I don't think people'd stomach a head tax unless they also got a dividend. You could do a ""mandatory tax when there's a deficit, payout when there's a surplus"" thing I suppose.
+
+Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,False,True,False,Information seeking
+32,"James Franco recently got caught up trying to have sex with an extremely attractive 17 year old girl. His manner, to be fair, was boorish and very direct, asking her, simply, ""should I get a hotel room?"" skipping all the pleasantries. However, not only did she tell him she was 18, but in New York State 17 is legal age. 
+
+There was an uproar from feminist groups, and the media in general, accusing Franco of being a pervert. He publicly apologized.
+
+What should he apologize for? Wanting to have sex with a beautiful young girl?
+
+The desire and drive to have sex with women is not only entirely normal, it's what society is based on. Youngness is attractive to men.
+
+For society to be outraged at James Franco for wanting, and trying, to have sex with this girl is absurd. It's based on a fundamental lie, that men are not supposed to be attracted to women under a certain age. Sure, age limits should be respected in states where the age limit is 18, but when he's informed that she is 18, and even if she were 17 it would be legal, there is nothing to apologize for.
+
+_____
+
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,False,False,True,False,False,Counter-argue
+33,"Yours too but it doesn't matters for me now :
+                     
+                  
+I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Neutral,False,False,False,True,False,False,Counter-argue
+34,"Edit: I just realized that there's a Popular Topic archive with this topic in it. I'm not sure if the mods are supposed to leave this one or remove it, but I'll be reading through some of the older versions of this topic.
+
+Let me preface this by saying that I'm not okay with raping babies. However, the idea of moral relativity, and the question, ""How far can we take it?"" are troubling ones. I've done some careful thinking and I believe that there are no objective morals at all. I'm interested in hearing what others think of my case, and equally interested in hearing theirs.
+
+Basically, my case for complete moral relativity is this:
+
+* Human perception of morality varies wildly based on time, place, situation, and who you ask. For example, many of the moral guidelines described in religious texts would be completely unacceptable today, but back then they were the norm. We don't consider people from those eras of those religions ""evil,"" even if we do say they are misguided. Therefore, it follows that morality must depend on context.
+
+* As another example, I once had a very heated argument with a religious friend who claimed that cannibalism was objectively wrong. It is disrespectful to the dead. However, some cultures consider eating your dead a way of showing respect. It does not seem fair to call these people ""evil"" for doing what their culture does. In addition, if a person's survival depends on cannibalism, it does not seem fair to call them evil to prioritize their own life over the sanctity of a corpse. Therefore, even things that ""feel"" wrong to us, like eating human flesh, cannot be.
+
+* Humans do not agree on moral issues. Euthanasia, abortion, and war are controversial issues. If morality were objective, we would all agree on these issues.
+
+* Legality is a human construct, and is an attempt to enforce objective morality onto a relatively moral world. This is why the law is not always right. For example, criminals can sometimes get away with their actions by finding a loophole, and innocent people can be punished for breaking the law, even when it seems obvious that their actions were not immoral and did not present any significant danger to anyone. Therefore, objective morality cannot work in the real world.
+
+* Human morality often reflects evolution. (And evolution can be used to explain certain ""objective"" morals) We intuitively value altruism because it is good for the population. We despise child abuse because we have an instinctive urge to protect our young. Most, if not all, of the things we consider ""objectively wrong"" are things that are harmful, to the individual or to the whole. It's probable, therefore, that a different civilization evolved in different conditions would not follow our objective morality. We cannot safely consider them ""evil,"" so we must conclude that even if their morality is completely different from ours, they are still just as morally correct.
+
+* To use an example from popular culture, the Formics from Ender's Game possess no free will on an individual level, and do not consider killing morally wrong. Humans hold free will and agency in high regard, yet the Formics do not, and even a seemingly objective moral rule, ""Don't kill people,"" is not universal. However, as the author demonstrates, this does not make them evil. It just means that finding common morals is very difficult, if possible at all.
+
+From this case, it seems that the only possible moral code is that there isn't one; Morality is determined by those it concerns. Child abuse, rape, murder, stealing, these things are wrong *because we consider them wrong*, and because they are harmful to us. Objective morality of any kind cannot exist.
+
+This is not to say that I believe serial killers are just as moral as saints. It is clear that morals are necessary to the structure of society. We still must stop criminals who are harmful to society, even if we are unclear on the most moral way to go about doing so. We still must have moral standards, to help individuals get along with each other and keep humans happy. However, we have to accept that objective morality is inherently flawed.
+
+Edit: I've gotten some very good replies, and I'm answering all I can. I think I've arrived at the following conclusion:
+
+Morality cannot be thought of as strictly objective or relative. Instead, there are certain things that almost all humans can agree are immoral, such as murder and rape, so they are objectively wrong. These are usually defined by what is beneficial to humanity's survival. On the other hand, there are some things that are, at least at the moment, impossible to objectively determine as right or wrong, and for these we have to rely on personal experience and careful reflection until we have a better way of deciding.
+
+So I have changed my view a little, and I'm working on refining this into something a little clearer. Thank you guys for your input.
+_____
+
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*",Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.,Negative,False,False,False,False,False,False,False,True,Others,True,"Sentiment: negative
+Emotion:",Negative,False,False,False,True,False,False,Counter-argue
+35,"Perhaps a compromise would be to provide some minimum level of power, water, etc for free, then charge for ""overages"" essentially. Of course, determining what a minimum standard is would be quite difficult.",I think any minimum level at all would still make a difference to most people.,Positive,False,False,False,False,False,False,False,True,Others,True,"Sentiment: positive
+Emotion:",Positive,False,False,False,True,False,False,Support

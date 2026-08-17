@@ -1,87 +1,87 @@
 {
-  "macro_f1": 0.18,
-  "cohen_kappa": 0.16666666666666674,
+  "macro_f1": 0.4197402597402597,
+  "cohen_kappa": 0.3207547169811321,
   "fallback_count": 0,
   "classification_report": {
     "Information seeking": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+      "precision": 0.4,
+      "recall": 1.0,
+      "f1-score": 0.5714285714285714,
+      "support": 2.0
     },
     "Challenge": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 1.0
+      "precision": 0.25,
+      "recall": 0.09090909090909091,
+      "f1-score": 0.13333333333333333,
+      "support": 11.0
     },
     "Counter-argue": {
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1-score": 0.0,
-      "support": 0.0
+      "precision": 0.5238095238095238,
+      "recall": 0.9166666666666666,
+      "f1-score": 0.6666666666666666,
+      "support": 12.0
     },
     "Support": {
       "precision": 1.0,
-      "recall": 0.3333333333333333,
-      "f1-score": 0.5,
-      "support": 3.0
+      "recall": 0.5714285714285714,
+      "f1-score": 0.7272727272727273,
+      "support": 7.0
     },
     "Others": {
-      "precision": 0.25,
-      "recall": 1.0,
-      "f1-score": 0.4,
-      "support": 1.0
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 4.0
     },
-    "accuracy": 0.4,
+    "accuracy": 0.5,
     "macro avg": {
-      "precision": 0.25,
-      "recall": 0.26666666666666666,
-      "f1-score": 0.18,
-      "support": 5.0
+      "precision": 0.4347619047619048,
+      "recall": 0.5158008658008658,
+      "f1-score": 0.4197402597402597,
+      "support": 36.0
     },
     "weighted avg": {
-      "precision": 0.65,
-      "recall": 0.4,
-      "f1-score": 0.38,
-      "support": 5.0
+      "precision": 0.46765873015873016,
+      "recall": 0.5,
+      "f1-score": 0.43612313612313613,
+      "support": 36.0
     }
   },
   "confusion_matrix": [
     [
-      0,
+      2,
       0,
       0,
       0,
       0
     ],
     [
-      0,
-      0,
-      0,
+      2,
+      1,
+      7,
       0,
       1
     ],
     [
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
       0,
       1,
-      2
+      11,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      0,
+      4,
+      1
     ],
     [
       0,
+      1,
+      3,
       0,
-      0,
-      0,
-      1
+      0
     ]
   ],
   "labels": [
