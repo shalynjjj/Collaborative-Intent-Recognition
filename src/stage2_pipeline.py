@@ -60,8 +60,29 @@ def parse_single_label(raw_output: str, labels: List[str], fallback: str) -> Tup
     return fallback, True
 
 
+def _emotion_answer_text(raw_output: str) -> str:
+    """The emotion prompt ends with "Categories:", and the model's completion
+    often continues that sentence by echoing the full category list back
+    (observed on ~39% of dev rows) before giving its real answer later,
+    introduced by "answer" / "the final answer is". Scoping to an explicit
+    answer marker -- when present -- avoids matching every category word in
+    that echoed list; `_first_line` alone was catching all of them as
+    positives, which is why Hostility/Contempt/Curiosity precision was so low.
+    """
+    stripped = (raw_output or "").strip()
+    if not stripped:
+        return ""
+    for line in stripped.splitlines():
+        idx = line.lower().rfind("answer")
+        if idx != -1:
+            after = line[idx:]
+            colon = after.find(":")
+            return (after[colon + 1 :] if colon != -1 else after).strip()
+    return stripped.splitlines()[0]
+
+
 def parse_emotion_labels(raw_output: str) -> Tuple[Dict[str, bool], bool]:
-    text = _first_line(raw_output).lower()
+    text = _emotion_answer_text(raw_output).lower()
     result = {label: (label.lower() in text) for label in EMOTION_LABELS}
     if "none" in text and not any(result.values()):
         # Defensive synonym: the prompt asks for "neutral", but the model may

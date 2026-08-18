@@ -513,6 +513,73 @@ the current CLI. (Results in `results/strategy_c/legacy/{full_backup,layers2,lay
 Full RoBERTa weights-on/off must be rerun under the standardized OOF
 pipeline before comparison with TF-IDF and Strategy B.
 
+## Error Analysis: Why `disagree` Underperforms (Strategies B & C)
+
+**Note:** this section uses the expanded 332-row held-out set (see
+`docs/stage1_full_report.md`), not the pilot80 set the numbers earlier in
+this README still reference — the two aren't directly comparable.
+
+`disagree` F1 on the 332-row held-out set: A 0.623, B 0.590, C 0.565. B and C
+each mislabel it for a different reason, and each reason was checked against
+every misclassified row in that category, not just a handful of examples:
+
+- **B mostly mistakes `disagree` for `statement`** (25%, 62/249 true
+  `disagree` rows, pooled across B's 3 held-out seeds). Of those 62, 56% have
+  zero negation or hedge words -- e.g. *"Reoccurrence has to be detected to
+  be tracked."* -- content-only disagreement with no lexical marker to key
+  on. The other 44% don't have this feature, so it's a partial explanation,
+  not the whole cause.
+- **C mostly mistakes `disagree` for `agree`** (18%, 45/249) -- this is the
+  broader bidirectional agree/disagree confusion documented in
+  `docs/stage1_full_report.md` (present in all 8 of C's dev-OOF seeds). An
+  "affirmative opener" theory (reply starts with "yes"/"indeed"/etc.) was
+  tested and ruled out: only 4% (2/45) fit it.
+- **Both strategies also leak `disagree`→`question`** (B 12%, C 17%). This
+  is the strongest pattern found: 71% (B, 22/31) and 52% (C, 22/42) of these
+  errors literally end in a question mark, versus 1% of correctly-labeled
+  `disagree` replies in both strategies -- e.g. *"Where did I say that?"* is
+  grammatically a question but functionally a rejection of the parent's
+  claim, and the model appears to key on the "?" rather than the
+  disagreement itself.
+
+Negation, contractions, reply length, and spelling were also checked as
+candidate explanations and showed no reliable pattern; only the
+rhetorical-question pattern above held up.
+
+Reproduce with:
+
+```bash
+python3 -m src.analyze_disagree_errors
+```
+
+which reads `results/strategy_{b,c}_heldout/heldout_seed{42,123,2026}_predictions.csv`
+and writes `results/error_analysis/disagree_error_text_features.csv` and
+`disagree_error_examples.csv`. Full write-up: `docs/error_analysis_disagree.md`.
+
+### Blind Re-Label: 27 Hard Agree/Disagree Rows
+
+Separately from the `disagree` analysis above, the 27 gold-300 rows where
+at least 6 of Strategy C's 8 dev-OOF seeds flip `agree`↔`disagree` (see
+`docs/stage1_full_report.md`'s Error Analysis) were pulled out for a blind
+re-label, to check whether that confusion reflects genuine annotation
+ambiguity or a model limitation:
+
+- `results/strategy_c/agree_disagree_hard27_blind.csv` -- the 27 rows,
+  shuffled, with the original label stripped and a blank `your_label`
+  column to fill in.
+- `results/strategy_c/agree_disagree_hard27_answer_key.csv` -- same rows
+  with the original gold label and each seed's prediction; not to be opened
+  until the blind file is labeled.
+- Score a completed blind label with:
+
+```bash
+python3 -m src.score_agree_disagree_relabel \
+  --blind-csv results/strategy_c/agree_disagree_hard27_blind.csv
+```
+
+Add `--blind-csv-2` with a second annotator's filled-in copy to also get
+inter-annotator agreement. Status: labeling in progress, not yet scored.
+
 ## Notebook
 
 `notebooks/stage1_experiments.ipynb` is intentionally thin: it imports from `src/`, runs scripts, and displays saved results.
