@@ -580,6 +580,87 @@ python3 -m src.score_agree_disagree_relabel \
 Add `--blind-csv-2` with a second annotator's filled-in copy to also get
 inter-annotator agreement. Status: labeling in progress, not yet scored.
 
+### Full-Dataset Text-Feature Columns (Delivery Artifact)
+
+The negation/hedge/spelling check above previously ran only on
+misclassified rows. Since the dataset itself is a deliverable, it now runs
+on **every** row, so downstream users (e.g. training a negation classifier)
+don't have to recompute it.
+
+```bash
+python3 -m src.add_text_features
+```
+
+Unions `data/cmv_300_gold_final.csv` (300 rows) and
+`data/cmv_test_candidates_heldout_expanded.csv` (530 rows, no overlap) into
+`data/cmv_full_with_text_features.csv` (830 rows), reusing the `_features()`
+logic from `analyze_disagree_errors.py` on both `Parent` and `Reply`:
+
+`{reply,parent}_word_count`, `{reply,parent}_hedge_rate/has_hedge`,
+`{reply,parent}_negation_rate/has_negation`,
+`{reply,parent}_contraction_rate`, `{reply,parent}_spelling_error_rate`,
+`{reply,parent}_very_long/very_short`, `{reply,parent}_ends_in_question`
+
+Plus `corpus_source` (`gold_300` / `heldout_batch2` / `heldout_pilot80`).
+
+### Parent-Negation Ablation: Does Strategy B Use the Parent?
+
+Strategy B's top confusion is agree/disagree misclassified as `statement`
+(see "Error Analysis" above) — possibly because it pattern-matches the
+`Reply` alone and ignores `Parent` entirely. Tested directly: for rows
+Strategy B calls `statement` in all 3 locked seeds, flip the `Parent`'s
+negation (add/remove), keep `Reply` unchanged, flip gold label to match
+(`agree`↔`disagree`). Retrain the same locked config from scratch and
+predict on both versions:
+
+- still `statement` regardless → ignoring `Parent`
+- flips to match new gold → using `Parent`
+
+```bash
+python3 -m src.ablation_parent_negation
+```
+
+Writes `results/error_analysis/parent_negation_ablation_predictions.csv`
+(per example × variant × seed) and `parent_negation_ablation_summary.csv`
+(aggregated).
+
+**Result (3 examples × 3 seeds = 9 edited rows):**
+
+| example | variant | gold | seed 42 | seed 123 | seed 2026 | matches new gold |
+| --- | --- | --- | --- | --- | --- | ---: |
+| `babies_headcover` | original | disagree | statement | statement | statement | 0/3 |
+| `babies_headcover` | edited | agree | statement | statement | statement | **0/3** |
+| `brand_new_tires` | original | disagree | disagree | statement | statement | 1/3 |
+| `brand_new_tires` | edited | agree | statement | statement | statement | **0/3** |
+| `who_healthcare_ranking` | original | agree | statement | disagree | statement | 0/3 |
+| `who_healthcare_ranking` | edited | disagree | statement | disagree | statement | **1/3** |
+
+**0/9 edited predictions matched the new gold label.** 14/18 predictions
+were `statement` regardless of the edit. The two exceptions don't support
+context use either: seed 42 on `brand_new_tires` flips
+`disagree`→`statement` (wrong direction; `agree` expected), and seed 123 on
+`who_healthcare_ranking` predicts `disagree` for **both** the original and
+its opposite — invariant to the negation, not responsive to it.
+**Conclusion: supports the hypothesis** — Strategy B is dominated by
+Reply-only pattern matching on this error type, not meaningfully using
+`Parent`.
+
+Candidates drawn from 23 agree/disagree→`statement` rows misclassified in
+all 3 heldout seeds; kept only rows with one cleanly negatable claim in
+`Parent` (most CMV parents are multi-paragraph, no single unambiguous
+clause to flip).
+
+`train_roberta.py`'s `_train_and_predict`/`_run_once` now take an optional
+`save_model_dir` to persist the fine-tuned model+tokenizer instead of
+discarding it (`run_strategy_b_heldout_eval` saves each seed to
+`results/strategy_b_heldout/models/seed{N}/` by default). Once saved,
+`src/predict_with_saved_strategy_b.py` predicts on any new Parent/Reply CSV
+without retraining:
+
+```bash
+python3 -m src.predict_with_saved_strategy_b --input rows.csv --output preds.csv
+```
+
 ## Notebook
 
 `notebooks/stage1_experiments.ipynb` is intentionally thin: it imports from `src/`, runs scripts, and displays saved results.

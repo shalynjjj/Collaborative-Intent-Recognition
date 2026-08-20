@@ -213,21 +213,27 @@ Because all three strategies are evaluated on the identical 332 held-out pairs, 
 
 ---
 
-## Error Analysis: Confusion Overview
+## Error Analysis
+
+This section merges the quantitative confusion breakdown, the text-feature checks that explain it, the agree/disagree cross-strategy check, and the parent-negation ablation into one narrative. Representative examples are kept inline (one per pattern); the rest are in the Appendix.
+
+### Confusion Overview
 
 Pooling errors across all three held-out seeds for each strategy (996 predictions per strategy), the single largest error types are **not** `agree`/`disagree` confusions, but two other pairs: **`disagree`→`statement`** (Strategy B's largest error type, 62 instances) and **`statement`→`agree`** (Strategy C's largest, 84 instances; also present in B, 56 instances). Reading a sample of each, plus simple text statistics (word count, hedge-word rate like "but"/"however", negation-word rate like "not"/"never"), reveals three distinct, specific patterns:
 
-- **`disagree`→`statement` (Strategy B).** These replies disagree by stating a counter-fact or counter-hypothetical, not by using disagreement language: hedge-word rate is 0.03 (vs. 0.13 for `disagree` generally) and negation rate is 0.31 (vs. 0.51). Examples: *"There is no such thing as cultural decay, only change."*; *"Consider this: if this effect did not occur, we would be heading towards a Malthusian catastrophe."* The disagreement is carried entirely by content, not by any lexical marker, so the model defaults to reading these as neutral statements.
+- **`disagree`→`statement` (Strategy B).** These replies disagree by stating a counter-fact or counter-hypothetical, not by using disagreement language: hedge-word rate is 0.03 (vs. 0.13 for `disagree` generally) and negation rate is 0.31 (vs. 0.51). Representative example: Parent *"Some babies won't eat if their heads are covered."* → Reply *"They'll eat once they're hungry enough."* (gold `disagree`, predicted `statement`). Read on its own, the reply is just a plain claim about babies eating; only against the parent does it read as a rejection of the parent's claim. The disagreement is carried entirely by content, not by any lexical marker, so the model defaults to reading these as neutral statements. (More examples in Appendix A.)
 
-- **`statement`→`agree` (Strategies B and C).** 36% of these misclassified replies are five words or fewer, far above baseline. These are short, reactive replies — thanks, corrections, brief asides — with a positive/polite tone but no substantive engagement with the argument. Examples: *"Whoops, thanks!"*; *"changed."*; *"Ahh. Yes I misinterpreted your comment. Thanks for the clarification."* The model appears to read positive/polite tone in a short reply as `agree`, regardless of whether it substantively agrees with anything.
+- **`agree`→`statement` (Strategy B, smaller-scale, same mechanism).** The same isolation effect shows up in the other direction: Parent *"The WHO ranks the American healthcare system two spots above Cuba's."* → Reply *"Yeah. Still one of the best in the world and it's free at the point of use. Therefore it's two spots below America, but for every citizen."* (gold `agree`, predicted `statement`). The reply reads as a free-standing claim in isolation; it only registers as agreement once matched against the parent's specific ranking claim. This pair is reused below in the parent-negation ablation.
+
+- **`statement`→`agree` (Strategies B and C).** 36% of these misclassified replies are five words or fewer, far above baseline. These are short, reactive replies — thanks, corrections, brief asides — with a positive/polite tone but no substantive engagement with the argument. Example: *"Whoops, thanks!"* (More examples in Appendix A.) The model appears to read positive/polite tone in a short reply as `agree`, regardless of whether it substantively agrees with anything.
 
 - **`statement`→`disagree` (Strategy C, 75 instances).** Longer than baseline (15.1 vs. 12.7 words), with elevated hedge-word (0.23 vs. 0.17) and negation (0.31 vs. 0.25) rates — these read as skeptical/challenging in tone (embedded rhetorical questions, "but" qualifiers) without being a genuine disagreement with the parent's core claim.
 
-**Broader theme:** together with the agree/disagree pattern below, all of B's and C's largest error types involve replies where the dialogue act is carried by tone, structure, or implication rather than an explicit lexical marker — RoBERTa fine-tuned on 300–2500 pairs struggles specifically with this class of example.
+**Broader theme:** together with the agree/disagree pattern below, all of B's and C's largest error types involve replies where the dialogue act is carried by tone, structure, or implication rather than an explicit lexical marker — RoBERTa fine-tuned on 300–2500 pairs struggles specifically with this class of example. The parent-negation ablation below tests this directly for the `disagree`/`agree`→`statement` pattern: does the model actually fail to use the parent, or does it just look that way from the text statistics?
 
----
+The full annotated corpus (not just misclassified rows) now carries these same text-feature columns (`has_negation`, `has_hedge`, `ends_in_question`, etc., computed on both `Parent` and `Reply`) as a shippable dataset artifact — see `data/cmv_full_with_text_features.csv` and the README's "Full-Dataset Text-Feature Columns" section.
 
-## Error Analysis: Additional Text-Feature Checks
+### Text-Feature Checks
 
 To complete the negation/contractions/length/spelling check, a contraction rate and a spelling-error rate (nltk words-corpus heuristic: a token not found in the corpus and not capitalized) were computed the same way as the negation and hedge-word rates above, comparing each error pair against its class baseline.
 
@@ -243,7 +249,7 @@ This completes the full negation/contractions/length/spelling/ambiguous-wording 
 
 ---
 
-## Error Analysis: Agree/Disagree Confusion
+### Agree/Disagree Confusion (Strategy B & C)
 
 **Finding:** beyond the confusion pairs above, a smaller but more *reproducible* problem stands out: a **bidirectional `agree`↔`disagree` confusion**, present in **all 8** of Strategy C's dev-OOF seeds without exception, and present to a lesser degree in Strategy B. Severity varies by seed (C's `agree` recall ranges 0.36–0.59), but direction is constant: `agree` misclassifies mainly as `disagree` in every seed, and vice versa.
 
@@ -266,6 +272,27 @@ Strategy A is unaffected by these rows. Strategy B and C — both RoBERTa fine-t
 **Not ruled out:** class imbalance in gold-300 (145 `disagree` vs. 64 `agree`, 2.3:1) may independently explain lower `agree` recall.
 
 **Caveat:** this whole analysis is a model-cross-validation proxy, not measured IAA. Gold-300 has overall raw agreement (89.67%), but pre-reconciliation labels were not retained, so it's not possible to check whether these specific 27 pairs were among the original annotator disagreements. A blind re-labeling of these 27 pairs is the direct way to test this (see Future Work).
+
+### Parent-Negation Ablation (Strategy B)
+
+The `disagree`/`agree`→`statement` pattern above is consistent with two different explanations: the model genuinely can't tell agreement/disagreement from content alone, or it's not even trying — i.e., it's reading `Reply` in isolation and ignoring `Parent` entirely. This ablation tests the second explanation directly, rather than inferring it indirectly from text statistics.
+
+**Method:** for rows Strategy B misclassifies as `statement` in all 3 locked seeds, the `Parent`'s negation is manually flipped (added if absent, removed if present), `Reply` is left untouched, and the gold label is flipped to match the now-negated `Parent` (`agree`↔`disagree`). The exact locked config (silver_size 2500, sample_seed 123, class weights on) is retrained from scratch on the 3 locked seeds and scored on both the original and edited version of each row. If the prediction still comes out `statement` regardless of the edit, the model is ignoring `Parent`; if it flips to match the new gold label, it's using `Parent`.
+
+Three examples were usable — most CMV parent comments are multi-paragraph and don't reduce to one cleanly negatable claim — including the `disagree`→`statement` and `agree`→`statement` pairs quoted above:
+
+| example | variant | gold | seed 42 | seed 123 | seed 2026 | matches new gold |
+| --- | --- | --- | --- | --- | --- | ---: |
+| babies/head-covering | original | disagree | statement | statement | statement | 0/3 |
+| babies/head-covering | edited | agree | statement | statement | statement | **0/3** |
+| brand-new-tires | original | disagree | disagree | statement | statement | 1/3 |
+| brand-new-tires | edited | agree | statement | statement | statement | **0/3** |
+| WHO healthcare ranking | original | agree | statement | disagree | statement | 0/3 |
+| WHO healthcare ranking | edited | disagree | statement | disagree | statement | **1/3** |
+
+**Result: 0 of 9 edited predictions matched the new gold label**, and 14 of 18 total predictions were `statement` regardless of the parent edit. The two non-`statement` predictions don't support context use either: one flips in the wrong direction after editing (`disagree`→`statement` where `agree` was expected), and one predicts the same label (`disagree`) for a parent and its exact negation — invariant to the edit, not responsive to it.
+
+**This confirms the pattern-matching explanation over the "genuinely can't tell" explanation**, at least for this error type: Strategy B is not meaningfully using `Parent` here, it's classifying `Reply` in isolation. Sample size is small (3 examples) by construction — most candidate rows didn't have a parent clean enough to edit unambiguously — so this is a targeted confirmatory test, not a broad quantitative claim. Reproduce with `python3 -m src.ablation_parent_negation` (details in README).
 
 ---
 
@@ -313,6 +340,22 @@ Closing A-vs-C and B-vs-C would require annotating toward ~330–350 confirmed p
 **Annotation-dependent follow-ups (not currently planned, given time constraints):**
 - Blind re-label the 27 agree/disagree "hard" pairs — small-scale (27 pairs), much cheaper than the item below.
 - Annotate toward ~330–350 confirmed pairs/class to resolve A-vs-C and B-vs-C at 80% power (not expected to resolve A-vs-B, whose effect size is near zero). This is the only way to make A-vs-C and B-vs-C conclusive; without it, both remain open questions.
+
+---
+
+## Appendix A: Additional Error Examples
+
+One representative example per pattern is kept in the Error Analysis section above; the rest are here.
+
+**`disagree`→`statement` (Strategy B):**
+- *"There is no such thing as cultural decay, only change."*
+- *"Consider this: if this effect did not occur, we would be heading towards a Malthusian catastrophe."*
+
+**`statement`→`agree` (Strategies B and C):**
+- *"changed."*
+- *"Ahh. Yes I misinterpreted your comment. Thanks for the clarification."*
+
+Full misclassified-row dumps: `results/error_analysis/disagree_error_examples.csv` (disagree-gold errors, all destination classes, both strategies) and `results/error_analysis/parent_negation_ablation_predictions.csv` (the ablation study's per-seed predictions).
 
 ---
 

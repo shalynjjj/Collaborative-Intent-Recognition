@@ -1,0 +1,7 @@
+example_id,variant,gold,n_seeds,n_pred_matches_gold,n_pred_statement,preds
+babies_headcover,edited,agree,3,0,3,"['statement', 'statement', 'statement']"
+babies_headcover,original,disagree,3,0,3,"['statement', 'statement', 'statement']"
+brand_new_tires,edited,agree,3,0,3,"['statement', 'statement', 'statement']"
+brand_new_tires,original,disagree,3,1,2,"['disagree', 'statement', 'statement']"
+who_healthcare_ranking,edited,disagree,3,1,2,"['statement', 'disagree', 'statement']"
+who_healthcare_ranking,original,agree,3,0,2,"['statement', 'disagree', 'statement']"

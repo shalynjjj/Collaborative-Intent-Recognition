@@ -200,6 +200,7 @@ def _train_and_predict(
     use_class_weights: Optional[bool] = None,
     also_predict_train: bool = False,
     training_overrides: Optional[Dict] = None,
+    save_model_dir: Optional[Path] = None,
 ) -> Tuple[List[str], Dict, Optional[Dict]]:
     set_seed(seed)
     import torch
@@ -322,6 +323,12 @@ def _train_and_predict(
             train_pred_labels = [ID2LABEL[int(idx)] for idx in train_pred_ids]
             train_metrics = compute_metrics(inner_train_df[train_label_col], train_pred_labels)
 
+        if save_model_dir is not None:
+            save_model_dir = Path(save_model_dir)
+            save_model_dir.mkdir(parents=True, exist_ok=True)
+            trainer.save_model(str(save_model_dir))
+            tokenizer.save_pretrained(str(save_model_dir))
+
         return pred_labels, split_metadata, train_metrics
     finally:
         if torch.cuda.is_available():
@@ -342,6 +349,7 @@ def _run_once(
     use_class_weights: Optional[bool] = None,
     also_predict_train: bool = False,
     training_overrides: Optional[Dict] = None,
+    save_model_dir: Optional[Path] = None,
 ) -> Tuple[List[str], Dict, Dict]:
     train_metrics = None
     if dry_run:
@@ -365,6 +373,7 @@ def _run_once(
             use_class_weights,
             also_predict_train,
             training_overrides,
+            save_model_dir,
         )
     metrics = compute_metrics(eval_df[eval_label_col], predictions)
     if train_metrics is not None:
@@ -539,13 +548,17 @@ def run_strategy_b(
     return rebuild_strategy_b_summaries(results_dir)
 
 
-def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
+def run_strategy_b_heldout_eval(dry_run: bool = False, save_models: bool = True) -> pd.DataFrame:
     """One-shot confirmatory eval of the locked Strategy B config on TEST_CSV.
 
     Trains on the single silver subset fixed by STRATEGY_B_FINAL_CONFIG and
     evaluates against TEST_CSV instead of GOLD_CSV. Takes no size/seed-list
     arguments on purpose -- this must not turn into a second sweep. Run once,
     after the silver-size sweep against GOLD_CSV is finalized.
+
+    save_models persists each seed's fine-tuned model+tokenizer under
+    STRATEGY_B_HELDOUT_DIR/models/seed{N}/ so later scripts (e.g. an ablation
+    study) can load and predict on new inputs without retraining from scratch.
     """
     ensure_results_dirs()
     STRATEGY_B_HELDOUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -574,6 +587,7 @@ def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
     rows = []
     for train_seed in SEEDS:
         set_seed(train_seed)
+        model_dir = STRATEGY_B_HELDOUT_DIR / "models" / f"seed{train_seed}" if save_models and not dry_run else None
         predictions, metrics, split_metadata = _run_once(
             train_base,
             test_df,
@@ -584,6 +598,7 @@ def run_strategy_b_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
             split_seed=config["sample_seed"],
             group_col="source_root",
             use_class_weights=config["use_class_weights"],
+            save_model_dir=model_dir,
         )
         prediction_counts = {label: int(predictions.count(label)) for label in DIALOGUE_LABELS}
         missing_classes = [label for label, count in prediction_counts.items() if count == 0]
