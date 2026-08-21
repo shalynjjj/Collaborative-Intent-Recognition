@@ -85,6 +85,55 @@ def bootstrap_ci(
     }
 
 
+def paired_bootstrap_difference(
+    y_true: Iterable[str],
+    y_pred_a: Iterable[str],
+    y_pred_b: Iterable[str],
+    labels: Optional[List[str]] = None,
+    n_boot: int = 2000,
+    seed: int = 42,
+) -> Dict:
+    """Paired bootstrap CI for the macro-F1 difference ``A - B``.
+
+    Both systems must predict the same rows. Resampling shared row indices
+    preserves that pairing and is the appropriate comparison for Stage 2's
+    prompt/input ablations.
+    """
+    label_names = labels or DIALOGUE_LABELS
+    y_true = np.asarray(list(y_true))
+    y_pred_a = np.asarray(list(y_pred_a))
+    y_pred_b = np.asarray(list(y_pred_b))
+    if not (len(y_true) == len(y_pred_a) == len(y_pred_b)):
+        raise ValueError("Paired predictions and gold labels must have equal lengths")
+
+    observed = f1_score(
+        y_true, y_pred_a, labels=label_names, average="macro", zero_division=0
+    ) - f1_score(
+        y_true, y_pred_b, labels=label_names, average="macro", zero_division=0
+    )
+    rng = np.random.default_rng(seed)
+    differences = np.empty(n_boot)
+    for i in range(n_boot):
+        idx = rng.integers(0, len(y_true), size=len(y_true))
+        score_a = f1_score(
+            y_true[idx], y_pred_a[idx], labels=label_names, average="macro", zero_division=0
+        )
+        score_b = f1_score(
+            y_true[idx], y_pred_b[idx], labels=label_names, average="macro", zero_division=0
+        )
+        differences[i] = score_a - score_b
+
+    lo, hi = np.percentile(differences, [2.5, 97.5])
+    return {
+        "n_boot": n_boot,
+        "boot_seed": seed,
+        "macro_f1_difference": float(observed),
+        "macro_f1_difference_boot_mean": float(differences.mean()),
+        "macro_f1_difference_ci95": [float(lo), float(hi)],
+        "ci_excludes_zero": bool(lo > 0 or hi < 0),
+    }
+
+
 def compute_emotion_metrics(
     df: pd.DataFrame,
     labels: Optional[List[str]] = None,
@@ -138,4 +187,3 @@ def summarize_runs(rows: List[Dict], group_cols: List[str], output_path: Path) -
     output_path.parent.mkdir(parents=True, exist_ok=True)
     summary.to_csv(output_path, index=False)
     return summary
-

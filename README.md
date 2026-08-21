@@ -607,26 +607,28 @@ Plus `corpus_source` (`gold_300` / `heldout_batch2` / `heldout_pilot80`).
 
 Strategy B's top confusion is agree/disagree misclassified as `statement`
 (see "Error Analysis" above) — possibly because it pattern-matches the
-`Reply` alone and ignores `Parent` entirely. Tested directly: for rows
-Strategy B calls `statement` in all 3 locked seeds, flip the `Parent`'s
+`Reply` alone and may be insensitive to `Parent`. As a small targeted test,
+three rows that Strategy B frequently calls `statement` across the locked
+seeds were selected. We flipped the `Parent`'s
 negation (add/remove), keep `Reply` unchanged, flip gold label to match
 (`agree`↔`disagree`). Retrain the same locked config from scratch and
 predict on both versions:
 
-- still `statement` regardless → ignoring `Parent`
-- flips to match new gold → using `Parent`
+- unchanged after the edit → evidence of insensitivity on that case
+- changes to match edited gold → evidence of responsiveness to the changed context
 
 ```bash
 python3 -m src.ablation_parent_negation
 ```
 
 Writes `results/error_analysis/parent_negation_ablation_predictions.csv`
-(per example × variant × seed) and `parent_negation_ablation_summary.csv`
-(aggregated).
+(per example × variant × seed), `parent_negation_ablation_summary.csv`
+(by example and variant), and `parent_negation_ablation_overall.csv`
+(paired change statistics).
 
 **Result (3 examples × 3 seeds = 9 edited rows):**
 
-| example | variant | gold | seed 42 | seed 123 | seed 2026 | matches new gold |
+| example | variant | gold | seed 42 | seed 123 | seed 2026 | matches row gold |
 | --- | --- | --- | --- | --- | --- | ---: |
 | `babies_headcover` | original | disagree | statement | statement | statement | 0/3 |
 | `babies_headcover` | edited | agree | statement | statement | statement | **0/3** |
@@ -635,20 +637,25 @@ Writes `results/error_analysis/parent_negation_ablation_predictions.csv`
 | `who_healthcare_ranking` | original | agree | statement | disagree | statement | 0/3 |
 | `who_healthcare_ranking` | edited | disagree | statement | disagree | statement | **1/3** |
 
-**0/9 edited predictions matched the new gold label.** 14/18 predictions
-were `statement` regardless of the edit. The two exceptions don't support
-context use either: seed 42 on `brand_new_tires` flips
+**1/9 edited predictions matched the edited gold label**, but that prediction
+was already `disagree` before the edit and therefore did not respond to the
+changed Parent. Across the paired comparisons, **8/9 predictions were
+unchanged**, **1/9 changed**, and **0/9 changed to the expected edited label**.
+Overall, **15/18 predictions were `statement`**. The changed case was seed 42
+on `brand_new_tires`, which moved
 `disagree`→`statement` (wrong direction; `agree` expected), and seed 123 on
 `who_healthcare_ranking` predicts `disagree` for **both** the original and
 its opposite — invariant to the negation, not responsive to it.
-**Conclusion: supports the hypothesis** — Strategy B is dominated by
-Reply-only pattern matching on this error type, not meaningfully using
-`Parent`.
+This is preliminary evidence that Strategy B was insensitive to the Parent
+edits in these selected cases; it does not establish that the model generally
+ignores Parent or relies only on Reply text.
 
-Candidates drawn from 23 agree/disagree→`statement` rows misclassified in
-all 3 heldout seeds; kept only rows with one cleanly negatable claim in
-`Parent` (most CMV parents are multi-paragraph, no single unambiguous
-clause to flip).
+Candidates were drawn from agree/disagree→`statement` errors and kept only
+when a Parent contained a reasonably editable claim (most CMV parents are
+multi-paragraph). Only the babies example was predicted as `statement` by all
+three seeds before editing. Because the counterfactual labels were manually
+constructed and two cases remain semantically debatable, they should be
+manually validated before this result is used as confirmatory evidence.
 
 `train_roberta.py`'s `_train_and_predict`/`_run_once` now take an optional
 `save_model_dir` to persist the fine-tuned model+tokenizer instead of
@@ -724,13 +731,15 @@ Each training run reserves an inner validation split and loads the checkpoint wi
 Strategy B retains class-weighted cross-entropy. Strategy C reports a paired
 weights-on/off ablation under identical folds and seeds.
 
-## Stage 2: Multi-Module Affective Reasoning (TODO)
+## Stage 2: Multi-Module Affective Reasoning
 
-Stage 2: a modular LLM-based pipeline that predicts sentiment, emotion, and communicative intent for each CMV reply, using the reply, its parent comment, and the Stage 1 dialogue-act label as input. Two research questions: 
-(1) does decomposing the task into separate
-modules beat a single unified prompt, and 
-(2) which information-sharing strategy
-between modules gives the best intent-recognition performance.
+Stage 2 uses Llama-3.1-8B-Instruct to predict sentiment, emotion, and
+communicative intent from each CMV Parent–Reply pair. It asks two questions:
+(1) under matched input information, do separate task-specific prompts perform
+better than one prompt that predicts all three targets; and (2) which auxiliary
+signals help Intent under both ideal gold-label and realistic predicted-label
+conditions? The main experiments are complete; manual Stage 2 error analysis
+and report integration remain open.
 
 `data/cmv_300_gold_final.csv` already has full `Sentiment`, `Sarcasm`, `Hostility`,
 `Contempt`, `Neutral`, `Curiosity`, `Appreciation`, and `Intent` columns for all 300
@@ -739,15 +748,18 @@ already done. No new annotation is required for the experiments below.
 
 ### Open decisions (resolved)
 
-- **DA feature source:** gold `Dialogue_act` (oracle), not Strategy A's
-  predictions. Strategy A's predicted DA is only ~0.6 macro-F1, so using it
-  would confound "does DA help" with "are the predictions too noisy to help."
+- **Auxiliary feature sources:** Experiment 1 does **not** use Dialogue Act;
+  both conditions receive only `Parent + Reply`. Experiment 2 reports two
+  branches: an oracle branch using gold DA/Sentiment/Emotion and a realistic
+  branch using Strategy A few-shot DA plus Experiment 1's predicted Sentiment
+  and Emotion.
 - **Eval protocol:** `python3 -m src.prepare_stage2_split` splits `GOLD_CSV`
   by `Intent` (seed `42`, 12%) into `data/cmv_300_gold_stage2_dev.csv` (36
-  rows, prompt iteration only, never reported) and
-  `data/cmv_300_gold_stage2_eval.csv` (264 rows, touched once per locked
-  prompt config) — same touch-once discipline as `GOLD_CSV`/`TEST_CSV` in
-  Stage 1. Both Experiment 1 and Experiment 2 must use this same split.
+  rows, prompt iteration only, never used for final claims) and
+  `data/cmv_300_gold_stage2_eval.csv` (264 rows, final evaluation). Both
+  experiments use this fixed split. Experiment 1 required one documented
+  corrective eval rerun after removing an unintended gold Dialogue Act input;
+  the confounded result is not used.
 - **IAA / kappa:** pre-reconciliation labels survived for `Dialogue_act`,
   `Sentiment`, and `Intent` on the gold-300, so kappa is already computed
   (κ = 0.8967 / 0.75 / 0.8133). Emotion (6-category multi-label:
@@ -776,8 +788,8 @@ the same generator/prompt/parse pattern as Strategy A's `src/llm_annotate.py`
       `run_single_prompt_baseline`, one LLM call returning sentiment, emotion,
       and intent as three labeled lines, parsed together.
 - [x] Multi-module orchestration: `run_multi_module_pipeline` calls the three
-      modules above in sequence (sentiment, then emotion, then intent with
-      gold `Dialogue_act` as context, per the DA feature-source decision above).
+      modules above independently. Each module receives only `Parent + Reply`,
+      matching the information available to the single-prompt baseline.
 
 Label strings match `GOLD_CSV`'s exact casing, so predictions compare directly
 against the `Sentiment`/`Sarcasm`/.../`Intent` columns with no re-casing.
@@ -810,18 +822,23 @@ Outputs are saved under `results/stage2/` as
 `<mode>_<split>_summary.json` with all three macro-F1s. Compare the two
 `summary.json` files to answer Experiment 1's RQ1.
 
-**Result (eval, 264 rows, touched once, prompts locked before running):**
+**Corrected result (eval, 264 rows):** both conditions receive exactly
+`Parent + Reply`; the multi-module Intent prompt no longer receives gold
+Dialogue Act.
 
 | | multi_module | single_prompt |
 | --- | ---: | ---: |
 | Sentiment macro-F1 | 0.572 | 0.532 |
-| Intent macro-F1 | **0.464** | 0.360 |
-| Emotion macro-F1 | 0.372 | 0.357 |
-| 3-way average | **0.469** | 0.416 |
+| Intent macro-F1 | **0.387** | 0.360 |
+| Emotion macro-F1 | **0.393** | 0.357 |
+| 3-way average | **0.450** | 0.416 |
 
-`multi_module` wins on all three label types, most on Intent (+0.105). **RQ1
-answer: decomposing into separate modules beats a single unified prompt**,
-especially for the higher-reasoning Intent task. `single_prompt`'s Intent
+The corrected results support task decomposition: the task-specific prompts
+score higher on all three label types under matched input information. The
+Intent gain is +0.027, not the previously reported +0.105; the old 0.464
+multi-module Intent score came from an unfair condition with gold Dialogue
+Act and is now treated only as an Experiment 2 oracle result. A paired
+bootstrap difference should accompany the final RQ1 claim. `single_prompt`'s Intent
 result is identical before and after the Others/Challenge/Counter-argue
 prompt revision below, because `build_single_prompt_baseline` never included
 those per-category definitions in the first place (kept compact by design,
@@ -843,47 +860,53 @@ explicitly hinges on whether the reply presents its own reasoning; and the
 Emotion prompt's `neutral`/`"none"` ambiguity (two ways to say "no strong
 emotion", parser only recognized one) was collapsed to one canonical answer.
 
-### Experiment 2 — Information-Sharing Strategy Between Modules
+### Experiment 2 — Oracle and Predicted Auxiliary Information for Intent
 
-- [x] Build the 7 input-combination sweep for intent prediction (reply+parent as
-      base, adding dialogue act / sentiment / emotion in the combinations listed
-      in the proposal).
-- [x] Run the sweep, report Intent macro-F1 per input combination against the
-      text-only baseline, identify the best module execution order.
-- [x] Run `bootstrap_ci()` (`src/evaluate.py`, reused from Strategy A's
-      held-out eval) on each combination's predictions to get a macro-F1 95%
-      CI — at n=264, this is what tells you whether the top combination is
-      actually better than the others or just within noise.
+Experiment 2 separates two questions that were previously conflated:
 
-`src/stage2_intent_sweep.py` runs `run_intent_module()` 8 times per row (the
-text-only baseline plus all 7 non-empty subsets of
-`{dialogue_act, sentiment, emotion}`), always using the **gold** DA/Sentiment/
-Emotion columns as oracle context (same reasoning as the DA feature-source
-decision above: noisy predicted features would confound "does this
-information help" with "is the prediction noisy"):
+1. **Oracle information value:** if auxiliary labels are perfectly correct,
+   which of Dialogue Act, Sentiment, and Emotion helps Intent classification?
+2. **Realistic pipeline value:** does that benefit remain when auxiliary labels
+   come from the actual upstream models and therefore contain errors?
 
-```bash
-python3 -m src.stage2_intent_sweep --split dev
-```
+- [x] Oracle sweep: text-only base plus all 7 non-empty auxiliary-label subsets.
+- [x] Individual bootstrap CIs for the original oracle results.
+- [x] Code for the matched predicted-label sweep and paired comparisons.
+- [x] Run the predicted-label sweep on dev and eval.
 
-This writes `results/stage2/intent_sweep_dev_predictions.csv` (one
-`intent_<combo>` column per combination), one
-`intent_sweep_dev_<combo>_metrics.json` per combination (macro-F1, kappa,
-confusion matrix, bootstrap CI), and a ranked
-`intent_sweep_dev_summary.csv`. To re-score an existing predictions file
-without calling the LLM again (e.g. after a parsing fix):
+The oracle branch uses gold DA/Sentiment/Emotion. The predicted branch uses
+Strategy A few-shot Dialogue Act predictions plus the corrected Experiment 1
+Sentiment and Emotion predictions. The four few-shot prompt demonstrations are
+excluded, producing a leakage-free common eval set of 260 rows. All Base,
+Oracle, and Predicted comparisons involving this branch are paired on those
+same rows.
 
 ```bash
-python3 -m src.stage2_intent_sweep --split dev --eval-only
+python3 -m src.stage2_intent_sweep --split dev --feature-source oracle --eval-only
+python3 -m src.stage2_intent_sweep --split dev --feature-source predicted
 ```
 
-Smoke test without loading the LLM:
+Outputs are separated by feature source so oracle results cannot be overwritten:
+
+- `intent_sweep_oracle_<split>_summary.csv`
+- `intent_sweep_predicted_<split>_predictions.csv`
+- `intent_sweep_predicted_<split>_summary.csv`
+- `intent_sweep_<source>_<split>_vs_base_paired.csv`
+- `intent_sweep_oracle_vs_predicted_<split>_paired.csv`
+
+Each newly generated auxiliary-input prediction records the parsed label,
+fallback flag, and raw Llama output. The reused text-only baseline has no new
+raw output. Fallback counts are passed into the saved metrics rather than being
+incorrectly reported as zero. Reusing the identical baseline means the
+predicted run makes 7 rather than 8 new calls per row.
+
+Smoke test without loading the LLM (saved separately and not scored):
 
 ```bash
-python3 -m src.stage2_intent_sweep --split dev --limit 5 --mock
+python3 -m src.stage2_intent_sweep --split dev --feature-source predicted --limit 5 --mock
 ```
 
-**Result (eval, 264 rows, touched once):**
+**Oracle result (eval, 264 rows):**
 
 | combination | macro-F1 | 95% CI | kappa |
 | --- | ---: | --- | ---: |
@@ -896,14 +919,31 @@ python3 -m src.stage2_intent_sweep --split dev --limit 5 --mock
 | `dialogue_act+emotion+sentiment` | 0.388 | [0.325, 0.448] | 0.304 |
 | `base` (text-only) | 0.387 | [0.322, 0.444] | 0.282 |
 
-**RQ2 answer: `dialogue_act` alone is the best-performing input combination**,
-clearly and reproducibly above the rest (same top rank on both the 36-row dev
-sweep and the 264-row eval sweep). Stacking sentiment or emotion on top of
-`dialogue_act` makes it *worse* than `dialogue_act` alone (0.411/0.404 vs.
-0.464) — best module execution order is DA → Intent directly, without
-computing Sentiment/Emotion first. The other 7 combinations cluster tightly
-together (0.387–0.411) with heavily overlapping CIs, i.e. statistically
-indistinguishable from the text-only baseline and from each other.
+**Predicted-input result (leakage-free common eval, 260 rows):**
+
+| combination | macro-F1 | 95% CI | kappa |
+| --- | ---: | --- | ---: |
+| `dialogue_act` | **0.435** | [0.368, 0.499] | 0.352 |
+| `dialogue_act+sentiment` | 0.397 | [0.331, 0.462] | 0.309 |
+| `dialogue_act+emotion+sentiment` | 0.392 | [0.329, 0.456] | 0.304 |
+| `dialogue_act+emotion` | 0.392 | [0.328, 0.456] | 0.295 |
+| `base` (text-only) | 0.380 | [0.318, 0.442] | 0.273 |
+| `emotion` | 0.373 | [0.307, 0.438] | 0.273 |
+| `emotion+sentiment` | 0.370 | [0.306, 0.434] | 0.254 |
+| `sentiment` | 0.360 | [0.298, 0.422] | 0.237 |
+
+**Final RQ2 finding:** gold Dialogue Act is the strongest oracle feature
+(0.464 vs. 0.387 text-only on 264 rows). More importantly, predicted Dialogue
+Act also improves Intent on the common 260 rows (0.435 vs. 0.380; paired
+difference +0.055, 95% CI [+0.001, +0.112]). This primary paired comparison
+provides modest, borderline evidence that most of the Dialogue Act benefit
+survives realistic Stage 1 errors. On the same 260 rows, oracle DA is
+only +0.024 above predicted DA, and that difference is uncertain (95% CI
+[-0.021, +0.065]). Predicted Sentiment and Emotion do not improve the baseline,
+alone or when stacked with DA. The other seven-combination rankings are treated
+as exploratory because no multiple-comparison correction was applied. These
+are auxiliary-information results, not a general claim about module execution
+order.
 
 This is also a worked example of why dev/eval are kept separate: the 36-row
 dev sweep showed a much starker pattern (`sentiment` clearly hurting,
@@ -916,6 +956,8 @@ of that apparent effect was dev-sample noise, not a real signal, and only
 - [ ] Sample and manually review misclassified examples, categorized by source as
       the proposal requires: incorrect DA prediction, undetected sarcasm, or
       insufficient conversational context.
+- [ ] Add paired uncertainty for Experiment 1's multi-module vs. single-prompt
+      differences before making a strong decomposition claim.
 - [ ] Extend `docs/full-report-draft.tex` and `docs/stage1_full_report.md` (or new
       Stage 2-specific files) with Stage 2 Methodology, Experiments, and Results
       sections, matching the style already used for Stage 1.

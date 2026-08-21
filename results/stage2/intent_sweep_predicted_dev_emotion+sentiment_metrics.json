@@ -1,0 +1,110 @@
+{
+  "macro_f1": 0.41944444444444445,
+  "cohen_kappa": 0.29119170984455967,
+  "fallback_count": 0,
+  "classification_report": {
+    "Information seeking": {
+      "precision": 0.2857142857142857,
+      "recall": 1.0,
+      "f1-score": 0.4444444444444444,
+      "support": 2.0
+    },
+    "Challenge": {
+      "precision": 0.4,
+      "recall": 0.18181818181818182,
+      "f1-score": 0.25,
+      "support": 11.0
+    },
+    "Counter-argue": {
+      "precision": 0.5,
+      "recall": 0.8333333333333334,
+      "f1-score": 0.625,
+      "support": 12.0
+    },
+    "Support": {
+      "precision": 1.0,
+      "recall": 0.2857142857142857,
+      "f1-score": 0.4444444444444444,
+      "support": 7.0
+    },
+    "Others": {
+      "precision": 0.5,
+      "recall": 0.25,
+      "f1-score": 0.3333333333333333,
+      "support": 4.0
+    },
+    "accuracy": 0.4722222222222222,
+    "macro avg": {
+      "precision": 0.5371428571428571,
+      "recall": 0.5101731601731602,
+      "f1-score": 0.41944444444444445,
+      "support": 36.0
+    },
+    "weighted avg": {
+      "precision": 0.5547619047619048,
+      "recall": 0.4722222222222222,
+      "f1-score": 0.4328703703703704,
+      "support": 36.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      2,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      3,
+      2,
+      5,
+      0,
+      1
+    ],
+    [
+      0,
+      2,
+      10,
+      0,
+      0
+    ],
+    [
+      2,
+      1,
+      2,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      3,
+      0,
+      1
+    ]
+  ],
+  "labels": [
+    "Information seeking",
+    "Challenge",
+    "Counter-argue",
+    "Support",
+    "Others"
+  ],
+  "bootstrap": {
+    "n_boot": 2000,
+    "boot_seed": 42,
+    "macro_f1_boot_mean": 0.39258935349946944,
+    "macro_f1_boot_std": 0.09452382374202828,
+    "macro_f1_ci95": [
+      0.2137272727272727,
+      0.5820099487549303
+    ],
+    "cohen_kappa_boot_mean": 0.28631644595990313,
+    "cohen_kappa_boot_std": 0.0997363212703253,
+    "cohen_kappa_ci95": [
+      0.09588445503275754,
+      0.4840162773560355
+    ]
+  }
+}

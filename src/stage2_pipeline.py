@@ -254,13 +254,17 @@ def run_multi_module_pipeline(
     parent: str,
     reply: str,
     generator: Callable[[str], str],
-    dialogue_act: Optional[str] = None,
 ) -> Dict:
+    """Run Experiment 1's three independent task-specific prompts.
+
+    All three modules receive the same source information (Parent + Reply).
+    Auxiliary labels such as dialogue act are intentionally excluded here so
+    that the comparison with the single-prompt baseline isolates prompt/task
+    decomposition.  Auxiliary-input combinations belong to Experiment 2.
+    """
     sentiment, sentiment_fallback, sentiment_raw = run_sentiment_module(parent, reply, generator)
     emotion_labels, emotion_fallback, emotion_raw = run_emotion_module(parent, reply, generator)
-    intent, intent_fallback, intent_raw = run_intent_module(
-        parent, reply, generator, dialogue_act=dialogue_act
-    )
+    intent, intent_fallback, intent_raw = run_intent_module(parent, reply, generator)
     return {
         "sentiment": sentiment,
         "sentiment_fallback": sentiment_fallback,
@@ -361,7 +365,7 @@ def annotate_stage2_dataframe(
             parent, reply = str(row["Parent"]), str(row["Reply"])
 
             if mode == "multi_module":
-                out = run_multi_module_pipeline(parent, reply, generator, dialogue_act=row.get("Dialogue_act"))
+                out = run_multi_module_pipeline(parent, reply, generator)
             elif mode == "single_prompt":
                 out = run_single_prompt_baseline(parent, reply, generator)
             else:

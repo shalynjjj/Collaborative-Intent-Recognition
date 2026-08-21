@@ -1,15 +1,17 @@
 """Parent-negation ablation for Strategy B: does it use the Parent, or just
 pattern-match the Reply?
 
-For each hand-picked agree/disagree row that Strategy B misclassifies as
-`statement` in all 3 locked seeds (see results/strategy_b_heldout), we flip
+For each hand-picked agree/disagree row that Strategy B frequently
+misclassifies as `statement` across the 3 locked seeds (see
+results/strategy_b_heldout), we flip
 the negation in the Parent (add it if absent, remove it if present), leave
 the Reply untouched, and flip the gold label to match the now-negated
 Parent. Re-running the *same* locked Strategy B config (silver_size=2500,
 sample_seed=123, class weights on) on both the original and edited Parent
-tells us:
-  - prediction stays `statement` on the edited row  -> model ignores Parent
-  - prediction matches the new gold label            -> model uses Parent
+tells us whether predictions respond to the Parent edit. An unchanged
+prediction is evidence of insensitivity for that example, not proof that the
+model always ignores Parent. A prediction that changes to the edited expected
+label is stronger evidence that the model used the changed context.
 
 Usage:
     python3 -m src.ablation_parent_negation
@@ -87,6 +89,36 @@ def _build_eval_df() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def summarize_paired_results(result: pd.DataFrame) -> pd.DataFrame:
+    """Summarize changes between original and edited predictions by seed."""
+    pairs = result.pivot(
+        index=["example_id", "seed"],
+        columns="variant",
+        values=["pred_label", "Dialogue_act"],
+    )
+    original_pred = pairs[("pred_label", "original")]
+    edited_pred = pairs[("pred_label", "edited")]
+    edited_gold = pairs[("Dialogue_act", "edited")]
+    prediction_changed = original_pred != edited_pred
+    edited_matches_gold = edited_pred == edited_gold
+
+    return pd.DataFrame(
+        [
+            {
+                "n_examples": result["example_id"].nunique(),
+                "n_seeds": result["seed"].nunique(),
+                "n_pairs": len(pairs),
+                "n_prediction_unchanged": int((~prediction_changed).sum()),
+                "n_prediction_changed": int(prediction_changed.sum()),
+                "n_edited_matches_gold": int(edited_matches_gold.sum()),
+                "n_changed_to_expected": int((prediction_changed & edited_matches_gold).sum()),
+                "n_total_predictions": len(result),
+                "n_statement_predictions": int((result["pred_label"] == "statement").sum()),
+            }
+        ]
+    )
+
+
 def run() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     config = STRATEGY_B_FINAL_CONFIG
@@ -138,10 +170,17 @@ def run() -> None:
     summary_path = OUTPUT_DIR / "parent_negation_ablation_summary.csv"
     summary.to_csv(summary_path, index=False)
 
+    overall = summarize_paired_results(result)
+    overall_path = OUTPUT_DIR / "parent_negation_ablation_overall.csv"
+    overall.to_csv(overall_path, index=False)
+
     print()
     print(summary.to_string(index=False))
+    print("\nPaired-result summary:")
+    print(overall.to_string(index=False))
     print(f"\nWrote {result_path}")
     print(f"Wrote {summary_path}")
+    print(f"Wrote {overall_path}")
 
 
 if __name__ == "__main__":

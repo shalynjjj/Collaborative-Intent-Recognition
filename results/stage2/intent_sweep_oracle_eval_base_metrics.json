@@ -1,7 +1,7 @@
 {
   "macro_f1": 0.386627463601886,
   "cohen_kappa": 0.282447326985079,
-  "fallback_count": 0,
+  "fallback_count": 3,
   "classification_report": {
     "Information seeking": {
       "precision": 0.19444444444444445,
@@ -90,5 +90,21 @@
     "Counter-argue",
     "Support",
     "Others"
-  ]
+  ],
+  "bootstrap": {
+    "n_boot": 2000,
+    "boot_seed": 42,
+    "macro_f1_boot_mean": 0.38422899223096046,
+    "macro_f1_boot_std": 0.03103468346650188,
+    "macro_f1_ci95": [
+      0.3220784096139037,
+      0.4435276876467977
+    ],
+    "cohen_kappa_boot_mean": 0.2821605720362778,
+    "cohen_kappa_boot_std": 0.03495232389425709,
+    "cohen_kappa_ci95": [
+      0.21451992271859716,
+      0.3500815053092717
+    ]
+  }
 }

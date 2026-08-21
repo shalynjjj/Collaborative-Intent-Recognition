@@ -277,11 +277,11 @@ Strategy A is unaffected by these rows. Strategy B and C — both RoBERTa fine-t
 
 The `disagree`/`agree`→`statement` pattern above is consistent with two different explanations: the model genuinely can't tell agreement/disagreement from content alone, or it's not even trying — i.e., it's reading `Reply` in isolation and ignoring `Parent` entirely. This ablation tests the second explanation directly, rather than inferring it indirectly from text statistics.
 
-**Method:** for rows Strategy B misclassifies as `statement` in all 3 locked seeds, the `Parent`'s negation is manually flipped (added if absent, removed if present), `Reply` is left untouched, and the gold label is flipped to match the now-negated `Parent` (`agree`↔`disagree`). The exact locked config (silver_size 2500, sample_seed 123, class weights on) is retrained from scratch on the 3 locked seeds and scored on both the original and edited version of each row. If the prediction still comes out `statement` regardless of the edit, the model is ignoring `Parent`; if it flips to match the new gold label, it's using `Parent`.
+**Method:** three agree/disagree examples that Strategy B frequently predicted as `statement` across the locked seeds were selected. The `Parent`'s negation was manually flipped (added if absent, removed if present), `Reply` was left untouched, and an expected counterfactual label was assigned (`agree`↔`disagree`). The exact locked config (silver_size 2500, sample_seed 123, class weights on) was retrained from scratch on the 3 locked seeds and scored on both versions. An unchanged prediction indicates insensitivity to that edit for that case; a change to the expected edited label provides stronger evidence of responsiveness to the changed context. Neither outcome by itself establishes the model's general use of Parent context.
 
 Three examples were usable — most CMV parent comments are multi-paragraph and don't reduce to one cleanly negatable claim — including the `disagree`→`statement` and `agree`→`statement` pairs quoted above:
 
-| example | variant | gold | seed 42 | seed 123 | seed 2026 | matches new gold |
+| example | variant | gold | seed 42 | seed 123 | seed 2026 | matches row gold |
 | --- | --- | --- | --- | --- | --- | ---: |
 | babies/head-covering | original | disagree | statement | statement | statement | 0/3 |
 | babies/head-covering | edited | agree | statement | statement | statement | **0/3** |
@@ -290,9 +290,9 @@ Three examples were usable — most CMV parent comments are multi-paragraph and 
 | WHO healthcare ranking | original | agree | statement | disagree | statement | 0/3 |
 | WHO healthcare ranking | edited | disagree | statement | disagree | statement | **1/3** |
 
-**Result: 0 of 9 edited predictions matched the new gold label**, and 14 of 18 total predictions were `statement` regardless of the parent edit. The two non-`statement` predictions don't support context use either: one flips in the wrong direction after editing (`disagree`→`statement` where `agree` was expected), and one predicts the same label (`disagree`) for a parent and its exact negation — invariant to the edit, not responsive to it.
+**Result:** 1 of 9 edited predictions matched the edited gold label, but it was already `disagree` on the original version and did not change in response to the edit. In the paired analysis, 8 of 9 predictions were unchanged, 1 changed, and 0 changed to the expected edited label. Overall, 15 of 18 predictions were `statement`. The sole changed prediction moved in the wrong direction (`disagree`→`statement`, while `agree` was expected); the apparent edited-label match predicted `disagree` for both the original Parent and its negated version.
 
-**This confirms the pattern-matching explanation over the "genuinely can't tell" explanation**, at least for this error type: Strategy B is not meaningfully using `Parent` here, it's classifying `Reply` in isolation. Sample size is small (3 examples) by construction — most candidate rows didn't have a parent clean enough to edit unambiguously — so this is a targeted confirmatory test, not a broad quantitative claim. Reproduce with `python3 -m src.ablation_parent_negation` (details in README).
+**Interpretation:** these results provide preliminary evidence that Strategy B was insensitive to the Parent edits in these selected cases. They do not prove that the model generally ignores Parent or classifies Reply in isolation. This is a three-example exploratory case study, and two counterfactual labels are semantically debatable; the edits and labels should be manually validated and the test expanded before making a confirmatory claim. Reproduce with `python3 -m src.ablation_parent_negation` (details in README).
 
 ---
 
