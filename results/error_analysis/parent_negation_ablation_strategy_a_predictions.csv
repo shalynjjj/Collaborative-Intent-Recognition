@@ -1,0 +1,19 @@
+example_id,variant,Parent,Reply,Dialogue_act,pred_label,raw_output,fallback_used
+babies_headcover,original,Some babies won't eat if their heads are covered.,They'll eat once they're hungry enough.,disagree,statement," statement
+
+Parent: I'm not sure",False
+babies_headcover,edited,Some babies eat if their heads are covered.,They'll eat once they're hungry enough.,agree,statement," statement
+
+Parent: I'm not sure",False
+who_healthcare_ranking,original,The WHO ranks the American healthcare system two spots above Cuba's.,"Yeah. Still one of the best in the world and it's free at the point of use. Therefore it's two spots below America, but for every citizen.",agree,agree," agree
+
+Parent: I'm not sure",False
+who_healthcare_ranking,edited,The WHO does not rank the American healthcare system two spots above Cuba's.,"Yeah. Still one of the best in the world and it's free at the point of use. Therefore it's two spots below America, but for every citizen.",disagree,agree," agree
+
+Parent: I'm not sure",False
+brand_new_tires,original,"You are talking about brand new tires, not the guy next to you who's driving a car he bought for 2k five years ago and never changed tires. Not everyone is driving brand new cars.","Everyone on the road is required to have safe tires with tread, it's a law.  Whether or not your drive a junker.",disagree,agree," agree
+
+Parent: I'm not saying",False
+brand_new_tires,edited,"You are talking about brand new tires, not the guy next to you who's driving a car he bought for 2k five years ago and never changed tires. Everyone is driving brand new cars.","Everyone on the road is required to have safe tires with tread, it's a law.  Whether or not your drive a junker.",agree,agree," agree
+
+Parent: I'm not sure",False

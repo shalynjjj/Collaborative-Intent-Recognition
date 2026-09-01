@@ -1,0 +1,4 @@
+example_id,original_pred,edited_pred,edited_gold,prediction_changed,edited_matches_gold,changed_to_expected
+babies_headcover,statement,statement,agree,False,False,False
+brand_new_tires,agree,agree,agree,False,True,False
+who_healthcare_ranking,agree,agree,disagree,False,False,False

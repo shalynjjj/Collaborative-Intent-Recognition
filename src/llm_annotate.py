@@ -112,7 +112,9 @@ def make_mock_generator() -> Callable[[str], str]:
     return generate
 
 
-def make_transformers_generator(max_new_tokens: Optional[int] = None) -> Callable[[str], str]:
+def make_transformers_generator(
+    max_new_tokens: Optional[int] = None, stop_strings: Optional[List[str]] = None
+) -> Callable[[str], str]:
     load_env()
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -138,6 +140,11 @@ def make_transformers_generator(max_new_tokens: Optional[int] = None) -> Callabl
         }
         if LLM.temperature > 0:
             generation_kwargs.update({"temperature": LLM.temperature, "top_p": LLM.top_p})
+        if stop_strings:
+            # Stops generation once the model starts hallucinating a new
+            # Parent/Reply example past its actual answer, instead of relying
+            # on max_new_tokens to cut it off mid-line.
+            generation_kwargs.update({"stop_strings": stop_strings, "tokenizer": tokenizer})
         output_ids = model.generate(**inputs, **generation_kwargs)
         new_tokens = output_ids[0][inputs["input_ids"].shape[-1] :]
         return tokenizer.decode(new_tokens, skip_special_tokens=True)

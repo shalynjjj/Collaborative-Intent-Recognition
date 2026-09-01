@@ -95,11 +95,19 @@ def parse_emotion_labels(raw_output: str) -> Tuple[Dict[str, bool], bool]:
 
 
 def _split_labeled_lines(raw_output: str) -> Dict[str, str]:
+    """First occurrence of each key wins. The model sometimes keeps
+    generating past its answer and hallucinates a new Parent/Reply example
+    with its own (often truncated) Sentiment/Emotion/Intent lines; taking the
+    last occurrence would let that hallucinated continuation silently
+    overwrite the real answer.
+    """
     fields: Dict[str, str] = {}
     for line in (raw_output or "").splitlines():
         if ":" in line:
             key, _, value = line.partition(":")
-            fields[key.strip().lower()] = value.strip()
+            key = key.strip().lower()
+            if key not in fields:
+                fields[key] = value.strip()
     return fields
 
 
@@ -399,10 +407,15 @@ def run_stage2(mode: str, split: str = "dev", limit: Optional[int] = None, mock:
     if limit is not None:
         df = df.head(limit).copy()
 
+    # single_prompt's completion sometimes runs past its answer and
+    # hallucinates a new "Parent: ..." example; cut generation off there so
+    # the real answer can't be overwritten by a truncated duplicate field
+    # (see _split_labeled_lines).
+    stop_strings = ["\nParent:"] if mode == "single_prompt" else None
     generator = (
         make_stage2_mock_generator()
         if mock
-        else make_transformers_generator(max_new_tokens=STAGE2_MAX_NEW_TOKENS)
+        else make_transformers_generator(max_new_tokens=STAGE2_MAX_NEW_TOKENS, stop_strings=stop_strings)
     )
     pred_path = STAGE2_DIR / f"{mode}_{split}_predictions.csv"
     return annotate_stage2_dataframe(df, mode, generator, output_csv=pred_path)
