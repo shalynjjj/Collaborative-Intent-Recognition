@@ -125,14 +125,28 @@ def run_intent_sweep_dataframe(
 ) -> pd.DataFrame:
     all_combos = [frozenset()] + COMBINATIONS  # frozenset() = text-only baseline
     rows = []
+    done_row_ids: set = set()
     writer = None
     file_handle = None
     if output_csv is not None:
         output_csv.parent.mkdir(parents=True, exist_ok=True)
-        file_handle = output_csv.open("w", newline="", encoding="utf-8")
+        # Resume support: this sweep runs 8 combinations per row, so a
+        # remote/SSH connection dropping partway through is expensive to
+        # redo from scratch. If a previous partial run's output is already
+        # on disk, keep its rows and only fill in what's missing.
+        if output_csv.exists() and output_csv.stat().st_size > 0:
+            existing = pd.read_csv(output_csv)
+            rows.extend(existing.to_dict("records"))
+            done_row_ids = set(existing["row_id"].tolist())
+            file_handle = output_csv.open("a", newline="", encoding="utf-8")
+            writer = csv.DictWriter(file_handle, fieldnames=list(existing.columns))
+        else:
+            file_handle = output_csv.open("w", newline="", encoding="utf-8")
 
     try:
         for idx, row in tqdm(df.iterrows(), total=len(df), desc="Intent sweep"):
+            if idx in done_row_ids:
+                continue
             parent, reply = str(row["Parent"]), str(row["Reply"])
             if feature_source == "oracle":
                 dialogue_act = row.get("Dialogue_act")
@@ -172,6 +186,12 @@ def run_intent_sweep_dataframe(
                 if writer is None:
                     writer = csv.DictWriter(file_handle, fieldnames=list(out.keys()))
                     writer.writeheader()
+                elif list(out.keys()) != writer.fieldnames:
+                    raise ValueError(
+                        f"{output_csv} has different columns than this run would produce -- "
+                        "it looks like a resume from an incompatible earlier run (different "
+                        "feature_source or code version). Delete it to start fresh."
+                    )
                 writer.writerow(out)
                 file_handle.flush()
     finally:

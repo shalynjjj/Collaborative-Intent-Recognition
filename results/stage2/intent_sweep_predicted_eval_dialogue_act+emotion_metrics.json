@@ -1,7 +1,7 @@
 {
   "macro_f1": 0.3915266966360922,
   "cohen_kappa": 0.29477004681441,
-  "fallback_count": 4,
+  "fallback_count": 3,
   "classification_report": {
     "Information seeking": {
       "precision": 0.28205128205128205,

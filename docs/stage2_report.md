@@ -1,6 +1,8 @@
 # Stage 2 Progress Report — Intent/Sentiment/Emotion Classification
 
-Stage 2 classifies each Reddit CMV `Parent`/`Reply` pair on three axes: **Sentiment** (3-class), **Emotion** (6-class multi-label), **Intent** (5-class, the primary target). Two experiments are running: **Experiment 1** compares two prompting architectures; **Experiment 2** (`intent_sweep`) tests whether auxiliary predicted labels help Intent classification. This report is the current, honest state of both — including two implementation bugs found and fixed this session that are not yet reflected in the result files below.
+Stage 2 classifies each Reddit CMV `Parent`/`Reply` pair on three axes: **Sentiment** (3-class), **Emotion** (6-class multi-label), **Intent** (5-class, the primary target). Two experiments are running: **Experiment 1** compares two prompting architectures; **Experiment 2** (`intent_sweep`) tests whether auxiliary predicted labels help Intent classification.
+
+This report has been updated across two sessions. Session 1 found and fixed two parsing bugs but never re-ran them against the LLM. Session 2 (this update) re-parsed the already-saved raw model outputs against the fixed code (no LLM calls needed), added two more parsing robustness fixes, manually verified the fixes on real data, and found a prompt-design confound in Experiment 1 that has been fixed in code but **not yet re-run against the LLM** — see the TODO list at the bottom for exactly what is current vs. stale.
 
 ## Dataset & split
 
@@ -56,38 +58,48 @@ Same inputs (`Parent` + `Reply`, no auxiliary labels) for both modes ([`stage2_p
 - **`multi_module`**: 3 independent LLM calls, one prompt per task.
 - **`single_prompt`**: 1 LLM call, one prompt asking for all 3 answers in a fixed 3-line format, parsed after the fact.
 
-### Results (macro-F1)
+### Results (macro-F1) — after Session 2's parsing fixes, re-parsed from already-saved raw model output (no new LLM calls)
 
 | split | mode | Sentiment | Intent | Emotion |
 |---|---|---:|---:|---:|
-| eval (n=264) | multi_module | **0.572** | **0.387** | **0.393** |
-| eval (n=264) | single_prompt | 0.532 | 0.360 | 0.357 |
-| dev (n=36) | multi_module | 0.647 | 0.567 | 0.272 |
-| dev (n=36) | single_prompt | 0.609 | 0.435 | 0.370 |
+| eval (n=264) | multi_module | 0.572 (unchanged) | 0.387 (unchanged) | 0.393 (unchanged) |
+| eval (n=264) | single_prompt | 0.532 → **0.584** | 0.360 → **0.364** | 0.357 → **0.383** |
+| dev (n=36) | multi_module | 0.647 (unchanged) | 0.567 (unchanged) | 0.272 → **0.308**¹ |
+| dev (n=36) | single_prompt | 0.609 → **0.521**² | 0.435 → **0.401**² | 0.370 → 0.371 |
 
-`multi_module` leads on all 3 tasks on eval (+0.03–0.04). **No significance test has been run on this gap yet** — it is a point estimate only.
+¹ `multi_module`'s dev predictions file predated an earlier (already-merged) fix to `_emotion_answer_text` and had never been re-parsed since — this is stale-data cleanup unrelated to Session 2's own fixes; `eval` was already re-run after that fix, hence unchanged.
+² `single_prompt` on **dev went down** after the fix. This is not a regression — it means some of the old dev score was an artifact of the overwrite bug (a correct first answer being silently replaced by a hallucinated second one) coincidentally landing on the right label. At n=36 a couple of flipped rows swing the score noticeably; treat dev numbers as illustrative only, per the existing "dev is never reported" policy.
 
-### Root cause found (this session)
+`single_prompt`'s eval numbers move closer to `multi_module` across all three tasks once the parsing bugs are fixed, but a gap remains. **No significance test has been run on this gap.**
 
-Parsing-fallback counts on eval, by mode:
+### Root cause (Session 1) and parsing fixes (Session 1 + 2)
+
+Parsing-fallback counts on eval, by mode, **before any fix**:
 
 | | sentiment_fallback | intent_fallback | emotion_fallback |
 |---|---:|---:|---:|
 | multi_module | 1/264 | 3/264 | 34/264 |
 | single_prompt | 8/264 | 16/264 | 9/264 |
 
-Inspected `single_prompt`'s fallback rows' raw model output directly and found **two distinct, unrelated failure modes** — not the token-budget-squeeze hypothesis originally suspected (fallback-row output length is *not* shorter than non-fallback rows, ruling that out):
+Three fixes were made to `parse_single_label`/`_split_labeled_lines` in [`stage2_pipeline.py`](../src/stage2_pipeline.py):
 
-1. **Intent/Sentiment fallback — answer overwritten, not lost.** The model answers correctly on the first 3 lines, then keeps generating and hallucinates a new fake `Parent:`/`Reply:` example, re-answering it with a second, truncated `Intent:` line. `_split_labeled_lines` stored the *last* occurrence of each key, so the empty truncated line silently overwrote the correct first answer. Confirmed on multiple rows (e.g. eval row_id 12, 13, 22).
-2. **Sentiment fallback — format abandoned entirely.** In other rows the model ignores the 3-line format from the start and writes free-text analysis/reasoning instead (e.g. row_id 56, 59, 64). Unrelated to bug 1 — this is an instruction-following failure, not a parsing bug.
+1. **First-occurrence-wins** (Session 1): the model sometimes answers correctly, then hallucinates a second fake `Parent:`/`Reply:` example with its own truncated answer lines. `_split_labeled_lines` used to keep the *last* occurrence of each key, letting the truncated hallucinated line silently overwrite the real answer. Now keeps the *first* occurrence.
+2. **Single-match full-text recovery** (Session 2): when the model abandons the 3-line format entirely and writes free-text reasoning instead, the real answer is often still present as prose (e.g. "...The reply is information seeking"), just not on the first line. `parse_single_label` now falls back to scanning the *entire* output, but only accepts the recovery when **exactly one** candidate label is mentioned anywhere in it — if the model instead echoes back several/all candidate labels (ambiguous), it still falls back rather than guessing.
+3. **Case/punctuation/separator normalization** (Session 2): matches now normalize both the label and the text (lowercase, collapse hyphens/underscores/whitespace/markdown punctuation to a single space) before comparing, so `"Counter-argue"` / `"counter argue"` / `"COUNTER_ARGUE"` / `"**Counter-Argue**"` all match. No live occurrence found in current saved outputs yet — this is defensive, verified to cause zero regressions on existing data.
 
-### Fixes applied this session (not yet re-run against the LLM)
+Effect of fixes 1+2 on `single_prompt` eval intent fallback: **16/264 → 9/264**. Dev: 1/36 → 0/36. Sentiment fallback and `multi_module`'s numbers were unaffected — the cases there were confirmed (see below) to be genuinely ambiguous or absent, not recoverable.
 
-- `_split_labeled_lines` now keeps the **first** occurrence of each key ([stage2_pipeline.py](../src/stage2_pipeline.py)), fixing failure mode 1.
-- `make_transformers_generator` gained an optional `stop_strings` param ([llm_annotate.py](../src/llm_annotate.py)); `run_stage2` now passes `stop_strings=["\nParent:"]` only for `single_prompt` mode, so generation stops before the hallucinated continuation starts, instead of relying on parsing to recover from it. Other callers (Strategy A, `multi_module`, `intent_sweep`) are unaffected (default `None`).
-- 2 new regression tests reproducing the exact row_id 12 pattern, added to [tests/test_stage2.py](../tests/test_stage2.py). Full suite: 15/15 passing.
-- **Not yet done: re-running `single_prompt` on dev/eval with the fix.** All numbers in the table above are from the pre-fix predictions and are expected to improve, at least on Sentiment/Intent. Failure mode 2 (format abandonment) is untouched by these fixes and will still cause some fallbacks.
-- `multi_module`'s Emotion fallback (34/264, the single worst number in the table) has a different, not-yet-root-caused mechanism (suspected: the model echoes the prompt's category list back per the docstring note in `_emotion_answer_text`) — out of scope for this session's fix.
+**Manual verification (Session 2):** all 8 rows across dev+eval whose fallback flag flipped to a real answer because of fixes 1–2 were inspected by hand against their raw model output. All 8 extractions faithfully reflect what the model actually said (some still disagree with the gold label — that's the model being wrong, not a parsing error). No incorrect/coincidental extractions were found. Notably, eval row_id 235 is a clean validation of fix 2: the model wrote pure free-text reasoning ending in the literal sentence *"The reply is information seeking"*, with no `Intent:` field at all — previously discarded as an unrecoverable fallback, now correctly extracted.
+
+`multi_module`'s Emotion fallback (34/264) was inspected the same way: nearly every fallback row's raw output contains 3–6 distinct emotion category words at once, confirming the suspected mechanism — **the model echoes the prompt's full category list back** instead of committing to one answer. Not yet fixed (see TODO).
+
+### Prompt-fairness confound found and fixed (Session 2, code only — not yet re-run)
+
+`build_single_prompt_baseline`'s prompt text was much sparser than the three per-task prompts it's being compared against: it never explained that `Reply` should be judged *in relation to* `Parent`, and included none of the per-label definitions that `build_sentiment_prompt`/`build_emotion_prompt`/`build_intent_prompt` give. This is a confound — the two conditions differed not only in "1 call vs. 3 calls" but also in how much guidance the model received, which plausibly explains some of `single_prompt`'s tendency to go off-format (e.g. eval row_id 22 and 235 both read like the model commenting on `Reply` in isolation rather than classifying it against `Parent`).
+
+**Fix**: the three definition blocks were extracted into shared constants (`_SENTIMENT_DEFINITIONS`, `_EMOTION_DEFINITIONS`, `_INTENT_DEFINITIONS`) reused verbatim by both `build_*_prompt` and `build_single_prompt_baseline`, and the combined prompt's opening line now states the reply is judged "toward the parent comment it is responding to" (matching the sentiment/intent prompts' framing). This makes "1 call vs. 3 calls" the only remaining difference between the two conditions.
+
+**This changes the prompt text sent to the model**, so every `single_prompt` number in this report (including the "after Session 2's parsing fixes" table above) is now stale relative to the current code and must be re-run against the LLM, not just re-parsed. See TODO #1.
 
 ---
 
@@ -109,6 +121,10 @@ Tests whether feeding `dialogue_act`/`sentiment`/`emotion` as extra context into
 
 Dev shows the same ranking (dialogue_act 0.567 vs. base 0.391). **Oracle vs. predicted**: no combination shows a significant difference — using the model's own predicted auxiliary labels performs statistically the same as using gold labels.
 
+**Session 2 update**: the same 3 parsing fixes were applied and the `predicted`-mode combinations were re-parsed from their saved raw output. Effect: only **1 row out of 264** changed (in `dialogue_act+emotion`, a fallback flipped to a genuine answer without changing the macro-F1). **The numbers above are unchanged and still current.**
+
+**Known limitation — cannot be refreshed by re-parsing:** the `oracle`-mode run and the `predicted`-mode's `base` combination never had their raw model output saved (only the final label), because they predate the raw-output-saving convention used elsewhere. Any future fix to the parsing logic that would affect these cannot be validated without re-running the LLM. Going forward, always persist `*_raw` columns for every generation call, not just some.
+
 ### Interpretation
 
 `dialogue_act` is the only auxiliary feature that reliably helps, and it holds up whether the feature is oracle or self-predicted. **Given the near-deterministic Dialogue_act↔Intent correlation found in the dataset section above** (Support≈agree 90.5%, Information seeking≈question 93.8%, Counter-argue≈disagree 90.9%), the more conservative reading is that this result is largely **annotation-scheme leakage** rather than evidence the model is doing richer contextual reasoning when given more information. This caveat should be stated explicitly whenever this result is cited.
@@ -117,9 +133,10 @@ Dev shows the same ranking (dialogue_act 0.567 vs. base 0.391). **Oracle vs. pre
 
 ## TODO / Next steps
 
-1. **Re-run `single_prompt` on dev + eval with the two bug fixes**, recompute `evaluate_stage2.py` metrics, and compare fallback counts and macro-F1 before/after. This is the most immediate item — the Experiment 1 numbers above are stale relative to the code.
-2. **Run a paired bootstrap significance test for `multi_module` vs. `single_prompt`** (reuse the bootstrap code already written for `intent_sweep`'s `*_vs_base_paired.csv`), on the *post-fix* `single_prompt` predictions, to know whether the architecture gap is real or noise.
-3. **Root-cause `multi_module`'s Emotion fallback (34/264)** — inspect raw outputs the same way as was done for `single_prompt`, confirm/refute the "echoes category list" hypothesis, and fix at the prompt or stopping-criteria level rather than only in parsing.
-4. **Address `single_prompt` failure mode 2 (format abandonment)** — this needs a prompt-level fix (e.g. a one-shot format example, or an explicit "Answer:" marker as already used for the emotion parser), not a parsing or stop-string fix. Separate piece of work from items 1–3.
-5. **Methodological question to raise with advisor**: at n=300 (dev=36, eval=264), is a single fixed-seed hold-out split sufficient, or should eval be evaluated with k-fold cross-validation — particularly for rare classes (Information seeking n=16, Hostility n=26) where a single split's estimate may have high variance?
+1. **Re-run `single_prompt` on dev + eval against the actual LLM** — required now for two independent reasons: (a) the Session 1 `stop_strings=["\nParent:"]` generation-time fix has never been validated against real generation (only the parsing-side fixes have been validated, via re-parsing old raw output), and (b) the prompt-fairness fix (definitions + parent-relationship framing) changes the prompt text itself, so old raw output is no longer representative. Re-parsing cannot substitute for this — it requires actually calling the model. After re-running, recompute `evaluate_stage2.py` metrics and manually spot-check a sample the same way Session 2 did.
+2. **Run a paired bootstrap significance test for `multi_module` vs. `single_prompt`** (reuse the bootstrap code already written for `intent_sweep`'s `*_vs_base_paired.csv`), on the post-re-run `single_prompt` predictions, to know whether the architecture gap is real or noise.
+3. **Root-cause is now confirmed for `multi_module`'s Emotion fallback (34/264)**: the model echoes the full category list back instead of answering (see Session 2 manual inspection above). Still needs an actual fix — likely an explicit "Answer:" marker in the emotion prompt (mirroring what `_emotion_answer_text`'s parsing side already expects), or a `stop_strings` addition, analogous to what was done for `single_prompt`.
+4. **`intent_sweep`'s `oracle` mode and `predicted`-mode `base` combination need a full re-run against the LLM** to benefit from any parsing fix, since their raw output was never saved. Make sure the re-run also starts saving `*_raw` columns for both, to avoid repeating this limitation.
+5. **Methodological question to raise with advisor**: at n=300 (dev=36, eval=264), is a single fixed-seed hold-out split sufficient, or should eval be evaluated with k-fold cross-validation — particularly for rare classes (Information seeking n=16, Hostility n=26) where a single split's estimate may have high variance? (Session 2 saw a very visible illustration of this: `single_prompt` dev intent macro-F1 moved by 0.03 from a single row's fallback flag flipping — n=36 is noisy.)
 6. **Caveat to raise with advisor**: the `intent_sweep` headline result ("dialogue_act significantly improves Intent classification") is confounded with the Dialogue_act↔Intent annotation correlation documented above. Worth discussing whether this should be reframed, or whether a follow-up test controlling for that correlation (e.g. evaluating only on rows where dialogue_act is *not* the majority-correlated one for that Intent class) is worth running.
+7. **After #1 completes**: consider reporting both "old prompt" and "new prompt" `single_prompt` numbers side by side in the eventual writeup, to make explicit how much of the original architecture gap was actually a prompt-fairness confound rather than the 1-call-vs-3-calls difference itself.

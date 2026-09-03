@@ -4,5 +4,5 @@
   "rows": 36,
   "sentiment_macro_f1": 0.6465260017050299,
   "intent_macro_f1": 0.5668831168831169,
-  "emotion_macro_f1": 0.2721395995229163
+  "emotion_macro_f1": 0.307996632996633
 }

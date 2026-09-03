@@ -56,7 +56,7 @@ Label: challenge
 Dialogue act: statement",Negative,True,False,False,False,False,False,Challenge
 2,"&gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not pay attention to, but which could come in handy
 
-I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,True,False,True,True,True,True,False,Support,False," positive
+I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,True,False,False,True,False,True,False,Support,False," positive
 ---
 Parent: &quot;I don't know, I just don't like the idea of a 4-year degree in computer science. I think it's a waste of time and money. I could have learned all the programming languages and skills I need in a year or two of self-study.&quot"," neutral, appreciation, curiosity, sarcasm, contempt 
 
@@ -76,7 +76,7 @@ Dialogue act: agree
 Intent: support
 Dialogue act: agree
 Label: support",Positive,False,False,False,False,False,True,Support
-3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Negative,False,True,True,True,True,True,True,False,Counter-argue,False," negative
+3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Negative,False,False,False,True,True,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -133,7 +133,7 @@ Intent: support
 Answer: support",Positive,False,False,False,False,False,True,Support
 5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
 
-Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Negative,False,True,False,True,True,True,True,False,Counter-argue,False," negative
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 Reason: The reply is disagreeing with the parent's statement that K&amp;M is superior, and is instead pointing out that Dark Souls shows that the best input method depends on the game. The tone is argumentative and critical. 
 
 The final answer is: negative.  # Sentiment_Analysis #"," contempt, neutral, sarcasm, curiosity, appreciation. 
@@ -226,7 +226,7 @@ Parent: What exactly is a religious fallacy?
 Reply: It's a fallacy that is",Neutral,False,False,False,True,False,False,Others
 9,"Is Walmart bad or are the people who hand over their dollars bad?
 
-Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,True,True,True,True,True,True,False,Counter-argue,False," neutral
+Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,False,True,True,True,False,False,False,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -301,7 +301,7 @@ The fact that Black Americans might do worse in all of these metrics is actually
 
 I am saying that *some* Asian Americans succeed despite their lack of racial privilege. But,  there is not a structurally entrenched system of privilege *based on their race/ethnicity*. The may have privileges based on other factors, such as gender, sexual orientation, or socioeconomic status.
 
-EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Negative,False,False,False,False,False,False,False,True,Challenge,False," negative
+EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Negative,False,False,False,False,True,True,False,False,Challenge,False," negative
 Is the sentiment of the reply toward the parent comment positive, negative or neutral?
 Answer: negative
 Reasoning skill required: Emotion Recognition And Sentiment Analysis
@@ -357,7 +357,7 @@ What we really need is some sort of Lovecraftian villain that would allow Batman
 
 That, or somebody who reincarnates as a more powerful being (Phoenix?) or who could just outlast Batman (Hulk / Wolverine, maybe)","_
 
-I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Neutral,False,True,True,True,True,True,True,False,Others,False," neutral
+I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Neutral,False,False,False,False,True,False,False,False,Others,False," neutral
 Label: neutral
 ```python
 import re
@@ -404,7 +404,7 @@ In my idea of how it would work:
 
 * It needs to be very difficult to change the constitution for the above reason
 
-What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Positive,False,True,True,True,True,True,True,False,Others,False," positive
+What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Positive,False,False,False,False,False,False,False,True,Others,False," positive
 ```python
 def classify_sentiment(reply):
     """"""
@@ -590,7 +590,7 @@ John has used heroin for 10 years. He knows that using heroin is illegal, expens
 
 Maria has not used any illegal substances, and, works hard at her job at WalMart and gets paid $200 per week. She spends $100 on tutoring for her daughter to help her daughter get better grades in school. She uses the other $100 to buy food, but, that money isn't enough to feed herself and her daughter.
 
-Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Negative,False,True,True,True,True,True,True,False,Counter-argue,False," negative
+Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Negative,False,True,False,True,True,False,False,False,Counter-argue,False," negative
 Answer: negative
 ```python
 def classify_sentiment(reply):
@@ -616,7 +616,7 @@ Label: counter-argue",Negative,False,False,False,True,False,False,Counter-argue
 
 The closest numbered criteria that this could fall into would be number 2, meaning that you believe that the default position should be one or the other (I think, for example, that it is quite clear that hard determinism is clearly correct). 
 
-However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Negative,False,True,False,True,True,True,False,False,Counter-argue,False," The reply expresses a clear opinion that Heisenberg's uncertainty principle supports volitional determinism, which is in opposition to hard determinism. This indicates a negative sentiment toward the parent comment's stance on hard determinism. 
+However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Negative,False,True,False,True,False,False,False,False,Counter-argue,False," The reply expresses a clear opinion that Heisenberg's uncertainty principle supports volitional determinism, which is in opposition to hard determinism. This indicates a negative sentiment toward the parent comment's stance on hard determinism. 
 Label: negative.  # CMV_reply_sentiment_label
 ```python
 def classify_sent"," contempt, curiosity, neutral, sarcasm 
@@ -746,7 +746,7 @@ Label: counter-argue",Neutral,False,False,False,True,False,False,Counter-argue
 
 &gt;People have real lives and shit to do.
 
-And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,True,True,True,True,False,False,False,Challenge,False," negative
+And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,True,True,True,False,False,False,False,Challenge,False," negative
 ```python
 def classify_sentiment(reply, parent):
     # Tokenize the reply and parent comment
@@ -869,7 +869,7 @@ For society to be outraged at James Franco for wanting, and trying, to have sex 
 
 _____
 
-&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,True,True,True,True,True,True,False,Counter-argue,False," negative
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,True,True,True,False,False,False,False,Counter-argue,False," negative
 Answer: negative
 Explanation: The reply expresses disapproval and frustration toward the parent comment, implying that James Franco's behavior was not justified by his age or the girl's legal age. The tone is critical and negative. 
 Note: The reply is not directly addressing the parent comment's argument, but rather providing"," sarcasm, hostility, contempt, curiosity, appreciation, neutral.  |
@@ -891,7 +891,7 @@ CMV type",Negative,False,False,False,True,False,False,Counter-argue
 33,"Yours too but it doesn't matters for me now :
                      
                   
-I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Negative,False,True,True,True,True,True,True,False,Counter-argue,False," negative
+I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
 ====================================================================================================
 
 ## Step 1: Analyze the tone of the reply

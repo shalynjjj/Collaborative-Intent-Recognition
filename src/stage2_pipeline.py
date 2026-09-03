@@ -1,5 +1,6 @@
 import argparse
 import csv
+import re
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
@@ -48,15 +49,50 @@ def _first_line(raw_output: str) -> str:
     return stripped.splitlines()[0] if stripped else ""
 
 
-def parse_single_label(raw_output: str, labels: List[str], fallback: str) -> Tuple[str, bool]:
-    text = _first_line(raw_output).lower()
+_NON_ALNUM_RUN = re.compile(r"[^a-z0-9]+")
+
+
+def _normalize_for_label_match(text: str) -> str:
+    """Case/whitespace/punctuation-insensitive form for matching a label
+    against model output. Lowercases, then collapses every run of
+    non-alphanumeric characters (spaces, hyphens, underscores, punctuation,
+    markdown markup like `**`/`_`) into a single space, so a multi-word
+    label matches regardless of how the model spelled the separator --
+    "Counter-argue" == "counter argue" == "COUNTER_ARGUE" == "**counter -
+    argue**".
+    """
+    return _NON_ALNUM_RUN.sub(" ", text.lower()).strip()
+
+
+def _find_label(text: str, labels: List[str]) -> Optional[str]:
+    normalized = _normalize_for_label_match(text)
     best_label, best_pos = None, None
     for label in labels:
-        pos = text.find(label.lower())
+        pos = normalized.find(_normalize_for_label_match(label))
         if pos != -1 and (best_pos is None or pos < best_pos):
             best_label, best_pos = label, pos
-    if best_label is not None:
-        return best_label, False
+    return best_label
+
+
+def parse_single_label(raw_output: str, labels: List[str], fallback: str) -> Tuple[str, bool]:
+    match = _find_label(_first_line(raw_output), labels)
+    if match is not None:
+        return match, False
+
+    # The model sometimes abandons the requested format entirely (free-text
+    # reasoning instead of a bare label) but still commits to exactly one
+    # candidate label somewhere later in its answer -- recover that instead
+    # of discarding a real answer as a fallback. Require an *exact one*
+    # match across the full output, not just the first line: when the model
+    # instead echoes back several/all candidate labels (e.g. restating the
+    # option list, or rambling into a second hallucinated example with a
+    # different answer), there is no way to tell which one is the real
+    # answer, so that case still falls back rather than guessing.
+    normalized_full = _normalize_for_label_match(raw_output or "")
+    found = {label for label in labels if _normalize_for_label_match(label) in normalized_full}
+    if len(found) == 1:
+        return next(iter(found)), False
+
     return fallback, True
 
 
@@ -116,14 +152,39 @@ def _split_labeled_lines(raw_output: str) -> Dict[str, str]:
 # ---------------------------------------------------------------------------
 
 
+# Shared verbatim across the per-task prompts (multi_module) and the combined
+# prompt (single_prompt) so that the two Experiment 1 conditions differ only
+# in call structure (3 calls vs. 1), not in how much guidance the model gets.
+_SENTIMENT_DEFINITIONS = """- positive: the reply expresses approval, agreement in tone, or a favorable attitude.
+- negative: the reply expresses disapproval, frustration, or an unfavorable attitude.
+- neutral: the reply is matter-of-fact, with no clear positive or negative tone."""
+
+_EMOTION_DEFINITIONS = """- sarcasm: the reply says the opposite of what it means, or mocks the parent through exaggeration or irony.
+- hostility: the reply is openly aggressive, angry, or attacking.
+- contempt: the reply is dismissive or belittling toward the parent or its argument.
+- curiosity: the reply asks for clarification, evidence, or more information out of genuine interest.
+- appreciation: the reply thanks, praises, or acknowledges the parent's point positively.
+- neutral: none of the other categories apply; the reply is emotionally flat. Always include this
+  category by itself if no other category applies -- do not answer "none"."""
+
+_INTENT_DEFINITIONS = """- information seeking: the reply primarily asks a question to get clarification or evidence.
+- challenge: the reply pushes back, dismisses, or mocks the parent's claim WITHOUT presenting its
+  own reasoning or alternative claim -- short rebuttals, sarcastic jabs, or "prove it" pushback with
+  no new argument all count here, even if they read as confident or dismissive.
+- counter-argue: the reply pushes back AND presents its own reasoning, evidence, or alternative
+  claim to support that pushback -- there must be actual argument content beyond disagreement itself.
+- support: the reply agrees with and reinforces the parent's position.
+- others: the reply does not engage with the parent's argument at all -- off-topic remarks, jokes
+  with no argumentative point, or meta-commentary about the thread/forum itself (e.g. mentioning
+  mods, bots, deltas, or other posts) all count here, even if they are on-topic in subject matter."""
+
+
 def build_sentiment_prompt(parent: str, reply: str) -> str:
     return f"""Classify the sentiment of the Reddit CMV reply toward the parent comment.
 Allowed labels: positive, negative, neutral.
 
 Definitions:
-- positive: the reply expresses approval, agreement in tone, or a favorable attitude.
-- negative: the reply expresses disapproval, frustration, or an unfavorable attitude.
-- neutral: the reply is matter-of-fact, with no clear positive or negative tone.
+{_SENTIMENT_DEFINITIONS}
 
 Return only one label.
 
@@ -137,13 +198,7 @@ def build_emotion_prompt(parent: str, reply: str) -> str:
 Categories: sarcasm, hostility, contempt, curiosity, appreciation, neutral.
 
 Definitions:
-- sarcasm: the reply says the opposite of what it means, or mocks the parent through exaggeration or irony.
-- hostility: the reply is openly aggressive, angry, or attacking.
-- contempt: the reply is dismissive or belittling toward the parent or its argument.
-- curiosity: the reply asks for clarification, evidence, or more information out of genuine interest.
-- appreciation: the reply thanks, praises, or acknowledges the parent's point positively.
-- neutral: none of the other categories apply; the reply is emotionally flat. Always include this
-  category by itself if no other category applies -- do not answer "none".
+{_EMOTION_DEFINITIONS}
 
 Return a comma-separated list of every category that applies.
 
@@ -172,16 +227,7 @@ def build_intent_prompt(
 Allowed labels: information seeking, challenge, counter-argue, support, others.
 
 Definitions:
-- information seeking: the reply primarily asks a question to get clarification or evidence.
-- challenge: the reply pushes back, dismisses, or mocks the parent's claim WITHOUT presenting its
-  own reasoning or alternative claim -- short rebuttals, sarcastic jabs, or "prove it" pushback with
-  no new argument all count here, even if they read as confident or dismissive.
-- counter-argue: the reply pushes back AND presents its own reasoning, evidence, or alternative
-  claim to support that pushback -- there must be actual argument content beyond disagreement itself.
-- support: the reply agrees with and reinforces the parent's position.
-- others: the reply does not engage with the parent's argument at all -- off-topic remarks, jokes
-  with no argumentative point, or meta-commentary about the thread/forum itself (e.g. mentioning
-  mods, bots, deltas, or other posts) all count here, even if they are on-topic in subject matter.
+{_INTENT_DEFINITIONS}
 
 Return only one label.
 {context}
@@ -191,10 +237,20 @@ Intent:"""
 
 
 def build_single_prompt_baseline(parent: str, reply: str) -> str:
-    return f"""Analyze the Reddit CMV reply and report all three of the following, using exactly this format (one per line):
+    return f"""Analyze the Reddit CMV reply's sentiment, emotion, and communicative intent, all toward
+the parent comment it is responding to, and report all three using exactly this format (one per line):
 Sentiment: <positive|negative|neutral>
 Emotion: <comma-separated subset of sarcasm, hostility, contempt, curiosity, appreciation, neutral, or "none">
 Intent: <information seeking|challenge|counter-argue|support|others>
+
+Sentiment definitions:
+{_SENTIMENT_DEFINITIONS}
+
+Emotion definitions:
+{_EMOTION_DEFINITIONS}
+
+Intent definitions:
+{_INTENT_DEFINITIONS}
 
 Parent: {parent}
 Reply: {reply}
@@ -362,14 +418,29 @@ def annotate_stage2_dataframe(
     output_csv: Optional[Path] = None,
 ) -> pd.DataFrame:
     rows: List[Dict] = []
+    done_row_ids: set = set()
     writer = None
     file_handle = None
+
     if output_csv is not None:
         output_csv.parent.mkdir(parents=True, exist_ok=True)
-        file_handle = output_csv.open("w", newline="", encoding="utf-8")
+        # Resume support: a long LLM run over a remote/SSH connection can get
+        # cut off partway through. If a previous partial run's output is
+        # already on disk, keep its rows and append only the ones still
+        # missing, instead of overwriting and re-generating from row 0.
+        if output_csv.exists() and output_csv.stat().st_size > 0:
+            existing = pd.read_csv(output_csv)
+            rows.extend(existing.to_dict("records"))
+            done_row_ids = set(existing["row_id"].tolist())
+            file_handle = output_csv.open("a", newline="", encoding="utf-8")
+            writer = csv.DictWriter(file_handle, fieldnames=list(existing.columns))
+        else:
+            file_handle = output_csv.open("w", newline="", encoding="utf-8")
 
     try:
         for idx, row in tqdm(df.iterrows(), total=len(df), desc=f"Stage 2 ({mode})"):
+            if idx in done_row_ids:
+                continue
             parent, reply = str(row["Parent"]), str(row["Reply"])
 
             if mode == "multi_module":
@@ -389,6 +460,12 @@ def annotate_stage2_dataframe(
                 if writer is None:
                     writer = csv.DictWriter(file_handle, fieldnames=list(out.keys()))
                     writer.writeheader()
+                elif list(out.keys()) != writer.fieldnames:
+                    raise ValueError(
+                        f"{output_csv} has different columns than this run would produce -- "
+                        "it looks like a resume from an incompatible earlier run (different mode "
+                        "or code version). Delete it to start fresh."
+                    )
                 writer.writerow(out)
                 file_handle.flush()
     finally:
@@ -410,7 +487,7 @@ def run_stage2(mode: str, split: str = "dev", limit: Optional[int] = None, mock:
     # single_prompt's completion sometimes runs past its answer and
     # hallucinates a new "Parent: ..." example; cut generation off there so
     # the real answer can't be overwritten by a truncated duplicate field
-    # (see _split_labeled_lines).
+    # (see _split_labeled_lines). 
     stop_strings = ["\nParent:"] if mode == "single_prompt" else None
     generator = (
         make_stage2_mock_generator()

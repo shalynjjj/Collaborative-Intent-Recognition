@@ -123,10 +123,20 @@ def make_transformers_generator(
     hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_TOKEN")
     auth_kwargs = {"token": hf_token} if LLM.model_source == "huggingface" and hf_token else {}
     tokenizer = AutoTokenizer.from_pretrained(model_path, **auth_kwargs)
+    # float16 on any accelerated device (CUDA or Apple Silicon's MPS) --
+    # loading in float32 doubles memory for no accuracy benefit here, and on
+    # a unified-memory Mac that difference is the gap between fitting an 8B
+    # model in RAM and not (an 8B model is ~15GB on disk in fp16; fp32 would
+    # need ~30GB). CPU-only execution keeps float32 since CPU matmul kernels
+    # don't reliably support fp16.
+    if torch.cuda.is_available() or torch.backends.mps.is_available():
+        torch_dtype = torch.float16
+    else:
+        torch_dtype = torch.float32
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         device_map="auto",
-        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+        torch_dtype=torch_dtype,
         **auth_kwargs,
     )
     resolved_max_new_tokens = max_new_tokens if max_new_tokens is not None else LLM.max_new_tokens
