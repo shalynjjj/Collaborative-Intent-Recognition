@@ -1,0 +1,3 @@
+task,a,b,n_boot,boot_seed,macro_f1_difference,macro_f1_difference_boot_mean,macro_f1_difference_ci95,ci_excludes_zero
+Sentiment,multi_module,single_prompt,2000,42,-0.05299574712812449,-0.05312666515304061,"[-0.10816686051565343, 0.006049916589624628]",False
+Intent,multi_module,single_prompt,2000,42,-0.022385079966906918,-0.022601151926797947,"[-0.08292160738149551, 0.03613348647466635]",False

@@ -738,8 +738,11 @@ communicative intent from each CMV Parent–Reply pair. It asks two questions:
 (1) under matched input information, do separate task-specific prompts perform
 better than one prompt that predicts all three targets; and (2) which auxiliary
 signals help Intent under both ideal gold-label and realistic predicted-label
-conditions? The main experiments are complete; manual Stage 2 error analysis
-and report integration remain open.
+conditions? Both experiments and the manual error analysis are complete;
+folding the results into the formal thesis writeup remains open. Full details,
+including two bugs found and fixed mid-project (a parser bug and a
+prompt-fairness confound that reversed Experiment 1's headline result), are in
+[`docs/stage2_report.md`](docs/stage2_report.md).
 
 `data/cmv_300_gold_final.csv` already has full `Sentiment`, `Sarcasm`, `Hostility`,
 `Contempt`, `Neutral`, `Curiosity`, `Appreciation`, and `Intent` columns for all 300
@@ -822,9 +825,13 @@ Outputs are saved under `results/stage2/` as
 `<mode>_<split>_summary.json` with all three macro-F1s. Compare the two
 `summary.json` files to answer Experiment 1's RQ1.
 
-**Corrected result (eval, 264 rows):** both conditions receive exactly
-`Parent + Reply`; the multi-module Intent prompt no longer receives gold
-Dialogue Act.
+**Superseded result (eval, 264 rows), kept for the record:** the table below
+was measured before two more bugs were found and fixed — `single_prompt`'s
+3-line answer parser silently losing correct answers to hallucinated
+continuations, and (more importantly) `build_single_prompt_baseline`'s prompt
+being written more sparsely than the three per-task prompts it was compared
+against (no label definitions, no "judge Reply against Parent" framing). Both
+conditions receive exactly `Parent + Reply` either way.
 
 | | multi_module | single_prompt |
 | --- | ---: | ---: |
@@ -833,17 +840,26 @@ Dialogue Act.
 | Emotion macro-F1 | **0.393** | 0.357 |
 | 3-way average | **0.450** | 0.416 |
 
-The corrected results support task decomposition: the task-specific prompts
-score higher on all three label types under matched input information. The
-Intent gain is +0.027, not the previously reported +0.105; the old 0.464
-multi-module Intent score came from an unfair condition with gold Dialogue
-Act and is now treated only as an Experiment 2 oracle result. A paired
-bootstrap difference should accompany the final RQ1 claim. `single_prompt`'s Intent
-result is identical before and after the Others/Challenge/Counter-argue
-prompt revision below, because `build_single_prompt_baseline` never included
-those per-category definitions in the first place (kept compact by design,
-unlike each `multi_module` module's dedicated prompt) — itself part of what
-this RQ is comparing, not a bug.
+**Current result, after fixing the parser bug and the prompt-fairness bug and
+re-running `single_prompt` against the real LLM (eval, 264 rows):**
+
+| | multi_module | single_prompt |
+| --- | ---: | ---: |
+| Sentiment macro-F1 | 0.572 | **0.625** |
+| Intent macro-F1 | 0.387 | **0.409** |
+| Emotion macro-F1 | 0.393 | **0.408** |
+
+**The result reverses**: `single_prompt` now leads on all three tasks, the
+opposite of the original conclusion above. Most of that original gap was the
+prompt-fairness bug, not the 1-call-vs-3-calls architecture itself. A paired
+bootstrap (`n_boot=2000`) on these same 264 rows found the new gap is **not
+statistically significant** either way (Sentiment diff −0.053, 95% CI
+[−0.108, +0.006]; Intent diff −0.022, 95% CI [−0.083, +0.036]) — so the honest
+reading is "point estimate now favors single_prompt, but not confidently
+distinguishable from no real difference," not a confirmed win for either
+architecture. Full root-cause writeup, the manual verification of the parser
+fix, and the discovery of the prompt-fairness bug are in
+[`docs/stage2_report.md`](docs/stage2_report.md).
 
 On the 36-row dev split, the two architectures looked much closer (and briefly
 appeared to favor `single_prompt` on Emotion) after fixing a real parsing bug
@@ -932,6 +948,15 @@ python3 -m src.stage2_intent_sweep --split dev --feature-source predicted --limi
 | `emotion+sentiment` | 0.370 | [0.306, 0.434] | 0.254 |
 | `sentiment` | 0.360 | [0.298, 0.422] | 0.237 |
 
+**Re-validated with a fresh, independent LLM run:** both tables above were
+originally produced before every generation call saved its raw output, so a
+later parsing-bug fix couldn't be verified against them without re-running the
+model. Both have since been re-run for real (not just re-parsed); the numbers
+moved by ≤0.002 everywhere and `dialogue_act` remains the only combination
+whose CI excludes 0 in both oracle and predicted mode — the finding holds up
+on a completely independent generation. Details in
+[`docs/stage2_report.md`](docs/stage2_report.md).
+
 **Final RQ2 finding:** gold Dialogue Act is the strongest oracle feature
 (0.464 vs. 0.387 text-only on 264 rows). More importantly, predicted Dialogue
 Act also improves Intent on the common 260 rows (0.435 vs. 0.380; paired
@@ -953,11 +978,15 @@ of that apparent effect was dev-sample noise, not a real signal, and only
 
 ### Error analysis and write-up
 
-- [ ] Sample and manually review misclassified examples, categorized by source as
-      the proposal requires: incorrect DA prediction, undetected sarcasm, or
-      insufficient conversational context.
-- [ ] Add paired uncertainty for Experiment 1's multi-module vs. single-prompt
-      differences before making a strong decomposition claim.
-- [ ] Extend `docs/full-report-draft.tex` and `docs/stage1_full_report.md` (or new
-      Stage 2-specific files) with Stage 2 Methodology, Experiments, and Results
-      sections, matching the style already used for Stage 1.
+- [x] Sample and manually review misclassified examples, categorized by source:
+      Intent confusion matrix, Dialogue-Act→Intent cascade analysis, and 5 case
+      studies (long/multi-topic text, Parent context underused, DA misprediction
+      cascading into Intent error, ambiguous Challenge/Counter-argue boundary,
+      surface form vs. true intent) — see `docs/stage2_report.md`'s "Error
+      Analysis" section.
+- [x] Add paired uncertainty for Experiment 1's multi-module vs. single-prompt
+      differences — see the paired-bootstrap result above; not significant
+      either direction.
+- [ ] Extend `docs/full-report-draft.tex` (or the thesis draft) with Stage 2
+      Methodology, Experiments, and Results sections — `docs/stage2_report.md`
+      has the full content, still needs folding into the formal writeup.

@@ -3,104 +3,94 @@ row_id,Parent,Reply,sentiment,sentiment_fallback,emotion_sarcasm,emotion_hostili
 Emotion: appreciation
 Intent: support
 
-Parent: I thought it was an argument for avoiding being next to the guy the police are shooting at.
-Reply: I don't think that's what the OP meant at all. I think they meant that you should avoid being next to the guy who",Positive,False,False,False,False,False,True,Support
-1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Negative,False,False,True,False,False,True,False,False,Challenge,False,"Sentiment: negative
-Emotion: curiosity, hostility
-Intent: challenge
+Parent:",Positive,False,False,False,False,False,True,Support
+1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Neutral,False,False,False,False,False,True,False,False,Information seeking,False,"Sentiment: neutral
+Emotion: curiosity
+Intent: information seeking
 
-Parent: As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.
-Reply: I think it's interesting that you",Negative,True,False,False,False,False,False,Challenge
+Parent:",Negative,True,False,False,False,False,False,Challenge
 2,"&gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not pay attention to, but which could come in handy
 
-I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
-Emotion: none
+I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Positive,False,False,False,False,False,False,True,False,Support,False,"Sentiment: positive
+Emotion: appreciation
 Intent: support
 
-Parent: &gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not",Positive,False,False,False,False,False,True,Support
+Sentiment: The reply expresses approval and agreement with the parent's point.
+Emotion: The reply expresses appreciation for the parent's comment, using the phrase ""This suddenly makes sense"".
+Intent: The reply supports the parent's argument, indicating that it",Positive,False,False,False,False,False,True,Support
 3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
 Emotion: contempt, hostility
 Intent: counter-argue
 
-Parent: Why would differing opinions on religion or politics be a deal-breaker?
-Reply: I think it's because people are often deeply invested in their beliefs and see them as a fundamental part of their identity. When someone disagrees",Neutral,False,False,False,True,False,False,Others
+Parent:",Neutral,False,False,False,True,False,False,Others
 4,"I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
 
-However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
-Emotion: none
+However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Positive,False,False,False,False,True,False,True,False,Support,False,"Sentiment: positive
+Emotion: appreciation, neutral
 Intent: support
 
-Parent: I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
-
-However,",Positive,False,False,False,False,False,True,Support
+Sentiment: The reply expresses approval and agreement with the parent's point, using the word ""I agree"" to indicate this.
+Emotion: The reply expresses appreciation for the parent's example, and is emotionally flat in its response.
+Intent",Positive,False,False,False,False,False,True,Support
 5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
 
-Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Neutral,False,False,False,False,True,False,False,False,Counter-argue,False,"Sentiment: neutral
-Emotion: none
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Neutral,False,False,False,False,True,True,False,False,Counter-argue,False,"Sentiment: neutral
+Emotion: curiosity, neutral
 Intent: counter-argue
 
-Sentiment: neutral
-Emotion: none
-Intent: counter-argue
+Sentiment: The reply does not express a clear positive or negative tone, simply stating a fact.
+Emotion: The reply expresses curiosity about the game dependency, but also has a neutral tone, as it does not express any",Negative,False,False,False,True,False,False,Counter-argue
+6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Neutral,True,False,False,False,False,False,False,True,Others,False,"```python
+def analyze_reply(reply, parent):
+    sentiment = ""neutral""
+    emotion = ""none""
+    intent = ""others""
 
-Sentiment: neutral
-Emotion: none
-Intent: counter-argue
-
-Note: The reply is a counter-argument to the parent's",Negative,False,False,False,True,False,False,Counter-argue
-6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"[Image of a graph showing a decline in life expectancy in the US]
-Sentiment: negative
-Emotion: contempt, hostility
-Intent: counter-argue
-Parent: I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see",Negative,True,True,False,False,False,False,Challenge
-7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Positive,False,False,False,False,True,False,False,False,Counter-argue,False,"Sentiment: negative
+    if ""Slide"" in reply:
+        sentiment = ""negative""
+        emotion = ""contempt""
+        intent = ""others""
+    elif ""I don't see"" in",Negative,True,True,False,False,False,False,Challenge
+7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Negative,False,True,False,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
 Emotion: contempt, sarcasm
 Intent: counter-argue
 
-Parent: I'm not sure if I agree with this.
-Reply: I'm not sure if you're aware of the fact that this is a well-established scientific fact.
-Sentiment: positive
-Emotion: none
-",Positive,True,True,False,False,False,False,Challenge
-8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Neutral,False,False,False,False,True,False,False,False,Information seeking,False,"Sentiment: negative
+Parent:",Positive,True,True,False,False,False,False,Challenge
+8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
 Emotion: contempt, hostility
-Intent: counter-argue
+Intent: challenge
 
-Parent: What exactly is a religious fallacy?
-Reply: A fallacy is a flawed argument, and religious beliefs are often based on flawed arguments
-Sentiment: neutral
-Emotion: none
-Intent: information seeking
-
-",Neutral,False,False,False,True,False,False,Others
+Parent:",Neutral,False,False,False,True,False,False,Others
 9,"Is Walmart bad or are the people who hand over their dollars bad?
 
 Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Neutral,False,False,False,False,True,False,False,False,Information seeking,False,"Sentiment: neutral
 Emotion: none
 Intent: information seeking
 
-Parent: Is Walmart bad or are the people who hand over their dollars bad?
-
-I don't think it's Walmart's fault that people are cheap. If you want to pay more for your groceries, go to Whole Foods.
-Reply: [You",Neutral,False,False,False,True,False,False,Counter-argue
+Parent:",Neutral,False,False,False,True,False,False,Counter-argue
 10,"My exposure to dance (Dancers I know) would lead me to believe that a) Dance isn't an Art in the same way that say Theater/ Film is, or b) my school simply doesnt emphasize that side of dance (which in my mind is the reason to study art of any kind at a university level)
 
 Film Majors and Theater Majors will spend the at least 2 semesters of Coursework on Theory, History, and Analysis. The dance majors I'm friends with say they don't have to do any of that.
 
 Which is the core of my issue with dance as a major, I don't see the other side of dance. It's 100% possible that's just my school, and other programs are different. 
 
-Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,False,False,False,False,True,False,False,Information seeking,False,"Sentiment: neutral
-Emotion: curiosity
-Intent: information seeking
+Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,False,False,False,False,False,False,True,Information seeking,False,"```python
+def analyze_reply(parent, reply):
+    sentiment = 'neutral'
+    emotion = 'curiosity'
+    intent = 'information seeking'
 
-This reply is neutral in sentiment because it does not express a clear opinion or emotion. It is curious in emotion because it asks a question to gather more information. The intent is information seeking because the reply asks a question to learn more about the OP",Neutral,False,False,False,False,True,False,Information seeking
-11,Your name had better not be a Game of Thrones spoiler.,"No, I'm just an advocate for gavelkind succession laws, even in fantasy worlds.  ;)",Neutral,False,True,False,False,False,False,False,False,Support,False,"Sentiment: neutral
+    return sentiment, emotion, intent
+
+parent = ""My exposure to dance (Dancers I know) would lead me to believe that a) Dance isn't an Art",Neutral,False,False,False,False,True,False,Information seeking
+11,Your name had better not be a Game of Thrones spoiler.,"No, I'm just an advocate for gavelkind succession laws, even in fantasy worlds.  ;)",Neutral,False,True,False,False,False,False,False,False,Others,False,"```markdown
+Sentiment: neutral
 Emotion: sarcasm
-Intent: support
-
-Parent: Your name had better not be a Game of Thrones spoiler.
-Reply: I'm not a fan of the show, but I do love the books.  I'm a bit worried that the show might not do the books justice.
-Sent",Positive,False,False,False,True,False,False,Others
+Intent: others
+```
+Explanation:
+- The reply is matter-of-fact and doesn't express a clear positive or negative tone, so it's neutral.
+- The winking face at the end of the sentence is a clear indicator of sarcasm",Positive,False,False,False,True,False,False,Others
 12,"&gt; Would it be fair to say that the blacks doing worse in all those metrics (crime, violence, poverty, disease, out of wedlock childbirth) also is not related to the real structural privilege? Or that it applies to blacks but not to asians?
 
 The fact that Black Americans might do worse in all of these metrics is actually directly related to the structural privilege. White people have the structural advantage at *the expense* of Black American's welfare, health, etc.
@@ -110,14 +100,15 @@ The fact that Black Americans might do worse in all of these metrics is actually
 I am saying that *some* Asian Americans succeed despite their lack of racial privilege. But,  there is not a structurally entrenched system of privilege *based on their race/ethnicity*. The may have privileges based on other factors, such as gender, sexual orientation, or socioeconomic status.
 
 EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
-Emotion: contempt, hostility
+Emotion: hostility, contempt
 Intent: challenge
 
-Reply: I think you're misunderstanding the concept of structural privilege. It's not that white people are actively trying to harm Asian people, it's that the system is designed to benefit white people at the expense of other groups. It's not",Negative,False,False,True,False,False,False,Challenge
-13,The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole diseased culture we live in. Do I really need to reply to it?,"If you feel that saying ""my girl/boyfriend"" in a monogamous relationship is evidence of a rape culture then there's clearly no point in debating any further.",Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
+Reply: I think you're misunderstanding the concept of structural privilege. It's not about individuals using their privilege to exploit others, but rather about systemic inequalities that affect entire groups. For example, redlining and discriminatory lending practices have historically denied Black",Negative,False,False,True,False,False,False,Challenge
+13,The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole diseased culture we live in. Do I really need to reply to it?,"If you feel that saying ""my girl/boyfriend"" in a monogamous relationship is evidence of a rape culture then there's clearly no point in debating any further.",Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
 Emotion: hostility, contempt
-Intent: counter-argue
-Parent: The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of",Negative,False,False,True,False,False,False,Challenge
+Intent: challenge
+
+Parent:",Negative,False,False,True,False,False,False,Challenge
 14,"The OP is actually much more clever than you all are giving her credit for
 
 OP has only made a comment about what happens IF Batman can escape the first fight - so any crazy-powerful superbeing wins but is not relevant to the discussion.
@@ -126,13 +117,24 @@ What we really need is some sort of Lovecraftian villain that would allow Batman
 
 That, or somebody who reincarnates as a more powerful being (Phoenix?) or who could just outlast Batman (Hulk / Wolverine, maybe)","_
 
-I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
-Emotion: none
-Intent: support
+I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Neutral,False,False,False,False,True,False,False,False,Others,False,"Sentiment: neutral
+Emotion: neutral
+Intent: others
 
-Parent: The OP is actually much more clever than you all are giving her credit for
+Sentiment: neutral
+Emotion: neutral
+Intent: others
 
-OP has only made a comment about what happens IF Batman can escape the first fight - so any crazy-powerful superbeing wins but is not relevant to the discussion",Neutral,False,False,False,True,False,False,Others
+Sentiment: neutral
+Emotion: neutral
+Intent: others
+
+Sentiment: neutral
+Emotion: neutral
+Intent: others
+
+Sentiment: neutral
+Emotion:",Neutral,False,False,False,True,False,False,Others
 15,"I don't know much of ancient Greece and how they toyed with it, however I feel that if our nation has established a constitution that works (as ours seems to, when correctly followed), abolishment of both the Electoral branch and decision making powers given to the Legislative branch would be the best thing the country could do.
 
 In my idea of how it would work:
@@ -149,50 +151,39 @@ In my idea of how it would work:
 
 * It needs to be very difficult to change the constitution for the above reason
 
-What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Negative,False,True,False,False,False,False,False,False,Counter-argue,False,"Sentiment: negative
+What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Negative,False,True,False,False,False,False,False,False,Challenge,False,"Sentiment: negative
 Emotion: sarcasm
-Intent: counter-argue
+Intent: challenge
 
-Parent: I don't know much of ancient Greece and how they toyed with it, however I feel that if our nation has established a constitution that works (as ours seems to, when correctly followed), abolishment of both the",Negative,False,True,True,False,False,False,Challenge
-16,"_ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.",Such plebs,Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: hostility, contempt
-Intent: counter-argue
+Parent:",Negative,False,True,True,False,False,False,Challenge
+16,"_ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.",Such plebs,Negative,False,False,False,True,False,False,False,False,Others,False,"Sentiment: negative
+Emotion: contempt
+Intent: others
 
-Parent: _ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.
-Reply: I think you're being facetious,",Negative,True,True,False,False,False,False,Support
-17,OPs post is in general.  This reply is in general.,"The OP is saying ""if I go"", so they are talking about themselves, not in general.",Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"The OP is saying ""if I go"", so they are talking about themselves, not in general.
-Sentiment: negative
+Parent:",Negative,True,True,False,False,False,False,Support
+17,OPs post is in general.  This reply is in general.,"The OP is saying ""if I go"", so they are talking about themselves, not in general.",Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
 Emotion: contempt, hostility
-Intent: counter-argue
+Intent: challenge
 
-Parent: OPs post is in general.  This reply is in general.
-Reply: The OP is saying ""if I",Neutral,False,False,False,True,False,False,Counter-argue
+Parent:",Neutral,False,False,False,True,False,False,Counter-argue
 18,"&gt;hes the only Ind in our federal legislative body. 
 
 That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been long.",Thank you i actually was not aware,Positive,False,False,False,False,False,False,True,False,Information seeking,False,"Sentiment: positive
 Emotion: appreciation
 Intent: information seeking
 
-Parent: &gt;hes the only Ind in our federal legislative body. 
-
-That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't",Positive,False,False,False,False,False,True,Support
+Parent:",Positive,False,False,False,False,False,True,Support
 19,"Check out [this video](http://www.ted.com/talks/christopher_ryan_are_we_designed_to_be_sexual_omnivores) that conveys a theory on how monogamy is not really as ingrained in us as most people think it is. There are theories that claim we (and by we I mean men) invented monogamy after coming up with agriculture to insure property inheritance (how do I know which one's my kid if she's fucking the whole town? who the hell gets my house then after I die?)
 
 Then you consider the fact that [monogamy wasn't really required for dudes up until like 60 years ago](https://www.youtube.com/watch?v=w8SOQEitsJI). Instead of choosing to let women behave like men, we chose to lock ourselves up in monogamy along with them. 6O years ago.
 
 Long story short: monogamy seems to be (to some people) a social construct that has no relevance today since getting pregnant is hard and abortions are legal in most developed places.
 
-Like others have said, it's impossible to find someone that fulfils your every need. And the fact that recent adultery rates are always high sounds like human reality is trying to make us understand that monogamy doesn't really make sense.","Which perfectly explains Socrates statement: ""By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.""",Neutral,False,False,False,False,True,False,False,False,Support,False," 
-Sentiment: neutral
-Emotion: none
-Intent: support
-```
-Sentiment: neutral
-Emotion: none
-Intent: support
-``` Annotate the sentiment, emotion, and intent of the reply. Use the quote from Socrates to support your analysis. 
+Like others have said, it's impossible to find someone that fulfils your every need. And the fact that recent adultery rates are always high sounds like human reality is trying to make us understand that monogamy doesn't really make sense.","Which perfectly explains Socrates statement: ""By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.""",Positive,False,False,False,False,False,True,True,False,Others,True,"I'm not saying that monogamy is bad, but it's not as natural as we think it is. I think we should be more open to the idea that monogamy is a social construct and that it's okay to explore other options. 
 
-The reply is neutral in sentiment",Negative,True,False,False,False,False,False,Challenge
+Sentiment: positive
+Emotion: appreciation, curiosity
+",Negative,True,False,False,False,False,False,Challenge
 20,"Here's the thing that no one ever tells you about smoking: 
 
 **Smoking is the best thing in the whole world**
@@ -223,79 +214,82 @@ We **all** made the decision to never smoke. Some of us just fucked it up withou
 Emotion: appreciation
 Intent: support
 
-Parent: Here's the thing that no one ever tells you about smoking: 
+Sentiment: The reply expresses a positive sentiment, as it is a heartfelt and emotional response to the parent comment.
 
-**Smoking is the best thing in the whole world**
+Emotion: The reply expresses appreciation, as it is a thank-you note for the gold received, but also a genuine expression of gratitude",Negative,False,False,False,False,False,True,Support
+21,It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.,You have to play nice.  I've got three strikes against me myself but I figured it out.  And the mods AFAICT just decide whether to delete comments which others report.,Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
+Emotion: hostility, contempt
+Intent: challenge
 
-No lies. It is the BEST thing. It creates a problem and it solves it. It is like winning",Negative,False,False,False,False,False,True,Support
-21,It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.,You have to play nice.  I've got three strikes against me myself but I figured it out.  And the mods AFAICT just decide whether to delete comments which others report.,Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: contempt, hostility
-Intent: counter-argue
-
-Parent: It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.
-Reply: I've been on that sub for years",Neutral,False,False,False,True,False,False,Counter-argue
+Parent:",Neutral,False,False,False,True,False,False,Counter-argue
 22,"I agree with you, but, will try to change your view.
 
 John has used heroin for 10 years. He knows that using heroin is illegal, expensive, and he spends $100 of the $200 he gets paid weekly working at Pizza Hut to pay for his heroin. He uses the other $100 to buy food, but, that money isn't enough to feed himself and his son.
 
 Maria has not used any illegal substances, and, works hard at her job at WalMart and gets paid $200 per week. She spends $100 on tutoring for her daughter to help her daughter get better grades in school. She uses the other $100 to buy food, but, that money isn't enough to feed herself and her daughter.
 
-Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: contempt, hostility
-Intent: counter-argue
-Parent: I agree with you, but, will try to change your view.
-This reply is negative because it is dismissive of the argument that Maria and John should both get the money. The reply is contemptuous and hostile",Negative,False,False,False,True,False,False,Counter-argue
+Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Neutral,True,False,False,False,False,False,False,True,Others,True,"```python
+import re
+
+def analyze_reply(reply):
+    # Sentiment analysis
+    sentiment = 'positive' if re.search(r'\b(obviously|agree|good|great|excellent)\b', reply, re.IGNORECASE) else 'negative' if re.search(r'\b(obviously|disagree",Negative,False,False,False,True,False,False,Counter-argue
 23,"I am most concerned about the debate between the theories of libertarian free will and hard determinism, because I believe that this debate has philosophical consequences that should tend to be important to people, affecting moral responsibility and reactions of moral contempt and meritocracy. 
 
 The closest numbered criteria that this could fall into would be number 2, meaning that you believe that the default position should be one or the other (I think, for example, that it is quite clear that hard determinism is clearly correct). 
 
-However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Positive,False,False,False,False,True,False,False,False,Support,False,"Sentiment: positive
-Emotion: none
+However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Positive,False,False,False,False,False,True,True,False,Support,False,"Sentiment: positive
+Emotion: curiosity, appreciation
 Intent: support
-Explanation: The reply is positive because it presents a scientific principle that supports the respondent's preferred philosophical position. The emotion is neutral because there is no apparent sarcasm, hostility, contempt, curiosity, or appreciation. The intent is to support the respondent's",Neutral,False,False,False,True,False,False,Counter-argue
-24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Negative,False,True,False,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: sarcasm, contempt
-Intent: counter-argue
 
-Parent: So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?
-Reply: Because it's not that simple. You'd need to consider the logistics of",Neutral,False,False,False,True,False,False,Counter-argue
-25,"Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.",my point was only countries with much less guns than the US don't have their police carry guns,Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: hostility, contempt
-Intent: counter-argue
+Sentiment: The reply expresses a positive attitude toward the parent's argument, as it agrees with the parent's position and provides a supporting example from physics.
+Emotion: The reply expresses curiosity, as it asks for clarification on the parent's",Neutral,False,False,False,True,False,False,Counter-argue
+24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Neutral,False,False,False,False,False,False,False,True,Others,True,"```python
+def analyze_reply(parent, reply):
+    sentiment = ""neutral""
+    emotion = ""none""
+    intent = ""others""
 
-Parent: Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.
-Reply: I think you're misunderstanding the point. The point is that countries with much less guns than",Neutral,False,False,False,True,False,False,Counter-argue
-26,Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.,"Then put that in the CMV. If the ""rules"" deviate from reality, they need to be stated from the beginning.",Negative,False,True,False,False,False,False,False,False,Challenge,False,"Sentiment: negative
-Emotion: sarcasm
+    if ""why"" in reply.lower():
+        intent = ""information seeking""
+    elif ""now imagine"" in reply.lower():
+        intent = ""others""
+    elif ""win",Neutral,False,False,False,True,False,False,Counter-argue
+25,"Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.",my point was only countries with much less guns than the US don't have their police carry guns,Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
+Emotion: contempt, hostility
 Intent: challenge
 
-Parent: Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.
-Reply: I think you're misunderstanding the point of the CMV. It's not about creating a hypothetical scenario,",Negative,False,False,False,True,False,False,Challenge
+Parent:",Neutral,False,False,False,True,False,False,Counter-argue
+26,Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.,"Then put that in the CMV. If the ""rules"" deviate from reality, they need to be stated from the beginning.",Negative,False,False,True,False,False,False,False,False,Challenge,False,"Sentiment: negative
+Emotion: hostility
+Intent: challenge
+
+Parent:",Negative,False,False,False,True,False,False,Challenge
 27,"&gt;Someone with Down's does not possess the tools to pull himself out of his own issues. Someone that just isn't trying does.
 
-This really seems like it's drawing an arbitrary line. If someone has an IQ of 75 we declare them helpless, but not IQ 100, say. What about 90? 85? 77? Where do we draw the line? Why do we draw a line? Why not just treat all of the people as having medical problems, rather than moral ones?",Because we don't use IQ to diagnose mental illness. The line is drawn when there is a distinct physiological difference in one persons brain compared to a normal one.,Negative,False,False,True,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
+This really seems like it's drawing an arbitrary line. If someone has an IQ of 75 we declare them helpless, but not IQ 100, say. What about 90? 85? 77? Where do we draw the line? Why do we draw a line? Why not just treat all of the people as having medical problems, rather than moral ones?",Because we don't use IQ to diagnose mental illness. The line is drawn when there is a distinct physiological difference in one persons brain compared to a normal one.,Negative,False,False,True,True,False,False,False,False,Counter-argue,False," 
+Sentiment: negative
 Emotion: contempt, hostility
 Intent: counter-argue
 
-Parent: &gt;Someone with Down's does not possess the tools to pull himself out of his own issues. Someone that just isn't trying does.
+Sentiment: The reply expresses disapproval of the parent's argument, implying that it is flawed or
+  misguided. The tone is critical and dismissive.
 
-This really seems like it's drawing an arbitrary line. If someone has",Neutral,False,False,False,True,False,False,Counter-argue
+Emotion: The reply expresses contempt for the parent's argument",Neutral,False,False,False,True,False,False,Counter-argue
 28,"Hardly reckless? You seriously underestimate how much damage a 4000+ pound machine can do, even driving at 40 mph, which is a relatively low speed.
 
 &gt;People have real lives and shit to do.
 
-And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,True,True,False,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: sarcasm, hostility
-Intent: counter-argue
+And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
+Emotion: hostility, contempt
+Intent: challenge
 
-Parent: Hardly reckless? You seriously underestimate how much damage a 4000+ pound machine can do, even driving at 40 mph, which is a relatively low speed.
+Parent:",Negative,False,True,False,False,False,False,Challenge
+29,"Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontroversy",I really don't think that's what he meant...,Neutral,False,False,False,False,True,False,False,False,Challenge,False,"Sentiment: neutral
+Emotion: none
+Intent: challenge
 
-&gt;People have real lives and shit",Negative,False,True,False,False,False,False,Challenge
-29,"Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontroversy",I really don't think that's what he meant...,Neutral,False,False,False,False,True,True,False,False,Counter-argue,False,"Sentiment: neutral
-Emotion: curiosity, neutral
-Intent: counter-argue
-
-Parent: Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthe",Negative,False,False,True,False,False,False,Challenge
+Parent:",Negative,False,False,True,False,False,False,Challenge
 30,"&gt;Do you have a different type of truth in mind?
 
 Not particularly, we can just stick with moral truths. The point is that if you're open to more than one kind of truth, then unless physics studies them all equally well, it is only one particular tool in the toolbox.
@@ -307,27 +301,40 @@ But we don't use physics to describe such phenomena, and I rather doubt most phy
 Sentiment: neutral
 Emotion: curiosity
 Intent: information seeking
-Reply: I think you're misunderstanding the point. Physics is interested in the underlying laws that govern all phenomena, regardless of scale. That's why we have theories like general relativity and quantum mechanics that describe the behavior of everything from atoms to",Neutral,False,False,False,False,True,False,Challenge
+
+Sentiment: neutral
+Emotion: curiosity
+Intent: information seeking
+
+Sentiment: neutral
+Emotion: curiosity
+Intent: information seeking
+
+Sentiment: neutral
+Emotion: curiosity
+Intent: information seeking
+
+Sentiment:",Neutral,False,False,False,False,True,False,Challenge
 31,"Heh... I don't think people'd stomach a head tax unless they also got a dividend. You could do a ""mandatory tax when there's a deficit, payout when there's a surplus"" thing I suppose.
 
-Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Positive,False,False,False,False,True,False,False,False,Information seeking,False,"Sentiment: negative
+Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Neutral,False,False,False,False,True,False,False,False,Others,False,"Sentiment: neutral
 Emotion: none
-Intent: challenge
-
-Sentiment: positive
-Emotion: none
-Intent: information seeking
+Intent: others
 
 Sentiment: neutral
 Emotion: none
 Intent: others
 
-Sentiment: positive
+Sentiment: neutral
 Emotion: none
-Intent: information seeking
+Intent: others
 
-Sentiment: positive
-Em",Neutral,False,False,False,False,True,False,Information seeking
+Sentiment: neutral
+Emotion: none
+Intent: others
+
+Sentiment: neutral
+Emotion:",Neutral,False,False,False,False,True,False,Information seeking
 32,"James Franco recently got caught up trying to have sex with an extremely attractive 17 year old girl. His manner, to be fair, was boorish and very direct, asking her, simply, ""should I get a hotel room?"" skipping all the pleasantries. However, not only did she tell him she was 18, but in New York State 17 is legal age. 
 
 There was an uproar from feminist groups, and the media in general, accusing Franco of being a pervert. He publicly apologized.
@@ -340,23 +347,20 @@ For society to be outraged at James Franco for wanting, and trying, to have sex 
 
 _____
 
-&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,False,False,True,False,False,False,False,Counter-argue,False,"Sentiment: negative
-Emotion: contempt
-Intent: counter-argue
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Negative,False,True,False,True,False,False,False,False,Challenge,False,"Sentiment: negative
+Emotion: contempt, sarcasm
+Intent: challenge
 
-Reply: I think you're misunderstanding the situation. The outrage wasn't because he was attracted to her, but because he was trying to have sex with her in a hotel room, which is a pretty obvious power imbalance. He was also",Negative,False,False,False,True,False,False,Counter-argue
+Sentiment: The reply expresses disapproval and frustration toward the parent's argument.
+Emotion: The reply contains contempt, as it belittles the parent's argument, and sarcasm, as it mocks the parent's point through exagger",Negative,False,False,False,True,False,False,Counter-argue
 33,"Yours too but it doesn't matters for me now :
                      
                   
-I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Neutral,False,False,False,False,True,False,False,False,Others,True,"Sentiment: negative
+I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Negative,False,False,True,True,False,False,False,False,Challenge,False,"Sentiment: negative
 Emotion: hostility, contempt
-Intent: counter-argue
+Intent: challenge
 
-Parent: I changed my view
-Reply: I'm glad you changed your view, but I'm still not convinced that most of the time they don't
-Sentiment: neutral
-Emotion: none
-Intent: counter",Neutral,False,False,False,True,False,False,Counter-argue
+Parent:",Neutral,False,False,False,True,False,False,Counter-argue
 34,"Edit: I just realized that there's a Popular Topic archive with this topic in it. I'm not sure if the mods are supposed to leave this one or remove it, but I'll be reading through some of the older versions of this topic.
 
 Let me preface this by saying that I'm not okay with raping babies. However, the idea of moral relativity, and the question, ""How far can we take it?"" are troubling ones. I've done some careful thinking and I believe that there are no objective morals at all. I'm interested in hearing what others think of my case, and equally interested in hearing theirs.
@@ -386,14 +390,13 @@ Morality cannot be thought of as strictly objective or relative. Instead, there 
 So I have changed my view a little, and I'm working on refining this into something a little clearer. Thank you guys for your input.
 _____
 
-&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*",Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.,Negative,False,False,True,False,False,False,False,False,Counter-argue,False,"Sentiment: negative
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*",Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.,Negative,False,False,True,False,False,False,False,False,Challenge,False,"Sentiment: negative
 Emotion: hostility
-Intent: counter-argue
+Intent: challenge
 
-Reply: I think you're misunderstanding the concept of objective morality. Objective morality is not about what is universally agreed upon, but rather what is universally true. For example, the laws of physics are universally true, but not everyone agrees on",Negative,False,False,False,True,False,False,Counter-argue
+This reply is negative because it expresses disapproval and frustration with the original post. The emotion is hostility because it is openly aggressive and attacking. The intent is challenge because it pushes back against the original post without presenting its own reasoning or alternative claim. It",Negative,False,False,False,True,False,False,Counter-argue
 35,"Perhaps a compromise would be to provide some minimum level of power, water, etc for free, then charge for ""overages"" essentially. Of course, determining what a minimum standard is would be quite difficult.",I think any minimum level at all would still make a difference to most people.,Positive,False,False,False,False,False,False,True,False,Support,False,"Sentiment: positive
 Emotion: appreciation
 Intent: support
 
-Parent: Perhaps a compromise would be to provide some minimum level of power, water, etc for free, then charge for ""overages"" essentially. Of course, determining what a minimum standard is would be quite difficult.
-Reply: I think any minimum",Positive,False,False,False,True,False,False,Support
+Parent:",Positive,False,False,False,True,False,False,Support

@@ -1,0 +1,1740 @@
+row_id,Parent,Reply,gold_intent,intent_base,intent_base_fallback,intent_base_raw,intent_dialogue_act,intent_dialogue_act_fallback,intent_dialogue_act_raw,intent_sentiment,intent_sentiment_fallback,intent_sentiment_raw,intent_emotion,intent_emotion_fallback,intent_emotion_raw,intent_dialogue_act+sentiment,intent_dialogue_act+sentiment_fallback,intent_dialogue_act+sentiment_raw,intent_dialogue_act+emotion,intent_dialogue_act+emotion_fallback,intent_dialogue_act+emotion_raw,intent_emotion+sentiment,intent_emotion+sentiment_fallback,intent_emotion+sentiment_raw,intent_dialogue_act+emotion+sentiment,intent_dialogue_act+emotion+sentiment_fallback,intent_dialogue_act+emotion+sentiment_raw
+0,I thought it was an argument for avoiding being next to the guy the police are shooting at.,"A very good point, I will keep it in mind.",Support,Support,False," support
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is an information seeking
+    if 'question' in reply.lower():
+        return 'information seeking",Support,False," support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Intent: support",Support,False," support
+Code: 
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the reply's sentiment
+    sentiment = 'Positive'
+
+    # Define the reply's content
+",Support,False," support
+Comment: The reply is supportive of the parent's point, agreeing with it and reinforcing it. The language used is appreciative and acknowledges the parent's insight. The reply does not challenge or counter-argue the parent's claim, but rather affirms it. This is an example of a supportive reply.",Support,False," support
+Dialogue act: agree
+Sentiment: Positive
+
+Parent: I'm not sure if I agree with this, but I think it's an interesting perspective.
+Reply: I think you're right, it's a good point.
+Intent: support
+Dialogue act: agree
+Sentiment: Positive
+
+Parent: I",Support,False," support
+
+The final answer is support.  # Correct!  # CMV # Reddit # DialogueActs # EmotionRecognition # IntentClassification  # NaturalLanguageProcessing  # ArgumentationMining  # HumanComputerInteraction  # ArtificialIntelligence  # MachineLearning  # NLP  # ArgumentMining  # DialogueAnalysis",Support,False," support
+```python
+def classify_intent(reply):
+    # Define the possible intents
+    intents = {
+        ""information seeking"": [""ask"", ""question"", ""clarify"", ""evidence""],
+        ""challenge"": [""push"", ""dismiss"", ""mock"", ""prove"", ""short rebuttal"", ""sarcast",Support,False," support
+Dialogue act: agree
+Sentiment: Positive
+Emotion: Appreciation
+
+Parent: I'm not sure if I agree with the idea of avoiding the police.
+Reply: I think it's a good idea to avoid the police when they're shooting at you.
+Intent: support
+Dialogue act: agree
+"
+1,"As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.","what on earth does ""act appropriately"" mean",Challenge,Information seeking,False," information seeking
+Label: information seeking
+---
+Parent: I'm not saying that, I'm saying that the current system is broken and needs to be changed.
+Reply: the system is not broken, it's just being used for the wrong purposes.
+Intent: counter-argue
+Label: counter-argue
+",Information seeking,False," information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Parent: I don't know, I just know when someone is being a jerk or a nuisance.
+Reply: that's a pretty subjective standard
+Intent: challenge
+Dialogue act: statement
+Label: challenge
+Dialogue act: statement",Information seeking,False," information seeking
+---
+Parent: I'm not saying they should be forced to assimilate, but I think it's reasonable to expect them to learn some basic English and customs.
+Reply: that's a pretty broad and vague expectation, and it's not like immigrants are a monolith
+Intent: counter-argue
+",Information seeking,False," information seeking
+Label: information seeking
+===============================================================================
+
+Parent: I'm not saying that all immigrants are bad people, but...
+Reply: Oh boy, here we go again.
+Intent: challenge
+Label: challenge
+===============================================================================
+
+Parent: I'm not saying that all immigrants are bad people, but...
+Reply:",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+
+Parent: I'm not saying that immigrants are bad people, but...
+Reply: you're not saying they're good people either
+Intent: counter-argue
+Dialogue act: statement
+Sentiment: Negative
+
+Parent: I'm not saying that immigrants",Information seeking,False," information seeking
+Dialogue act: question
+Emotion: Curiosity
+
+Parent: I'm not saying they should be forced to assimilate, but I think it's a good idea for them to learn the language and customs of the country they're living in.
+Reply: oh great, so now you're a linguist",Information seeking,False," information seeking
+```
+import pandas as pd
+
+# Define the data
+data = {
+    ""Parent"": [""As always, it depends on the arena you're talking about. I don't care what immigrants do on their own time but when they interact with me I expect them to act appropriately.""],
+    ""Reply",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+Emotion: Curiosity
+
+Parent: I'm not saying they should be forced to assimilate, but they should be willing to learn and adapt to our culture.
+Reply: ""learn and adapt to our culture"" is just a euphemism for """
+2,"&gt; The logic and maths behind the programming. Not only that an algorithm works, but why and how it works. A better knowledge and understanding of time and space complexity. Those are things people who teach themselves programming often seem to not pay attention to, but which could come in handy
+
+I think this is a key point. This is not a ""programming"" degree - computer science is basically a branch of mathematics, and programming languages are just a tool to a computer scientist. The OP's comment about learning a language which will be out of date somewhat misses the point. A competent developer will be skilled at programming ""in general"", and will pick up numerous languages throughout their career as and when it is necessary.",This suddenly makes sense. _,Support,Information seeking,False," information seeking
+IsCorrect: False
+Reply: I think you're misunderstanding the OP's point. They're not saying that learning a language is the only thing that matters, but rather that it's a crucial part of the learning process. Without a good grasp of programming fundamentals, you're not going to be able to",Support,False," support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Intent: support
+Dialogue act: agree
+Label: support",Information seeking,False," information seeking
+Answer: information seeking
+Code: 
+```python
+import re
+
+def classify_intent(reply):
+    # Remove leading/trailing whitespace
+    reply = reply.strip()
+    
+    # Remove punctuation
+    reply = re.sub(r'[^\w\s]', '', reply)
+    
+    # Convert to lowercase
+   ",Support,False," support
+Explanation: The reply agrees with and reinforces the parent's position, specifically the idea that computer science is a branch of mathematics and that a competent developer should be skilled at programming in general, rather than just one specific language. The tone is appreciative and understanding, indicating that the reply is supportive of the parent's",Support,False," support
+Dialogue act: agree
+Sentiment: Positive
+
+The final answer is: support.  ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ...",Support,False," support
+Dialogue act: agree
+Emotion: Appreciation
+
+The final answer is: support.  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...  ... ... ...",Support,False," support
+Explanation: The reply agrees with and reinforces the parent's position, specifically the idea that computer science is a branch of mathematics and that a competent developer should be skilled at programming in general, rather than just one specific language. The tone is appreciative and positive, indicating that the reply is supportive of the parent's",Information seeking,False," information seeking
+Dialogue act: agree
+Sentiment: Positive
+Emotion: Appreciation
+
+Parent: &gt; I'm not sure I agree with the idea that a CS degree is the only way to become a good programmer. I think it's possible to learn programming on your own and still become a good programmer"
+3,Why would differing opinions on religion or politics be a deal-breaker?,"Some religions prohibit dating/marrying people of other religions. Also, some people with conservative religious views see people with liberal or secularist views as immoral and vice versa.",Others,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence to support the parent's claim that differing opinions on religion or politics can be a deal-breaker. The reply provides specific examples of how differing religious views can lead to conflicts in relationships. 
+
+Note: The reply does not simply agree with the",Counter-argue,False," counter-argue
+Dialogue act: statement
+""""""
+from typing import List
+
+def classify_intent(reply: str) -> str:
+    """"""
+    Classify the communicative intent of the Reddit CMV reply.
+
+    Args:
+    reply (str): The reply to be classified.
+
+    Returns:
+    str: The label",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence to support the parent's claim that differing opinions on religion or politics can be a deal-breaker. The reply provides specific examples of how differing religious views can lead to conflicts in relationships. This is an example of counter-arguing, as",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence to support the parent's claim that differing opinions on religion or politics can be a deal-breaker. The reply provides specific examples of how differing religious views can lead to conflicts in relationships. 
+
+Note: The reply does not simply agree with the",Counter-argue,False," counter-argue
+Dialogue act: statement
+Sentiment: Neutral
+
+Parent: I'm not sure I agree with the idea that people should be able to say whatever they want.
+Reply: That's a slippery slope argument. What's next, banning books?
+Intent: counter-argue
+Dialogue act: statement",Counter-argue,False," counter-argue
+Dialogue act: statement
+Emotion: Neutral
+
+Parent: I think it's because people are often deeply invested in their own worldview and see others as wrong or immoral.
+Reply: That's a pretty simplistic view. People are complex and multifaceted, and their beliefs are influenced by a variety",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence to support the parent's claim that differing opinions on religion or politics can be a deal-breaker. The reply provides specific examples of how differing religious views can lead to conflicts in relationships. This is an example of counter-arguing, as",Counter-argue,False," counter-argue
+Dialogue act: statement
+Sentiment: Neutral
+Emotion: Neutral
+
+Parent: I'm not sure I agree with the idea that people should be free to make their own choices.
+Reply: That's a pretty broad statement. Can you clarify what you mean by ""make their own choices"""
+4,"I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
+
+However, I don't think that you can decide as a blanket statement for everyone else whether or not it's responsible to have children. As you mentioned, other people have different circumstances and considerations. A couple in their early 30s, in stable and established careers with a combined income in the 6 figures would be in a very different position, at least in the short term. The world may certainly change in unexpected ways, but those future children could be the ones to change things for the better.","I agree. Your example goes under my ""much richer"" exception.",Support,Counter-argue,False," counter-argue
+Reasoning: The reply agrees with the parent's view that people should not have children if they cannot support them, but then presents an exception to this rule, arguing that a couple with a high income and established careers is an exception. This is a counter-argument because it presents a specific case",Information seeking,False," information seeking
+Answer: counter-argue
+Dialogue act: agree
+Intent: support
+Answer: counter-argue
+Intent: challenge
+Answer: counter-argue
+Intent: others
+Answer: others
+Intent: information seeking
+Answer: counter-argue
+Intent: support
+Answer: support",Information seeking,False," information seeking
+Answer: information seeking
+Code: 
+```python
+import pandas as pd
+
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the reply
+    reply = ""I",Information seeking,False," information seeking
+Answer: information seeking
+Justification: The reply is primarily asking a question to get clarification or evidence. The reply is asking for an exception to be clarified. 
+
+Parent: I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish",Information seeking,False," information seeking
+Dialogue act: agree
+Sentiment: Positive
+
+Parent: I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
+
+However, I",Counter-argue,False," counter-argue
+Dialogue act: agree
+Emotion: Appreciation
+
+Parent: I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same view, honestly. 
+
+",Others,False," others
+Explanation: The reply is not engaging with the parent's argument at all. It's not presenting any reasoning or evidence to support or challenge the parent's claim. Instead, it's making a comment that is related to the topic but doesn't contribute to the discussion. The reply is simply acknowledging the parent's example",Counter-argue,False," counter-argue
+Dialogue act: agree
+Sentiment: Positive
+Emotion: Appreciation
+
+Parent: I agree with you that if you and your fiance don't think it's responsible to have kids, then don't. I wish more people who didn't feel they could adequately support children would adopt the same"
+5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
+
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Counter-argue,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence (Dark Souls), and alternative claim (game dependent) to support its pushback. The reply is not simply asking a question, pushing back without presenting its own reasoning, or agreeing with the parent's position. It is engaging with the parent",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Intent: counter-argue
+Dialogue act: counter-argue
+Intent: counter-argue
+Dialogue act: counter-argue
+Intent: counter-argue
+Dialogue act: counter-argue
+Intent: counter-argue",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, that Dark Souls is a game-dependent example, to support its pushback against the parent's claim that K&amp;M is superior. The reply does not simply challenge or mock the parent's claim, but rather offers a counter-argument. The sentiment",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, that Dark Souls is a game-dependent example, to support its pushback against the parent's claim that K&amp;M is superior. The reply does not simply challenge or dismiss the parent's claim without presenting its own argument. The reply does not seek",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Sentiment: Neutral
+
+Parent: *Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
+
+Edit: I also",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Emotion: Neutral
+
+Parent: *Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
+
+Edit: I also",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, that Dark Souls is a game-dependent example, to support its pushback against the parent's claim that K&amp;M is superior.  ""It's game dependent"" is an argument that counters the parent's generalization. The reply does not simply",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Sentiment: Neutral
+Emotion: Neutral
+
+Parent: *Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method"
+6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Challenge,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by pointing to a specific slide (14) in the presentation, implying that it contains evidence that supports the parent's claim. This is an example of counter-arguing, as the reply is pushing back against the parent's skepticism while also providing a",Counter-argue,False," counter-argue
+Dialogue act: statement
+""""""
+import pandas as pd
+
+# Define the data
+data = {
+    ""Parent"": [""I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how 'capitalism' is the",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning by pointing to a specific slide in the presentation, implying that the content of that slide supports the parent's claim. This is an example of counter-arguing, as the reply is pushing back against the parent's argument while also presenting evidence to support that",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by pointing to a specific slide in the presentation, which is an alternative claim to support the pushback. The reply is not asking a question, nor is it simply challenging the parent's claim without presenting its own reasoning. It is also not supporting the",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by pointing to a specific slide in the presentation, which is an alternative claim to support the pushback. The reply is not simply asking a question, pushing back without presenting its own reasoning, or agreeing with the parent's position. Instead, it is",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by pointing to a specific slide in the presentation, which is likely to be evidence supporting the parent's claim. The tone is sarcastic and hostile, but the content of the reply is still an argument. 
+
+Note: The reply is not asking a",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by pointing to a specific slide (14) in the presentation, implying that it contains evidence that supports the parent's claim. This is an example of counter-arguing, as the reply is pushing back against the parent's skepticism while also providing a",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by pointing to a specific slide (14) in the presentation, implying that it contains evidence that supports the parent's claim. The tone is dismissive and hostile, but the content of the reply is an argument. 
+
+Note: The reply is not"
+7,Haters gonna hate.,Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.,Challenge,Counter-argue,False," counter-argue
+Intent: others
+Intent: challenge
+Intent: information seeking
+Intent: support
+Intent: others
+Intent: challenge
+Intent: support
+Intent: others
+Intent: challenge
+Intent: information seeking
+Intent: others
+Intent: challenge
+Intent: support
+Intent: others
+Intent",Counter-argue,False," counter-argue
+
+Parent: I'm going to the gym today.
+Reply: I'm going to the gym today too!
+Intent: support
+
+Parent: I'm going to the gym today.
+Reply: That's a pretty weak argument. You're just going to the gym because you want to look good, right",Counter-argue,False," counter-argue
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is a challenge
+    if 'prove it' in reply or 'disagree",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply is sarcastic and hostile, but the primary intent is to counter-argue the parent's claim. 
+
+Note: The reply is sarcastic and hostile, but the primary intent",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+
+Parent: I'm not sure if I'm the only one who thinks this, but I think the new policy is a good thing.
+Reply: I think you might be the only one who thinks that. 
+Intent: challenge
+Dialogue act:",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Emotion: Sarcasm, Hostility
+
+Parent: Haters gonna hate.
+Reply: Great counterargument. Clearly your logical reasoning and dialectical skills have been well honed through your schooling.
+Intent: counter-argue
+Dialogue act: disagree
+Emotion",Counter-argue,False," counter-argue
+Reasoning: The reply is a counter-argument because it presents its own reasoning and evidence (the sarcasm and mocking tone) to support its pushback against the parent's claim. The reply is not simply asking a question, pushing back without presenting its own reasoning, or agreeing with the parent",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+Emotion: Sarcasm, Hostility
+
+Parent: I'm going to the gym to get in shape.
+Reply: That's great! I've been trying to get in shape too. What's your workout routine like?
+Intent: information"
+8,What exactly is a religious fallacy?,Something he made up to justify his traditional beliefs,Others,Counter-argue,False," counter-argue
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge
+Corrected Intent: challenge",Counter-argue,False," counter-argue
+Dialogue act: statement
+
+Parent: What exactly is a religious fallacy?
+Reply: I'm not sure, but I think it's a thing
+Intent: information seeking
+Dialogue act: statement
+
+Parent: What exactly is a religious fallacy?
+Reply: It's a fallacy that is",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply is not simply agreeing or disagreeing, but rather providing a definition for the term ""religious fallacy"". 
+
+Note: The reply is not necessarily correct, but it does present an argument",Counter-argue,False," counter-argue
+Comment: This reply is a counter-argument because it presents its own reasoning and evidence to support its pushback. The reply claims that the religious fallacy is something made up to justify traditional beliefs, which is a clear argument against the parent's question. 
+
+Parent: What exactly is a religious",Counter-argue,False," counter-argue
+Dialogue act: statement
+Sentiment: Negative
+
+Parent: What exactly is a religious fallacy?
+Reply: I'm not sure, but I think it's a fallacy that is used in religious arguments
+Intent: information seeking
+Dialogue act: question
+Sentiment: Neutral
+
+Parent:",Counter-argue,False," counter-argue
+Dialogue act: statement
+Emotion: Disgust
+
+Parent: What exactly is a religious fallacy?
+Reply: I'm not sure, but I think it's a fallacy that only applies to religious people
+Intent: information seeking
+Dialogue act: question
+Emotion: Curiosity",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply is not simply agreeing or disagreeing, but rather providing a definition for the term ""religious fallacy"". The reply is not asking a question, nor is it off-topic or making a",Counter-argue,False," counter-argue
+Dialogue act: statement
+Sentiment: Negative
+Emotion: Disgust
+
+Parent: What exactly is a religious fallacy?
+Reply: I'm not sure, but I'd love to learn more about it
+Intent: information seeking
+Dialogue act: question
+Sentiment: Neutral
+"
+9,"Is Walmart bad or are the people who hand over their dollars bad?
+
+Even if they have a 'monopoly', I can shop for food and underwear elsewhere.",[What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/Monopsony),Counter-argue,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by providing a link to a Wikipedia article that defines monopsony, which is a different concept from monopoly. This shows that the reply is not just disagreeing with the parent, but also providing evidence to support its counter-argument. 
+
+Parent",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by providing a link to a Wikipedia article that defines monopsony, which is a different concept from monopoly. This shows that the reply is not just disagreeing with the parent's claim, but also providing evidence to support its own counter-argument",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by providing a link to a Wikipedia article that defines monopsony, which is a different concept from monopoly. This shows that the reply is not just disagreeing with the parent's claim, but also providing evidence to support its own argument. The",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Neutral
+
+Parent: I'm not saying that Walmart is the only store that sells food and underwear. I'm saying that they have a monopoly on the market.
+
+Reply: [What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/M",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Emotion: Neutral
+
+Parent: I'm not saying that Walmart is the only store that sells food and underwear. I'm saying that they have a monopoly on the market.
+
+Reply: [What Walmart has isn't a monopoly.](http://en.wikipedia.org/wiki/M",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by providing a link to a Wikipedia article that defines monopsony, which is a different concept from monopoly. This shows that the reply is not just disagreeing with the parent's claim, but also providing evidence to support its own argument. The",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Neutral
+Emotion: Neutral
+
+Parent: I'm not saying that Walmart is bad, I'm saying that the people who shop there are bad.
+
+Reply: [I'm not sure I agree with that.](http://en.wikipedia.org/wiki/Mon"
+10,"My exposure to dance (Dancers I know) would lead me to believe that a) Dance isn't an Art in the same way that say Theater/ Film is, or b) my school simply doesnt emphasize that side of dance (which in my mind is the reason to study art of any kind at a university level)
+
+Film Majors and Theater Majors will spend the at least 2 semesters of Coursework on Theory, History, and Analysis. The dance majors I'm friends with say they don't have to do any of that.
+
+Which is the core of my issue with dance as a major, I don't see the other side of dance. It's 100% possible that's just my school, and other programs are different. 
+
+Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Information seeking,Information seeking,False," information seeking
+Label: information seeking
+Reply: I'm not sure what you're getting at with this post. Dance is an art form that has been around for thousands of years. It's not like it's a new thing that just popped up. What's your point?
+Intent: challenge
+Label: challenge
+",Information seeking,False," information seeking
+Label: information seeking
+Dialogue act: question
+Parent: My friends are all ballet and contemporary dancers. They're all very talented, but they all seem to focus on the physicality of dance, rather than the artistry or the history behind it. They all seem to be very focused on perfecting",Information seeking,False," information seeking
+Label: information seeking
+Sentiment: Neutral
+Reply: I'm a dance major and I can tell you that we do have to take classes on dance history, theory, and analysis. In fact, I'm taking a class right now on the history of modern dance. We also have to take technique",Information seeking,False," information seeking
+Label: information seeking
+Comment: I'm curious about the nature of the dance your friends do, as it might provide insight into the potential lack of emphasis on theory, history, and analysis in their program. This is a genuine inquiry, rather than a challenge or counter-argument. The reply is seeking",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+
+The final answer is: information seeking. 2023-05-13T15:47:04Z
+The final answer is: information seeking. 2023-05-13T15:47:04Z
+The final answer is:",Information seeking,False," information seeking
+Dialogue act: question
+Emotion: Curiosity
+
+The final answer is: information seeking. 2023-05-13T19:45:47Z
+The final answer is: information seeking. 2023-05-13T19:45:47Z
+The final answer is",Information seeking,False," information seeking
+Explanation: The reply asks a question to get clarification or evidence, specifically asking about the type of dance the parent's friends do. This is an example of information seeking, as the reply is seeking more information to better understand the context of the parent's claim. The reply does not push back, present its",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+Emotion: Curiosity
+Label: information seeking
+Reply: I'm a dance major and I can tell you that the kind of dance I do (ballet) has a rich history and theory behind it. We spend a lot of time studying the"
+11,Your name had better not be a Game of Thrones spoiler.,"No, I'm just an advocate for gavelkind succession laws, even in fantasy worlds.  ;)",Others,Others,False," others
+Reasoning: The reply is a joke and does not engage with the parent's argument at all. It is off-topic and does not address the parent's concern about spoilers. The tone is lighthearted and playful, but it does not provide any argumentative content. 
+
+Note: The other options",Others,False," others
+Dialogue act: support
+
+Parent: I'm not sure if I'm ready to commit to a new relationship.
+Reply: I'm not sure if I'm ready to commit to a new relationship either.  I've been in a few relationships in the past and I've always ended up getting hurt.  I",Support,False," support
+Sentiment: Positive
+
+Parent: I'm not sure I agree with the idea that the US should be a republic.
+Reply: I think you're misunderstanding the concept of a republic. A republic is a system of government where the power is held by the people, either directly or through elected representatives. It's",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning (advocating for gavelkind succession laws) and alternative claim (even in fantasy worlds) to support its pushback against the parent's concern about spoilers. The tone is lighthearted and playful, but the content is still argumentative",Counter-argue,False," counter-argue
+Label: counter-argue
+Dialogue act: disagree
+Sentiment: Positive
+
+Parent: I'm not sure I agree with the idea that the US should adopt a universal basic income.
+Reply: I think it's a great idea. We should definitely consider it.
+Intent: support
+Label",Counter-argue,False," counter-argue
+Label: counter-argue
+Dialogue act: disagree
+Emotion: Humorous
+
+Parent: I'm not sure I agree with the idea that the US should adopt a universal basic income.
+Reply: I think it's a great idea. We should totally do it. 
+Intent: support",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning (advocating for gavelkind succession laws) and pushes back against the parent's claim (that the name is a Game of Thrones spoiler) by providing an alternative explanation. The tone is lighthearted and playful, but the content",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Positive
+Emotion: Amused
+
+Parent: I'm not sure I agree with the idea that the US should adopt a four-day workweek.
+Reply: I think it's a great idea. Many countries have already implemented it and seen positive results.
+"
+12,"&gt; Would it be fair to say that the blacks doing worse in all those metrics (crime, violence, poverty, disease, out of wedlock childbirth) also is not related to the real structural privilege? Or that it applies to blacks but not to asians?
+
+The fact that Black Americans might do worse in all of these metrics is actually directly related to the structural privilege. White people have the structural advantage at *the expense* of Black American's welfare, health, etc.
+
+&gt; You are saying that Asians succeed despite their lack of privilege and would do even better in a non-racist world?
+
+I am saying that *some* Asian Americans succeed despite their lack of racial privilege. But,  there is not a structurally entrenched system of privilege *based on their race/ethnicity*. The may have privileges based on other factors, such as gender, sexual orientation, or socioeconomic status.
+
+EDIT: nuance",Why don't white people use their structural advantage at the expense of Asian people too?  Why the difference?,Challenge,Information seeking,False," information seeking
+IsCorrect: True
+Reply: I think you're misunderstanding the concept of structural privilege. It's not about individual people using their privilege, but about the systemic and institutional barriers that prevent certain groups from accessing resources and opportunities. Intent: counter-argue
+IsCorrect: True
+Reply: I think",Challenge,False," challenge
+Dialogue act: question
+Label: challenge
+Dialogue act: counter-argue
+Label: counter-argue
+Dialogue act: support
+Label: support
+Dialogue act: others
+Label: others
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: question
+Label: challenge",Information seeking,False," information seeking
+Label: information seeking
+Sentiment: Neutral
+Reply:  I think you're misunderstanding the concept of structural privilege.  It's not about individual people using their privilege to oppress others, but rather about the systemic and institutional barriers that prevent certain groups from accessing resources and opportunities.  For example, red",Challenge,False," challenge
+Label: challenge
+Comment: This reply is a challenge because it pushes back on the parent's claim without presenting its own reasoning or alternative claim. The parent's claim is that white people have a structural advantage at the expense of Black Americans, and the reply asks a question that implies this advantage should be applied to",Counter-argue,False," counter-argue
+Dialogue act: question
+Sentiment: Neutral
+
+This reply is a counter-argue because it presents its own reasoning and evidence to support its pushback. The reply asks a question that challenges the parent's claim, but it does not simply dismiss or mock the parent's position. Instead,",Counter-argue,False," counter-argue
+Dialogue act: question
+Emotion: Curiosity
+
+This reply is a counter-argue because it presents its own reasoning and evidence to support its pushback. The reply asks a question to get clarification or evidence, which is a characteristic of information seeking, but it also presents its own reasoning",Challenge,False," challenge
+Explanation: The reply is a challenge because it pushes back on the parent's claim by asking a question that implies the parent's argument is inconsistent. The question is not asking for clarification or evidence, but rather is a rhetorical device to highlight the perceived flaw in the parent's reasoning. The reply does not present its",Counter-argue,False," counter-argue
+Dialogue act: question
+Sentiment: Neutral
+Emotion: Curiosity
+
+Parent: &gt; Would it be fair to say that the blacks doing worse in all those metrics (crime, violence, poverty, disease, out of wedlock childbirth) also is not related to the real structural"
+13,The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole diseased culture we live in. Do I really need to reply to it?,"If you feel that saying ""my girl/boyfriend"" in a monogamous relationship is evidence of a rape culture then there's clearly no point in debating any further.",Challenge,Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback. It argues that the parent's interpretation of the examples is incorrect and that there's no point in debating further. The reply engages with the parent's argument and presents a counter-argument. 
+
+Note: The reply could",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Intent: counter-argue
+Label: counter-argue
+Dialogue act: disagree
+Intent: counter-argue
+Label: counter-argue
+Dialogue act: disagree
+Intent: counter-",Challenge,False," challenge
+```python
+def classify_intent(reply):
+    """"""
+    Classify the communicative intent of the Reddit CMV reply.
+
+    Args:
+    reply (str): The text of the reply.
+
+    Returns:
+    str: The label of the communicative intent (information seeking, challenge, counter-argue,",Counter-argue,False," counter-argue
+Speaker: OP
+Speaker role: Author
+Speaker gender: Male
+Speaker age: Adult
+Speaker location: Not specified
+Speaker occupation: Not specified
+Parent tone: Contempt
+Parent emotion: Contempt
+Parent intent: counter-argue
+Parent role: Author
+Parent gender:",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+
+Parent: I'm not saying that people who use the term ""my girlfriend"" are rapists. I'm saying that the fact that people use the term ""my girlfriend"" is a symptom of a larger societal problem.
+Reply: That's a",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Emotion: Contempt
+
+Parent: The rest of your argument was completely beside the point. None of your examples at all contradict what I say. The fact that women fight over men or that people speak possessively about each other is just another example of the whole dise",Challenge,False," challenge
+Explanation: The reply is a challenge because it dismisses the parent's claim and presents no reasoning or evidence to support its own position. The tone is also contemptuous, which further supports the classification as a challenge. The reply does not engage with the parent's argument, but rather pushes back with a short rebut",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+Emotion: Contempt
+
+Parent: I'm not saying that saying ""my girl/boyfriend"" is evidence of a rape culture. I'm saying that it's a symptom of a culture that is more accepting of violence against women.
+Reply"
+14,"The OP is actually much more clever than you all are giving her credit for
+
+OP has only made a comment about what happens IF Batman can escape the first fight - so any crazy-powerful superbeing wins but is not relevant to the discussion.
+
+What we really need is some sort of Lovecraftian villain that would allow Batman to escape the first fight, but which would nevertheless gradually take over and *become* insurmountable (maybe zombies, in general, although tbh I don't know if they count)
+
+That, or somebody who reincarnates as a more powerful being (Phoenix?) or who could just outlast Batman (Hulk / Wolverine, maybe)","_
+
+I posted my description in another post on this thread but put the delta at the bottom of the post. I just wanted to make sure /u/deltabot saw this.",Others,Others,False," others
+Correctness: 1
+Context: thread
+Context type: discussion
+Context subtype: hypothetical scenario
+Context topic: comic books
+Context subtopic: Batman
+Context subtopic type: character
+Context subtopic subtype: abilities
+Context subtopic subtype type: combat
+Context subtopic subtype subtype: escape",Others,False," others
+Dialogue act: statement
+```python
+def classify_intent(reply):
+    # Define the possible intents
+    intents = {
+        ""information seeking"": [""What do you think about..."", ""Can you explain..."", ""I'm not sure about...""],
+        ""challenge"": [""That's not true"", ""You can",Others,False," others
+Correctness: 1
+Context: thread
+Reasoning: The reply is off-topic and does not engage with the parent's argument at all. It is a meta-commentary about the thread/forum itself, mentioning the delta bot. 
+
+The final answer is: others.  I do not have the ability",Others,False," others
+Correctness: 1
+Confidence: 0.9999999999999999
+Intent: others
+Correctness: 1
+Confidence: 0.9999999999999999
+Intent: others
+Correctness: 1
+Confidence: 0.999999999999",Others,False," others
+Dialogue act: statement
+Sentiment: Neutral
+
+The reply is off-topic and does not engage with the parent's argument at all. It is a meta-commentary about the thread/forum itself, mentioning the delta bot.  The sentiment is neutral, as it is simply a statement of fact. The dialogue act",Others,False," others
+Dialogue act: statement
+Emotion: Neutral
+
+The final answer is: others.  I was able to get the correct answer by reading the reply and identifying that it does not engage with the parent's argument at all, but instead makes a meta-commentary about the thread/forum itself. The reply is about",Others,False," others
+Correctness: 1
+Context: thread
+Reasoning: The reply is off-topic and does not engage with the parent's argument at all. It is a meta-commentary about the thread/forum itself, mentioning the delta bot. 
+
+The final answer is: others.  I do not have the ability",Others,False," others
+Dialogue act: statement
+Sentiment: Neutral
+Emotion: Neutral
+
+The final answer is: others.  I was able to get the correct answer by using the following thought process:
+The reply does not engage with the parent's argument at all. It is a meta-commentary about the thread/forum itself"
+15,"I don't know much of ancient Greece and how they toyed with it, however I feel that if our nation has established a constitution that works (as ours seems to, when correctly followed), abolishment of both the Electoral branch and decision making powers given to the Legislative branch would be the best thing the country could do.
+
+In my idea of how it would work:
+
+* Congress can write, advocate, and argue for and against laws
+
+* Congress cannot decide on these laws, they can merely campaign for them
+
+* Every six months, all proposed bills, etc., will be put up to vote. Every citizen may vote, or not
+
+* Majority rule is enforced, no more than 51% is needed, thus eliminating the need for recasting the vote, tus eliminating postponement of a law
+
+* Constitutional law may need to be **Slightly** expanded on to set some ground rules for all further law
+
+* It needs to be very difficult to change the constitution for the above reason
+
+What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Challenge,Others,False," others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent: others
+Intent:",Others,False," others
+Dialogue act: joke
+Intent: others
+Dialogue act: joke
+Intent: others
+Dialogue act: joke
+Intent: others
+Dialogue act: joke
+Intent: others
+Dialogue act: joke
+Intent: others
+Dialogue act: joke
+Intent: others
+Dialogue act: joke
+Intent: others",Others,False," others
+Explanation: The reply is a joke and does not engage with the parent's argument at all. It is off-topic and does not provide any argumentative point. The sentiment is negative, but the label is ""others"" because the reply does not engage with the parent's argument. 
+
+Note: The sentiment of",Others,False," others
+Reasoning: The reply is a joke and does not engage with the parent's argument at all. It is a meta-commentary about the thread/forum itself, specifically expressing amusement at the parent's post. The tone is one of contempt and hostility, but it is not an argumentative response. 
+
+The final",Others,False," others
+Dialogue act: joke
+Sentiment: Positive
+
+Parent: I don't know much of ancient Greece and how they toyed with it, however I feel that if our nation has established a constitution that works (as ours seems to, when correctly followed), abolishment of both the Electoral branch and decision making powers",Others,False," others
+Dialogue act: laugh
+Emotion: Amusement
+
+Parent: I don't know much of ancient Greece and how they toyed with it, however I feel that if our nation has established a constitution that works (as ours seems to, when correctly followed), abolishment of both the Electoral branch and decision making",Others,False," others
+Reply: I think you're misunderstanding the concept of a constitution. A constitution is not a set of rules that can be changed every six months. It's a foundational document that outlines the framework of a government and the relationship between the government and its citizens. It's not meant to be a dynamic document that can",Others,False," others
+Reasoning: The reply is a joke and does not engage with the parent's argument at all. It is off-topic and does not provide any argumentative point. The sentiment is negative, but it is not a disagreement or a counter-argument. It is a joke, which is a meta-commentary about"
+16,"_ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.",Such plebs,Support,Others,False," others
+---
+Parent: I'm not sure if I'm the only one, but I've noticed that the more I use my brain, the more I feel like I'm losing my grip on reality.
+Reply: Same here. I've been noticing that too. I've been wondering if it's just a side effect",Challenge,False," challenge
+Dialogue act: disagree
+
+Parent: _ I'm not sure I agree with the idea that the peasantcake is superior to the pancake. I think the pancake is a more versatile food.
+Reply: I think the pancake is more versatile because it can be made with a variety of ingredients and can be",Challenge,False," challenge
+Comment: The reply is a dismissive and mocking remark that does not present any reasoning or alternative claim. It is a short rebuttal that pushes back against the parent's claim without engaging in any argument. The sentiment is negative, which aligns with the challenge label.  The reply is not asking for information",Challenge,False," challenge
+Comment: The reply is a sarcastic jab that dismisses the parent's claim without presenting any reasoning or alternative claim. It is a short rebuttal that pushes back on the parent's argument. The tone is hostile and sarcastic, which is consistent with the challenge label. 
+
+Note: The reply is not",Challenge,False," challenge
+Dialogue act: disagree
+Sentiment: Negative
+
+The final answer is: challenge.  I hope it is correct.  I used the definitions to classify the reply.  The reply is a short rebuttal that pushes back on the parent's claim without presenting its own reasoning or alternative claim.  It is",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Emotion: Sarcasm, Hostility
+
+Parent: _ Well done, good sir. For the lowly peasants of the world, perhaps the pancake (maybe renamed to the peasantcake) is the superior choice.
+Reply: Such plebs
+Intent: counter",Challenge,False," challenge
+```python
+def classify_reply(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is a challenge
+    if 'plebs' in reply.lower() or 'prove it'",Counter-argue,False," counter-argue
+Explanation: The reply is a counter-argue because it presents its own reasoning, evidence, or alternative claim to support that pushback. The reply is sarcastic and hostile, but it is still pushing back against the parent's claim and presenting its own argument. The reply is not simply asking"
+17,OPs post is in general.  This reply is in general.,"The OP is saying ""if I go"", so they are talking about themselves, not in general.",Counter-argue,Counter-argue,False," counter-argue
+Label: counter-argue
+Code: 
+```python
+def classify_reply(reply):
+    if ""if I go"" in reply:
+        return ""counter-argue""
+    else:
+        return ""others""
+```
+Explanation:
+This code classifies the reply as ""counter-arg",Counter-argue,False," counter-argue
+
+The final answer is: counter-argue.  I hope it is correct.  Thank you.  I am ready to be corrected.  I am ready to learn.  I am ready to improve.  I am ready to be wrong.  I am ready to be corrected.",Counter-argue,False," counter-argue
+Label: counter-argue
+```python
+def classify_reply(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the reply
+    reply = ""The OP is saying '",Counter-argue,False," counter-argue
+Label: counter-argue
+```python
+def classify_reply(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is an information seeking
+    if 'question",Counter-argue,False," counter-argue
+Dialogue act: clarify
+Sentiment: Neutral
+
+Parent: OPs post is in general.  This reply is in general.
+Reply: I don't think that's what they're saying.  I think they're talking about themselves.
+Intent: counter-argue
+Dialogue act: disagree",Counter-argue,False," counter-argue
+Dialogue act: clarify
+Emotion: Neutral
+
+Parent: OPs post is in general.  This reply is in general.
+Reply: I don't think that's what the OP is saying.  I think they are talking about themselves.
+Intent: counter-argue
+Dialogue act:",Counter-argue,False," counter-argue
+Label: counter-argue  # Corrected label
+```python
+def classify_reply(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the reply
+    reply = """,Counter-argue,False," counter-argue
+Dialogue act: clarify
+Sentiment: Neutral
+Emotion: Neutral
+
+Parent: OPs post is in general.  This reply is in general.
+Reply: I don't think so.  The OP is talking about themselves.
+Intent: challenge
+Dialogue act: disagree
+Sentiment:"
+18,"&gt;hes the only Ind in our federal legislative body. 
+
+That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been long.",Thank you i actually was not aware,Support,Information seeking,False," information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent: information seeking
+Intent",Information seeking,False," information seeking
+Dialogue act: agree
+""""""
+from typing import List
+
+def classify_intent(reply: str) -> str:
+    """"""
+    Classify the communicative intent of the Reddit CMV reply.
+
+    Args:
+    reply (str): The reply to be classified.
+
+    Returns:
+    str: The label of the",Information seeking,False," information seeking
+```
+import pandas as pd
+
+# Define the data
+data = {
+    ""Parent"": ["">hes the only Ind in our federal legislative body. "", ""That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 201",Information seeking,False," information seeking
+Label: information seeking
+Comment: The reply is polite and appreciative, and the user is seeking clarification on the information provided by the parent. The user is not challenging the parent's claim, but rather is asking for more information to understand the topic better. The reply is not presenting its own reasoning or",Information seeking,False," information seeking
+Dialogue act: thank
+Sentiment: Positive
+
+Parent: &gt;hes the only Ind in our federal legislative body. 
+
+That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been long",Information seeking,False," information seeking
+Dialogue act: agree
+Emotion: Appreciation
+
+Parent: &gt;hes the only Ind in our federal legislative body. 
+
+That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013 so it hasn't been",Information seeking,False," information seeking
+Label: information seeking
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is asking a question
+    if '?' in reply:
+        #",Information seeking,False," information seeking
+Dialogue act: thank
+Sentiment: Positive
+Emotion: Gratitude
+
+Parent: &gt;hes the only Ind in our federal legislative body. 
+
+That's not actually true anymore. Angus King from Maine is also an Ind. He was only voted in 2 years ago in 2013"
+19,"Check out [this video](http://www.ted.com/talks/christopher_ryan_are_we_designed_to_be_sexual_omnivores) that conveys a theory on how monogamy is not really as ingrained in us as most people think it is. There are theories that claim we (and by we I mean men) invented monogamy after coming up with agriculture to insure property inheritance (how do I know which one's my kid if she's fucking the whole town? who the hell gets my house then after I die?)
+
+Then you consider the fact that [monogamy wasn't really required for dudes up until like 60 years ago](https://www.youtube.com/watch?v=w8SOQEitsJI). Instead of choosing to let women behave like men, we chose to lock ourselves up in monogamy along with them. 6O years ago.
+
+Long story short: monogamy seems to be (to some people) a social construct that has no relevance today since getting pregnant is hard and abortions are legal in most developed places.
+
+Like others have said, it's impossible to find someone that fulfils your every need. And the fact that recent adultery rates are always high sounds like human reality is trying to make us understand that monogamy doesn't really make sense.","Which perfectly explains Socrates statement: ""By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.""",Challenge,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence (Socrates' statement) to support its pushback against the parent's claim that monogamy doesn't make sense. The reply is not simply agreeing or disagreeing, but rather engaging with the parent's argument and presenting an alternative perspective",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply references Socrates' statement, which is a counter-argument to the parent's claim that monogamy doesn't make sense. The reply is not simply agreeing or disagreeing,",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply is not just a short rebuttal or a sarcastic jab, but it actually engages with the parent's argument and presents a counter-argument. The reply is also not just a",Counter-argue,False," counter-argue
+
+The final answer is: counter-argue.  # Corrected # IntentClassification # RedditCMV # CMVReply # CounterArgue # Sarcasm # Philosophy # Monogamy # Marriage # Socrates # Quote # QuoteAnalysis # QuoteIntent # QuoteClassification # QuoteAnalysisIntent",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply uses a quote from Socrates to argue that the parent's claim about monogamy not making sense is not necessarily true, and that even if one gets a bad partner, it",Counter-argue,False," counter-argue
+Reasoning: The reply is a counter-argue because it presents its own reasoning and evidence to support its pushback. The reply uses a quote from Socrates to argue that the parent's claim about monogamy being a social construct is not supported by the fact that people still get married",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply uses a quote from Socrates to counter the parent's argument that monogamy doesn't make sense. The quote implies that marriage and monogamy can be beneficial and that the",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply uses a quote from Socrates to counter the parent's argument that monogamy doesn't make sense. The quote suggests that marriage and monogamy can lead to happiness, which"
+20,"Here's the thing that no one ever tells you about smoking: 
+
+**Smoking is the best thing in the whole world**
+
+No lies. It is the BEST thing. It creates a problem and it solves it. It is like winning the lottery fifteen times a day. 
+
+I knew about heroin. I knew about cocaine. I knew heroin would feel like the best orgasm I've ever had times a thousand. I knew cocaine would make me feel sexier than god but also like, if I got in a fight with god, I would win. I knew X would make every weekend better so long as I had it. I stayed FAR FAR away from that shit. Good things are good until you don't have them and then life sucks beyond the telling of it. I had a handle on that. 
+
+The only thing people told me about cigarettes was how much they sucked. Kissing a smoker was like licking an ashtray. They'll rob you blind. You'll die early. You'll smell bad. You'll talk through a hole in your throat. I watched them slowly march my father closer to death. Don't smoke.easy enough. 
+
+Here's the problem: if cigarettes are so nasty and terrible you have nothing to worry about. Have one. Have another. You'd never be *stupid* enough to fall into that trap, right? You can be that magic unicorn that can just have one socially with your friends, right? After all, people who get hooked get hooked before they turn 18 and you're nineteen so you're past the cutoff? Plus you're so *smart*! You'd never do something as dumb as getting addicted to the dumbest, most loserish drug on the market, right?
+
+It's never going to be you. Because smoking seems so innocuous. You know that 1/3 people who try heroin are addicted the first time out, but how can smoking, something so stupid, be so dangerous? It's just one cigarette.and the first time that's true! The first time you don't like it and it was as awful as you were expecting and you're completely disarmed for what's coming for you. 
+
+Then it's a long weekend of drinking in college and your friends smoke and they keep going outside to do so and you get curious again or you want to be ""in"" and the first one did NOTHING do you have the second. Then the eighth. And then it's only on the weekends. And then it's only while you drink. And then you ""cut back"" and only smoke when your friends have them (and they ALWAYS have them). You kind of know, in the back of your head, that you want them but you'd have to be stupid (remember?) to fall in that pit. You're crazy smart and good at life and you know all the facts and you'd never be that kid. 
+
+**Here's where it gets serious**: something terrible happens. You get broken up with, your dog gets hit by a car, you fail a class, something goes to hell in a hand basket. So you reward yourself with this self-destructive thing. Just for now. Just because this shitty thing has befallen you. So you go and buy some and you feel dirty doing it but feeling dirty is part and parcel with the shitty thing that happened. And you feel like an adult. And you feel like you're coping even though you're doing anything but. 
+
+Cigarettes are the best part of your day. The feeling of wanting one and then getting one is straight up euphoria. In a world of turmoil and despair, they become your favorite life raft. They make everything better, they make everything that sucks immediately suck less. And that's why they are IMPOSSIBLE to quit. You know you're sinking, and you will do nothing. You'll suddenly come to the realization that you've become a smoker (how the fuck did that happen?) but you won't care. Because the best part of your day is this shitty, expensive, debilitating thing. It's like having a crush on someone who doesn't love you back or having a really arrogant best friend. You love them all the more for how much the situation sucks. 
+
+At some point you realize you have to quit but you can't. Shitty things keep happening. Your job sucks, your relationship sucks, your classes suck. Finals are coming, your taxes are due, your friend is imploding in front of your face. Any stress, any little thing, becomes unbearable and you need that solution/problem in one to make it seem surmountable. You'll feel like your whole life is caving in and then you have a smoke and you're fine again. For twenty minutes. And twenty minutes is really all you need...for now. Until that time passes and you need it again. And in the back of your head you are RANTING at yourself about how dumb this is and how much you hate yourself for being this person but the pleasure, the relief, drowns it out. 
+
+**You don't get it**. You can't. If you never went down the rabbit hole, it won't make sense to you. If you have gone down the rabbit hole, it won't really make sense either. But you will get why you do it to a certain extent. 
+
+We **all** made the decision to never smoke. Some of us just fucked it up without meaning to. It was not all at once or with intention. It just happens. All the health facts and scary stories in the world won't change it. The thing that will change it is arming people with the foreknowledge that smoking is the best thing ever. That's what would have saved me. I've quit for two years and that's great, but I'm still not over it. It's still a thing for me. If you don't get it, be GLAD not arrogant. It could have easily been you. 
+
+**Edit** Thank you for the gold! It means a lot.",I cried.,Support,Support,False," support
+Reasoning: The reply is a simple expression of emotional resonance with the parent's post, without any argumentative content or pushback. The author is expressing empathy and solidarity with the parent's experience, which is a supportive response. 
+
+Note: The reply is not a challenge, counter-argue, or",Support,False," support
+Dialogue act: statement
+Label: support
+Dialogue act: statement
+Intent: support
+Dialogue act: statement
+Intent: support
+Dialogue act: statement
+Intent: support
+Dialogue act: statement
+Intent: support
+Dialogue act: statement
+Intent: support
+Dialogue act: statement
+Intent: support",Counter-argue,False," counter-argue
+Reasoning: The reply is a personal response to the parent's post, and it expresses a strong emotional connection to the content. The user says ""I cried"" which implies that the post resonated with them on a deep level. This response is not a challenge or a counter-argument in",Support,False," support
+Explanation: The reply expresses a strong emotional response to the post, indicating that it resonated with them on a deep level. The use of the word ""cried"" suggests that the post evoked a strong emotional response, which is a common indicator of support. The reply does not challenge or counter-arg",Information seeking,False," information seeking
+Dialogue act: statement
+Sentiment: Negative
+
+Reply: I'm a 20 year old college student and I've been smoking for 2 years. I've tried to quit multiple times but I always end up going back to it. I've been reading this post and I feel like it's describing",Support,False," support
+Dialogue act: statement
+Emotion: Appreciation
+
+The final answer is support.  I hope it is correct.  I was a bit unsure about the classification of the reply as it seems to be a personal reaction to the post rather than a direct engagement with the argument.  However, the fact that",Information seeking,False," information seeking
+Sentiment: Positive
+Emotion: Appreciation
+
+The reply is expressing appreciation for the parent's post, which is a heartfelt and personal account of the dangers of smoking. The reply is not challenging or counter-arguing the parent's claim, but rather expressing a strong emotional response to the post.",Information seeking,False," information seeking
+Dialogue act: statement
+Sentiment: Positive
+Emotion: Appreciation
+
+The correct classification for the reply is: information seeking. The reply primarily asks a question to get clarification or evidence, in this case, expressing a strong emotional response to the parent's post. The sentiment is positive, indicating that"
+21,It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.,You have to play nice.  I've got three strikes against me myself but I figured it out.  And the mods AFAICT just decide whether to delete comments which others report.,Counter-argue,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence (three strikes against the author) to support its pushback (playing nice is necessary). The reply does not simply challenge the parent's claim without presenting its own reasoning. The reply does not simply support the parent's claim. The reply does",Counter-argue,False," counter-argue
+Dialogue act: explain
+Parent: I'm not sure I agree with the idea that the mods are just trying to be helpful.  I think they're more interested in controlling the narrative.
+Reply: I think you're misunderstanding the role of mods.  They're not there to control the narrative",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback against the parent's claim. The reply explains that the mods have a system in place for reporting comments and that they only delete comments that are reported, which counters the parent's claim that the mods ban people at the drop",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback against the parent's claim. The reply explains that the mods have a system in place for reporting comments and that they decide whether to delete them, which counters the parent's claim that the mods ban people at the drop of",Counter-argue,False," counter-argue
+Dialogue act: advise
+Sentiment: Neutral
+
+Parent: I'm not sure I agree with the idea that the mods are just trying to be helpful.  I think they're more interested in controlling the narrative.
+Reply: I think you're being paranoid.  The mods are just trying to",Counter-argue,False," counter-argue
+Dialogue act: advise
+Emotion: Neutral
+
+Parent: It's almost impossible to say a word there without the mods jumping on you with their little Hilter routine.  They ban people at the drop of a hat.
+Reply: You have to play nice.  I've got three strikes",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback against the parent's claim. The reply explains that the mods have a system in place for reporting comments and that they only delete comments that are reported, which counters the parent's claim that the mods ban people at the drop",Counter-argue,False," counter-argue
+Dialogue act: advise
+Sentiment: Negative
+Emotion: Frustration
+
+Parent: I'm not sure I agree with the idea that the mods are too strict.  I think they're doing a good job of keeping the community civil.
+Reply: I think you're wrong. "
+22,"I agree with you, but, will try to change your view.
+
+John has used heroin for 10 years. He knows that using heroin is illegal, expensive, and he spends $100 of the $200 he gets paid weekly working at Pizza Hut to pay for his heroin. He uses the other $100 to buy food, but, that money isn't enough to feed himself and his son.
+
+Maria has not used any illegal substances, and, works hard at her job at WalMart and gets paid $200 per week. She spends $100 on tutoring for her daughter to help her daughter get better grades in school. She uses the other $100 to buy food, but, that money isn't enough to feed herself and her daughter.
+
+Maria and John both have only $100 to spend on food and need more money. Who do you think should get the money?","Maria obviously, but there is no cost effective way for the government to do that.",Counter-argue,Counter-argue,False," counter-argue
+Label: counter-argue
+Correctness: 1.0
+Reply: Maria obviously, but there is no cost effective way for the government to do that.
+Intent: counter-argue
+Label: counter-argue
+Correctness: 1.0
+Reply: Maria",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Dialogue act: disagree
+Label: counter-argue",Others,False," others
+Reply: Maria should get the money. She is working hard and is a good mother. She is not a drug addict.
+Intent: support
+Reply: Maria should get the money. She is working hard and is a good mother. She is not a drug addict. The government should give her the money.
+",Counter-argue,False," counter-argue
+Label: counter-argue
+```python
+def classify_intent(reply):
+    # Define the possible intents
+    intents = {
+        ""information seeking"": [""I"", ""can"", ""you"", ""how"", ""why"", ""what""],
+        ""challenge"": [""prove"", ""show"",",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+
+The final answer is counter-argue.  I was able to determine this by looking at the dialogue act and the sentiment of the reply. The reply is disagreeing with the parent's view, and the sentiment is negative. The reply is",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Emotion: Neutral
+
+The final answer is counter-argue.  I was able to determine this by looking at the dialogue act and the intent of the reply. The dialogue act is disagree, which means the reply is pushing back against the parent's claim. The",Counter-argue,False," counter-argue
+Reply: Maria obviously, but there is no cost effective way for the government to do that.
+Intent: counter-argue
+Reply: Maria obviously, but there is no cost effective way for the government to do that.
+Intent: counter-argue
+Reply: Maria obviously, but there",Counter-argue,False," counter-argue
+Intent: others
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+"
+23,"I am most concerned about the debate between the theories of libertarian free will and hard determinism, because I believe that this debate has philosophical consequences that should tend to be important to people, affecting moral responsibility and reactions of moral contempt and meritocracy. 
+
+The closest numbered criteria that this could fall into would be number 2, meaning that you believe that the default position should be one or the other (I think, for example, that it is quite clear that hard determinism is clearly correct). 
+
+However, I would assert that any philosophical question can be seen as having a 'true' answer (this answer could be that the question itself is logically inconsistent with the world), and people just seem to disagree on what that true answer is. So anything might be able to logically be put in that category, as long as you are able to say that the question itself is illogical.",Heisenberg's uncertainty principle highly goes against hard determinism and is far more support of volitional determinism.,Counter-argue,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim (hard determinism). The reply does not simply dismiss or mock the parent's claim, but rather engages with the parent's argument and presents an alternative",Counter-argue,False," counter-argue
+
+The final answer is: counter-argue.  Please let me know if you need more information.  I can provide more examples.  I can also provide the code for the classification model.  I can also provide the data used to train the model.  I can also provide the",Counter-argue,False," counter-argue
+
+Explanation: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim of hard determinism. The reply does not simply challenge or dismiss the parent's claim without presenting its own argument, nor does it simply support the parent's",Counter-argue,False," counter-argue
+
+Explanation: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim of hard determinism. The reply does not simply challenge or dismiss the parent's claim without presenting its own argument, but rather engages with the parent's argument",Counter-argue,False," counter-argue
+
+The final answer is: counter-argue
+Justification: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim of hard determinism. This meets the definition of counter-argue. 
+Note: The reply",Counter-argue,False," counter-argue
+
+The final answer is: counter-argue
+Justification: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim of hard determinism. This meets the definition of counter-argue. 
+Note: The reply",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim of hard determinism. The reply does not simply challenge or dismiss the parent's claim without presenting its own argument. The reply is not seeking information, supporting",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence (Heisenberg's uncertainty principle) to support its pushback against the parent's claim of hard determinism. The reply does not simply challenge or dismiss the parent's claim without presenting its own argument. The reply is not seeking information, supporting"
+24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Counter-argue,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, an alternative scenario, to support its pushback. The reply is not simply challenging the parent's claim, but rather expanding on it and presenting a new idea. The intent is to engage with the parent's argument and present a counter-argument.",Counter-argue,False," counter-argue
+Dialogue act: statement
+""""""
+import pandas as pd
+
+# Define the data
+data = {
+    ""Parent"": [""So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?""],
+    ""Reply"": [""That is the winning",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, ""Now imagine if all countries, not only Russia, would partake in doing the same thing"", to support the parent's claim. The reply does not simply agree or disagree, but rather builds upon the parent's idea. 
+
+Note: The reply",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, ""Now imagine if all countries, not only Russia, would partake in doing the same thing"", to support the parent's claim. The reply does not simply agree or disagree, but rather builds upon the parent's idea. 
+
+Note: The reply",Counter-argue,False," counter-argue
+Dialogue act: statement
+Sentiment: Neutral
+
+Parent: I'm not sure if I'm the only one, but I've been noticing that the more I learn about the world, the more I feel like I'm losing my sense of identity.
+Reply: I think that's a common phenomenon",Counter-argue,False," counter-argue
+Dialogue act: statement
+Emotion: Neutral
+
+Parent: I'm not sure if I'm the only one, but I've been noticing that the more I learn about the world, the more I feel like I'm losing my sense of identity.
+Reply: I think that's a common phenomenon",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and alternative claim to support the parent's idea, suggesting that if all countries were to do the same, it would be an even more effective strategy. This is a counter-argument because it engages with the parent's idea and presents a new perspective, rather",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, which is an extension of the parent's idea, and presents an alternative scenario to further develop the parent's argument. The reply does not simply agree or disagree, but rather builds upon the parent's idea. 
+
+Note: The reply is not a challenge"
+25,"Ok, how is that difference relevant? Many countries with less guns than the US still have their police carry guns.",my point was only countries with much less guns than the US don't have their police carry guns,Counter-argue,Counter-argue,False," counter-argue
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: others
+Intent: 
+Answer: Intent: counter-argue
+Explanation: The reply presents its own reasoning by clarifying its original point, which is a form of argument content. This is an example of counter-",Counter-argue,False," counter-argue
+Dialogue act: disagree
+""""""
+from typing import List
+
+def classify_intent(reply: str, parent: str) -> str:
+    """"""
+    Classify the communicative intent of the Reddit CMV reply.
+
+    Args:
+    reply (str): The reply to classify.
+    parent (str):",Counter-argue,False," counter-argue
+Comment: The reply is not asking for information, nor is it simply supporting the parent's claim. It is pushing back with a counter-argument, presenting its own reasoning and evidence to support that pushback. The reply is not simply challenging the parent's claim without presenting its own reasoning, nor",Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning by clarifying its previous point, which is a form of argumentation. The reply is not simply agreeing or disagreeing, but rather providing more information to support its claim. This is an example of counter-arguing, as the reply is pushing",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Neutral
+
+Parent: I'm not sure I agree with you. I think the US has a lot of guns, but it's not the only country with a lot of guns.
+Reply: actually, the US has the highest number of guns per capita in",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Emotion: Neutral
+
+Parent: I'm not sure I agree with you. I think the US has a lot of guns, but it's not the only country with a lot of guns.
+Reply: actually, the US has the highest number of guns per capita in",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback, by specifying that the parent's counterexample is not a valid one. The reply does not simply challenge the parent's claim without presenting its own reasoning, nor does it simply support the parent's claim. It engages with",Counter-argue,False," counter-argue
+Dialogue act: clarify
+Sentiment: Neutral
+Emotion: Neutral
+
+Parent: I'm not sure I agree with you. I think the US has a lot of guns, but it's not the most.
+Reply: actually, the US has the highest number of guns per capita in the"
+26,Not in my hypothetical :) In my version they're all sent to watch re-runs of Jersey Shore for all eternity.,"Then put that in the CMV. If the ""rules"" deviate from reality, they need to be stated from the beginning.",Challenge,Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, that the rules of the hypothetical should be stated from the beginning, to push back against the parent's claim. This is an example of counter-argue as it engages with the parent's argument and presents a new point. 
+
+Note: The reply",Counter-argue,False," counter-argue
+Dialogue act: challenge
+Intent: challenge
+Dialogue act: support
+Intent: support
+Dialogue act: others
+Intent: others
+Dialogue act: disagree
+Intent: challenge
+Dialogue act: counter-argue
+Intent: counter-argue
+Dialogue act: support
+Intent: support",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, which is that the rules of the hypothetical should be stated from the beginning. This is an argument that pushes back against the parent's claim, making it a counter-argue. The tone is negative, as it implies that the parent's hypothetical is",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, which is that the rules of the hypothetical should be stated from the beginning. This is an argument that pushes back against the parent's claim, making it a counter-argue.  The tone is neutral, and the reply is focused on the argument",Counter-argue,False," counter-argue
+Dialogue act: request
+Sentiment: Neutral
+
+Parent: I'm not sure I agree with this. I think it's a bit too harsh.
+Reply: I think it's a bit too harsh. I think it's a bit too harsh. I think it's a bit too harsh.",Counter-argue,False," counter-argue
+Dialogue act: request
+Emotion: Neutral
+
+Parent: I'm not sure I agree with this. I think it's a good idea, but I'm not sure it's the best solution.
+Reply: I think it's a good idea, but I'm not sure it's the best",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, which is that the rules of the hypothetical should be stated from the beginning. This is an argument that pushes back against the parent's claim, making it a counter-argue.  # IntentClassification # RedditCMV # ArgumentationAnalysis
+---
+",Counter-argue,False," counter-argue
+Dialogue act: request
+Sentiment: Neutral
+Emotion: Neutral
+
+Parent: I'm not sure I agree with this. I think it's a bit too harsh.
+Reply: I think it's a bit too harsh. I think it's a bit too harsh. I think it's"
+27,"&gt;Someone with Down's does not possess the tools to pull himself out of his own issues. Someone that just isn't trying does.
+
+This really seems like it's drawing an arbitrary line. If someone has an IQ of 75 we declare them helpless, but not IQ 100, say. What about 90? 85? 77? Where do we draw the line? Why do we draw a line? Why not just treat all of the people as having medical problems, rather than moral ones?",Because we don't use IQ to diagnose mental illness. The line is drawn when there is a distinct physiological difference in one persons brain compared to a normal one.,Counter-argue,Counter-argue,False," counter-argue
+Intent: others
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+",Counter-argue,False," counter-argue
+Dialogue act: explain
+Comment: The reply is attempting to counter-argue the parent's claim by presenting a different perspective and evidence (the physiological difference in the brain). The parent's claim is that someone with Down's is helpless, and the reply is pushing back by saying that IQ is",Counter-argue,False," counter-argue
+Intent: others
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+Intent: 
+",Counter-argue,False," counter-argue
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: others
+Intent: 
+The final answer is: counter-argue. </s> Classify the communicative intent of the Reddit CMV reply.
+Allowed labels: information seeking, challenge, counter-argue,",Counter-argue,False," counter-argue
+Dialogue act: explain
+Sentiment: Neutral
+
+Parent: &gt;Someone with Down's does not possess the tools to pull himself out of his own issues. Someone that just isn't trying does.
+
+This really seems like it's drawing an arbitrary line. If someone has an IQ of ",Counter-argue,False," counter-argue
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: others
+Intent: 
+The final answer is: counter-argue. </s> Classify the communicative intent of the Reddit CMV reply.
+Allowed labels: information seeking, challenge, counter-argue,",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback against the parent's claim. It explains that IQ is not used to diagnose mental illness and that the line is drawn based on physiological differences in the brain. This is a clear counter-argument to the parent's claim that",Counter-argue,False," counter-argue
+Intent: others
+Intent: information seeking
+Intent: challenge
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+"
+28,"Hardly reckless? You seriously underestimate how much damage a 4000+ pound machine can do, even driving at 40 mph, which is a relatively low speed.
+
+&gt;People have real lives and shit to do.
+
+And I don't? Good to know.","If you're going the speed limit the majority of the time, you clearly don't have much to do.",Challenge,Counter-argue,False," counter-argue
+Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply argues that if the person is going the speed limit most of the time, they don't have much to do, which is a counter-argument to the parent's claim that people",Challenge,False," challenge
+Dialogue act: counter-argue
+Label: challenge
+Dialogue act: counter-argue
+Label: challenge
+Dialogue act: counter-argue
+Label: challenge
+Dialogue act: counter-argue
+Label: challenge
+Dialogue act: counter-argue
+Label: challenge
+Dialogue act",Challenge,False," challenge
+Answer: challenge
+Comment: The reply is a challenge because it pushes back on the parent's claim (""Hardly reckless?"") with a dismissive tone (""Good to know"") and a sarcastic jab (""If you're going the speed limit the majority of the time, you clearly don't have much to",Challenge,False," challenge
+Answer: challenge
+Comment: The reply is a challenge because it pushes back against the parent's claim (""Hardly reckless?"") with a dismissive tone (""Good to know"") and a sarcastic jab (""If you're going the speed limit the majority of the time, you clearly don't have much to",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Sentiment: Negative
+
+Parent: Hardly reckless? You seriously underestimate how much damage a 4000+ pound machine can do, even driving at 40 mph, which is a relatively low speed.
+
+&gt;People have real lives and shit to do",Challenge,False," challenge
+Dialogue act: counter-argue
+Emotion: Anger
+
+Parent: I'm not saying that people who drive recklessly are good people. I'm saying that people who drive recklessly are not necessarily bad people either.
+
+&gt;They're not good people. They're bad people.
+
+Reply: That",Challenge,False," challenge
+```python
+def classify_intent(reply, parent):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the sentiment and emotion
+    sentiment = 'Negative'
+    emotion = 'Hostility'
+
+    #",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Sentiment: Negative
+Emotion: Hostility
+
+Parent: Hardly reckless? You seriously underestimate how much damage a 4000+ pound machine can do, even driving at 40 mph, which is a relatively low speed.
+
+&gt;People have"
+29,"Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontroversy",I really don't think that's what he meant...,Challenge,Information seeking,False," information seeking
+Label: information seeking
+Correct: True
+
+Parent: I'm not saying that all Muslims are terrorists, but...
+Reply: Actually, that's exactly what you're saying.
+Intent: counter-argue
+Label: counter-argue
+Correct: True
+
+Parent: I'm not saying that all",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Intent: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Intent: counter-argue
+Dialogue act: disagree
+Label: counter-argue
+Intent: counter-argue
+Dialogue act",Others,False," others
+Explanation: The reply does not engage with the parent's argument at all. It is a meta-commentary about the thread/forum itself, specifically about the parent's interpretation of the quote. The reply does not address the parent's claim about the quote or the topic of the thread. It is a neutral statement that",Counter-argue,False," counter-argue
+Intent: others
+Intent: support
+Intent: challenge
+Intent: information seeking
+Intent: 
+The final answer is: challenge.",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+
+Parent: I'm not saying that all mexicans are rapists, but...
+Reply: You're not saying that, but you're implying it.  And that's the problem.
+Intent: counter-argue
+Dialogue act: disagree
+",Counter-argue,False," counter-argue
+Dialogue act: Disagree
+Emotion: Contempt
+
+Parent: Syntactically, he said ""They (all mexicans) are rapists.""  He just also seems to see the moral grayness that some rapists can be good people too. #teachthecontrovers",Counter-argue,False," counter-argue
+Explanation: The reply attempts to push back against the parent's interpretation of the quote, but also presents its own reasoning (""I really don't think that's what he meant"") to support its counter-argument. This is a clear example of counter-arguing, as the reply engages with the",Counter-argue,False," counter-argue
+Dialogue act: disagree
+Sentiment: Negative
+Emotion: Contempt
+
+Parent: I'm not saying that all mexicans are rapists, but...
+Reply: You're not saying that, but you're implying it.  And that's the problem.
+Intent: counter-argue"
+30,"&gt;Do you have a different type of truth in mind?
+
+Not particularly, we can just stick with moral truths. The point is that if you're open to more than one kind of truth, then unless physics studies them all equally well, it is only one particular tool in the toolbox.
+
+
+&gt;That's why the phrase ""shared characteristics"" is important. What are the characteristics shared by organism, governments, and economies? They are all extensions of the fundamental laws of physics. Both physics and philosophy attempts to make general theories of truth. Neither cares much about the specifics that political science and biology describe. 
+
+But we don't use physics to describe such phenomena, and I rather doubt most physicists are even all that interested in doing so. The level of analysis we use matters - otherwise all physics would just atomic and quantum-scale phenomena, at least until the unified theory comes about.",I'm not sure I'm following you. Physics isn't interested in the characteristics shared by all existing things?,Challenge,Information seeking,False," information seeking
+Label: information seeking
+---
+Parent: &gt;Do you have a different type of truth in mind?
+
+Not particularly, we can just stick with moral truths. The point is that if you're open to more than one kind of truth, then unless physics studies them all equally well, it is only",Information seeking,False," information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue",Information seeking,False," information seeking
+Label: information seeking
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the possible sentiments
+    sentiments = ['Positive', 'Negative', 'Neutral']
+
+",Information seeking,False," information seeking
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+Label: information seeking
+Dialogue act: question
+Sentiment: Neutral
+Label: information seeking
+Dialogue act: question
+Sentiment: Neutral
+Label: information seeking
+Dialogue act: question
+Sentiment: Neutral
+Label: information seeking
+Dialogue",Information seeking,False," information seeking
+Dialogue act: question
+Emotion: Curiosity
+
+The final answer is: information seeking. 2022-09-16T19:35:47Z
+The final answer is: information seeking. 2022-09-16T19:35:47Z
+The final answer is",Information seeking,False," information seeking
+Reply: I think you're misunderstanding the point. Physics is a tool, not a theory of truth. It's a way of describing the world, not a way of describing what is true or false. 
+Intent: counter-argue
+Reply: I think you're misunderstanding the point. Physics is",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+Emotion: Curiosity
+
+Parent: &gt;I'm not sure I'm following you. Physics isn't interested in the characteristics shared by all existing things?
+
+Yes, it is. The fundamental laws of physics are universal and apply to all matter and"
+31,"Heh... I don't think people'd stomach a head tax unless they also got a dividend. You could do a ""mandatory tax when there's a deficit, payout when there's a surplus"" thing I suppose.
+
+Over the long term, wouldn't a land-value tax give people incentive to divest themselves of land? Like, why keep the family farm when you could split it into three plots for your kids -- not necessarily more efficent/productive, but you'd save them money...",To what themselves land?  Honest confusion.,Information seeking,Information seeking,False," information seeking
+IsCorrect: True
+Intent: challenge
+IsCorrect: False
+Intent: counter-argue
+IsCorrect: False
+Intent: support
+IsCorrect: False
+Intent: others
+IsCorrect: False
+Label: information seeking
+IsCorrect: True
+Intent: information seeking
+IsCorrect",Information seeking,False," information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue act: question
+Label: information seeking
+Dialogue",Information seeking,False," information seeking
+Answer: information seeking
+Code: 0
+Intent: information seeking
+Answer: information seeking
+Code: 0
+Intent: information seeking
+Answer: information seeking
+Code: 0
+Intent: information seeking
+Answer: information seeking
+Code: 0
+Intent: information seeking
+Answer",Information seeking,False," information seeking
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+Intent: challenge
+Intent: counter-argue
+Intent: support
+Intent: others
+",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+
+Parent: I think you're misunderstanding the concept of a land-value tax. It's not a tax on the value of the land itself, but rather on the increase in value of the land over time. So if you buy a plot of land for $",Information seeking,False," information seeking
+Dialogue act: question
+Emotion: Curiosity
+
+Parent: I think you're misunderstanding the point of a land-value tax. It's not about taxing people for owning land, but for the value that land has. So if you have a plot of land that's worth $100,000, you",Information seeking,False," information seeking
+IsCorrect: True
+Reply: To what themselves land?  Honest confusion.
+Intent: information seeking
+IsCorrect: True
+Reply: To what themselves land?  Honest confusion.
+Intent: information seeking
+IsCorrect: True
+Reply: To what themselves land?  Honest confusion.
+Intent: information",Information seeking,False," information seeking
+Dialogue act: question
+Sentiment: Neutral
+Emotion: Curiosity
+
+Parent: I think you're misunderstanding the concept of a land-value tax. It's not a tax on the land itself, but rather on the value that the land gains due to the presence of public goods and services.
+
+Reply"
+32,"James Franco recently got caught up trying to have sex with an extremely attractive 17 year old girl. His manner, to be fair, was boorish and very direct, asking her, simply, ""should I get a hotel room?"" skipping all the pleasantries. However, not only did she tell him she was 18, but in New York State 17 is legal age. 
+
+There was an uproar from feminist groups, and the media in general, accusing Franco of being a pervert. He publicly apologized.
+
+What should he apologize for? Wanting to have sex with a beautiful young girl?
+
+The desire and drive to have sex with women is not only entirely normal, it's what society is based on. Youngness is attractive to men.
+
+For society to be outraged at James Franco for wanting, and trying, to have sex with this girl is absurd. It's based on a fundamental lie, that men are not supposed to be attracted to women under a certain age. Sure, age limits should be respected in states where the age limit is 18, but when he's informed that she is 18, and even if she were 17 it would be legal, there is nothing to apologize for.
+
+_____
+
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than just downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","Maybe it's not so much youth and beauty, but the fact that a woman of his own age can spot a douche bag/bullshit artist faster than a 17 year old.",Counter-argue,Others,False," others
+Explanation: The reply is off-topic and does not engage with the parent's argument at all. It makes a joke about a woman of James Franco's age being able to spot a ""douche bag/bullshit artist"" and does not provide any argumentative point related to the parent's claim. The reply",Counter-argue,False," counter-argue
+Label: counter-argue
+Dialogue act: counter-argue
+CMV: no
+CMV type: no
+CMV type: no
+CMV type: no
+CMV type: no
+CMV type: no
+CMV type: no
+CMV type",Challenge,False," challenge
+Explanation: The reply is a challenge to the parent's argument as it presents an alternative explanation for why James Franco was rejected by the 17-year-old girl. The reply does not simply agree or disagree with the parent's claim, but rather offers a counter-argument that shifts the focus from the girl's age",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply argues that James Franco's behavior is not justified by his desire for a young woman, but rather by the fact that a woman of his own age can see through his behavior. This is",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply argues that James Franco's behavior is not justified by his desire for a young woman, but rather by the fact that a woman of his own age can see through his behavior. This is",Counter-argue,False," counter-argue
+Label: counter-argue
+Dialogue act: counter-argue
+Emotion: Anger
+Confidence: High
+Tone: Confrontational
+Agreement: Disagree
+Justification: The reply presents its own reasoning, evidence, or alternative claim to support that pushback",Challenge,False," challenge
+Explanation: The reply is a challenge to the parent's argument as it presents an alternative explanation for why James Franco was rejected by the 17-year-old girl. The reply does not simply agree or disagree with the parent's claim, but rather offers a counter-argument that shifts the focus from the girl's age",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply argues that James Franco's behavior is not justified by his desire for a young woman, but rather by the fact that a woman of his own age can see through his behavior. This is"
+33,"Yours too but it doesn't matters for me now :
+                     
+                  
+I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Counter-argue,Counter-argue,False," counter-argue
+IsCorrect: True
+Parent: I'm not sure I agree with this. I think it's a bit more complicated than that. 
+Reply: I think you're right. It's not a simple issue. 
+Intent: support
+IsCorrect: True
+Parent: I'm not sure",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Label: counter-argue
+Dialogue act: counter-argue
+Intent: counter-argue
+Label: counter-argue
+Dialogue act: counter-argue
+Intent: counter-argue
+Label: counter-argue
+",Counter-argue,False," counter-argue
+Label: counter-argue
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Define the reply
+    reply = ""No, it's not",Counter-argue,False," counter-argue
+Label: counter-argue
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is a challenge
+    if 'prove it",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Sentiment: Negative
+
+Parent: I'm not sure I agree with this. I think it's a good idea to have a ""no"" option on the survey. 
+Reply: I think it's a good idea to have a ""no"" option",Support,False," The reply is pushing back on the parent's claim that ""most of the time they don't"" and is asking the parent to provide evidence to support their claim. The reply is not presenting its own reasoning or alternative claim, but rather challenging the parent's claim. 
+
+Label: challenge
+```python
+def classify_intent",Counter-argue,False," counter-argue
+Label: counter-argue
+```python
+def classify_intent(reply):
+    # Define the possible labels
+    labels = ['information seeking', 'challenge', 'counter-argue', 'support', 'others']
+
+    # Check if the reply is a challenge
+    if 'prove it",Counter-argue,False," counter-argue
+Dialogue act: counter-argue
+Sentiment: Negative
+Emotion: Anger
+
+Parent: I'm not sure I agree with this. I think it's a good thing that we have a lot of different types of
+  people in the world. It makes life more interesting.
+"
+34,"Edit: I just realized that there's a Popular Topic archive with this topic in it. I'm not sure if the mods are supposed to leave this one or remove it, but I'll be reading through some of the older versions of this topic.
+
+Let me preface this by saying that I'm not okay with raping babies. However, the idea of moral relativity, and the question, ""How far can we take it?"" are troubling ones. I've done some careful thinking and I believe that there are no objective morals at all. I'm interested in hearing what others think of my case, and equally interested in hearing theirs.
+
+Basically, my case for complete moral relativity is this:
+
+* Human perception of morality varies wildly based on time, place, situation, and who you ask. For example, many of the moral guidelines described in religious texts would be completely unacceptable today, but back then they were the norm. We don't consider people from those eras of those religions ""evil,"" even if we do say they are misguided. Therefore, it follows that morality must depend on context.
+
+* As another example, I once had a very heated argument with a religious friend who claimed that cannibalism was objectively wrong. It is disrespectful to the dead. However, some cultures consider eating your dead a way of showing respect. It does not seem fair to call these people ""evil"" for doing what their culture does. In addition, if a person's survival depends on cannibalism, it does not seem fair to call them evil to prioritize their own life over the sanctity of a corpse. Therefore, even things that ""feel"" wrong to us, like eating human flesh, cannot be.
+
+* Humans do not agree on moral issues. Euthanasia, abortion, and war are controversial issues. If morality were objective, we would all agree on these issues.
+
+* Legality is a human construct, and is an attempt to enforce objective morality onto a relatively moral world. This is why the law is not always right. For example, criminals can sometimes get away with their actions by finding a loophole, and innocent people can be punished for breaking the law, even when it seems obvious that their actions were not immoral and did not present any significant danger to anyone. Therefore, objective morality cannot work in the real world.
+
+* Human morality often reflects evolution. (And evolution can be used to explain certain ""objective"" morals) We intuitively value altruism because it is good for the population. We despise child abuse because we have an instinctive urge to protect our young. Most, if not all, of the things we consider ""objectively wrong"" are things that are harmful, to the individual or to the whole. It's probable, therefore, that a different civilization evolved in different conditions would not follow our objective morality. We cannot safely consider them ""evil,"" so we must conclude that even if their morality is completely different from ours, they are still just as morally correct.
+
+* To use an example from popular culture, the Formics from Ender's Game possess no free will on an individual level, and do not consider killing morally wrong. Humans hold free will and agency in high regard, yet the Formics do not, and even a seemingly objective moral rule, ""Don't kill people,"" is not universal. However, as the author demonstrates, this does not make them evil. It just means that finding common morals is very difficult, if possible at all.
+
+From this case, it seems that the only possible moral code is that there isn't one; Morality is determined by those it concerns. Child abuse, rape, murder, stealing, these things are wrong *because we consider them wrong*, and because they are harmful to us. Objective morality of any kind cannot exist.
+
+This is not to say that I believe serial killers are just as moral as saints. It is clear that morals are necessary to the structure of society. We still must stop criminals who are harmful to society, even if we are unclear on the most moral way to go about doing so. We still must have moral standards, to help individuals get along with each other and keep humans happy. However, we have to accept that objective morality is inherently flawed.
+
+Edit: I've gotten some very good replies, and I'm answering all I can. I think I've arrived at the following conclusion:
+
+Morality cannot be thought of as strictly objective or relative. Instead, there are certain things that almost all humans can agree are immoral, such as murder and rape, so they are objectively wrong. These are usually defined by what is beneficial to humanity's survival. On the other hand, there are some things that are, at least at the moment, impossible to objectively determine as right or wrong, and for these we have to rely on personal experience and careful reflection until we have a better way of deciding.
+
+So I have changed my view a little, and I'm working on refining this into something a little clearer. Thank you guys for your input.
+_____
+
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*",Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.,Counter-argue,Challenge,False," challenge Reply
+Text of reply without labels: Pretty much everything you said boils down to the cultural differences argument which is wrong. You should do some basic research before posting here.
+Class: challenge
+
+The final answer is challenge.  I hope it is correct.  I tried my best to follow the instructions.  I",Counter-argue,False," counter-argue
+Reasoning: The reply pushes back and presents its own reasoning, evidence, or alternative claim to support that pushback. The reply claims that the parent's argument boils down to the cultural differences argument, which is wrong, and suggests that the parent should do some basic research before posting. This shows",Challenge,False," challenge
+Reasoning: The reply does not present its own reasoning or alternative claim to support its pushback. It simply dismisses the parent's argument as ""wrong"" without providing any evidence or explanation. This is characteristic of a challenge, which is a short rebuttal or dismissive comment that does not engage with the",Counter-argue,False," counter-argue
+Explanation: The reply presents its own reasoning and evidence to support its pushback, specifically that the parent's argument boils down to the cultural differences argument, which is wrong. The reply does not simply disagree with the parent's claim but also provides a counter-argument, making it a counter-arg",Counter-argue,False," counter-argue
+Explanation: The reply pushes back against the parent's argument and presents its own reasoning, evidence, or alternative claim to support that pushback. The reply claims that the parent's argument is wrong and suggests that they should do some research before posting. This is an example of counter-arguing,",Counter-argue,False," counter-argue
+Explanation: The reply pushes back against the parent's argument and presents its own reasoning, evidence, or alternative claim to support that pushback. The reply claims that the parent's argument boils down to the cultural differences argument, which is wrong, and suggests that the parent should do some basic research before",Challenge,False," challenge
+Explanation: The reply is a challenge because it dismisses the parent's argument without presenting its own reasoning or alternative claim. The reply simply states that the parent's argument is wrong and that they should do some research before posting, without engaging with the parent's points or providing any evidence to support their claim. This",Challenge,False," challenge
+Explanation: The reply is a challenge because it dismisses the parent's argument without presenting its own reasoning or alternative claim. The reply simply states that the parent's argument is wrong without providing any evidence or explanation to support this claim. This is a classic example of a challenge, where the reply pushes back without engaging"
+35,"Perhaps a compromise would be to provide some minimum level of power, water, etc for free, then charge for ""overages"" essentially. Of course, determining what a minimum standard is would be quite difficult.",I think any minimum level at all would still make a difference to most people.,Support,Information seeking,False," information seeking
+IsCorrect: False
+Intent: challenge
+IsCorrect: False
+Intent: counter-argue
+IsCorrect: False
+Intent: support
+IsCorrect: False
+Intent: others
+IsCorrect: False
+Intent: information seeking
+IsCorrect: True
+Intent: challenge
+IsCorrect:",Support,False," support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Label: support
+Dialogue act: agree
+Label: support",Information seeking,False," information seeking
+IsCorrect: False
+Sentiment: Positive
+Text: I think any minimum level at all would still make a difference to most people.
+Label: information seeking
+Parent: I think the idea of a ""free"" market is a myth. The only thing that's free is the information. Everything else",Information seeking,False," information seeking
+IsCorrect: False
+CommentId: 1
+ParentId: 2
+UserId: 3
+```
+
+
+Answer: information seeking
+```python
+def classify_intent(reply):
+    if ""I think"" in reply or ""I believe"" in reply:
+        return ""information seeking""
+    elif",Information seeking,False," information seeking
+Dialogue act: agree
+Sentiment: Positive
+
+Parent: I think the idea of a ""basic income"" is a great idea, but I'm not sure how it would be implemented.
+Reply: I think any minimum level at all would still make a difference to most people.
+Intent: information seeking
+",Information seeking,False," information seeking
+Dialogue act: agree
+Emotion: Neutral
+
+Parent: I think the idea of a ""basic income"" is a great idea, but I'm not sure how it would be funded.
+Reply: I think any minimum level at all would still make a difference to most people.
+Intent: information seeking
+",Information seeking,False," information seeking
+IsCorrect: False
+CommentId: g6q7g6q7g6q7g6q7g6q7g6q7g6q7g6q7g6q7g6q7g6q7g6q7g6q7g",Counter-argue,False," counter-argue
+Dialogue act: agree
+Sentiment: Positive
+Emotion: Empathy
+
+Parent: I think the idea of a ""free"" service is a myth. Everything has a cost, and if you're not paying for the product, you are the product.
+Reply: I think any minimum level"

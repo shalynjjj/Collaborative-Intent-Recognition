@@ -2,7 +2,7 @@
   "mode": "single_prompt",
   "split": "eval",
   "rows": 264,
-  "sentiment_macro_f1": 0.5319818939245843,
-  "intent_macro_f1": 0.35974912979397283,
-  "emotion_macro_f1": 0.35740522126001983
+  "sentiment_macro_f1": 0.6247909543135313,
+  "intent_macro_f1": 0.4090125435687929,
+  "emotion_macro_f1": 0.408208505828656
 }
