@@ -133,7 +133,7 @@ Intent: support
 Answer: support",Positive,False,False,False,False,False,True,Support
 5,"*Dark Souls* is just one game. Even if I did prefer that game with a controller, it wouldn't change my view that K&amp;M is, overall, the superior input method.
 
-Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+Edit: I also used a mod (I can't remember the name right now - it's been a few years) that really helped make the K&amp;M experience a lot smoother. I tried a few times with a controller and was notably worse in the game.","Dark souls shows there is no overall better scheme, it's game dependent.",Negative,False,True,False,True,True,False,False,False,Counter-argue,False," negative
 Reason: The reply is disagreeing with the parent's statement that K&amp;M is superior, and is instead pointing out that Dark Souls shows that the best input method depends on the game. The tone is argumentative and critical. 
 
 The final answer is: negative.  # Sentiment_Analysis #"," contempt, neutral, sarcasm, curiosity, appreciation. 
@@ -404,7 +404,7 @@ In my idea of how it would work:
 
 * It needs to be very difficult to change the constitution for the above reason
 
-What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Positive,False,False,False,False,False,False,False,True,Others,False," positive
+What could go wrong? I think it really works, and will get America what it wants, not what politicians want.",Oh man.  This is hilarious.,Positive,False,True,True,True,True,False,False,False,Others,False," positive
 ```python
 def classify_sentiment(reply):
     """"""
@@ -891,7 +891,7 @@ CMV type",Negative,False,False,False,True,False,False,Counter-argue
 33,"Yours too but it doesn't matters for me now :
                      
                   
-I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+I changed my view","No, it's not his. The burden of proof falls on you, because *you* made the claim that ""most of the time they don't""",Negative,False,True,True,True,True,False,False,False,Counter-argue,False," negative
 ====================================================================================================
 
 ## Step 1: Analyze the tone of the reply

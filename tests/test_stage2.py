@@ -8,6 +8,7 @@ from src.config import INTENT_LABELS
 from src.stage2_pipeline import (
     _split_labeled_lines,
     annotate_stage2_dataframe,
+    parse_emotion_labels,
     parse_single_label,
     run_multi_module_pipeline,
     run_single_prompt_baseline,
@@ -53,6 +54,54 @@ class SplitLabeledLinesTests(unittest.TestCase):
         self.assertEqual(fields["sentiment"], "neutral")
         self.assertEqual(fields["emotion"], "none")
         self.assertEqual(fields["intent"], "challenge")
+
+    def test_recovers_python_assignment_style_answer(self):
+        # Reproduces the single_prompt Emotion fallback increase (9->18)
+        # after the prompt-fairness fix: the model answers inside a fenced
+        # Python function instead of the requested `Key: value` lines.
+        raw = (
+            "```python\n"
+            "def analyze_reply(reply):\n"
+            '    sentiment = "neutral"\n'
+            '    emotion = "neutral"\n'
+            '    intent = "others"\n'
+            "```"
+        )
+        fields = _split_labeled_lines(raw)
+        self.assertEqual(fields["sentiment"], '"neutral"')
+        self.assertEqual(fields["emotion"], '"neutral"')
+        self.assertEqual(fields["intent"], '"others"')
+
+
+class ParseEmotionLabelsTests(unittest.TestCase):
+    def test_matches_adjective_form_of_a_category(self):
+        # Reproduces the single_prompt Emotion fallback increase: the model
+        # writes "sarcastic" (adjective) instead of "sarcasm" (the label's
+        # own spelling), which an exact-substring match would discard.
+        labels, fallback_used = parse_emotion_labels(
+            "This reply is a sarcastic jab at the parent's point."
+        )
+        self.assertTrue(labels["Sarcasm"])
+        self.assertFalse(fallback_used)
+
+    def test_recovers_answer_on_the_line_after_the_marker(self):
+        # Reproduces 25/34 of multi_module's Emotion fallback rows: the
+        # model echoes the full category list, then an "Answer:" marker
+        # with nothing after the colon, with the real (narrower) answer on
+        # the next line -- e.g. results/stage2/multi_module_eval_predictions.csv
+        # row where the echoed list is "contempt, curiosity, neutral, sarcasm"
+        # but the actual Answer: line only commits to "neutral,sarcasm".
+        raw = (
+            "contempt, curiosity, neutral, sarcasm \n\n"
+            "Answer:\nneutral,sarcasm \n"
+            "Explanation: The reply is neutral because..."
+        )
+        labels, fallback_used = parse_emotion_labels(raw)
+        self.assertFalse(fallback_used)
+        self.assertTrue(labels["Neutral"])
+        self.assertTrue(labels["Sarcasm"])
+        self.assertFalse(labels["Contempt"])
+        self.assertFalse(labels["Curiosity"])
 
 
 class ParseSingleLabelRecoveryTests(unittest.TestCase):

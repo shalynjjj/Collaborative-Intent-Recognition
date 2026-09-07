@@ -679,7 +679,7 @@ Reply: Oh, I see. So the bully is good for trade. That's a completely new and or
 IsCorrect: True
 ---
 Parent: Well, the force of the ""bully"" in this case allows for free, safe trade over the oceans for any country that can afford a boat, even the ones it's not very friendly with. The end result is a greater amount of trade and prosperity for",Negative,False,False,False,False,True,False,Challenge
-30,And who gives anyone the right to decide who *needs* to die? Because I certainly don't remember voting for a local executioner.,"We all decide that as individuals and it's, usually, the people that have guns that decide this.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+30,And who gives anyone the right to decide who *needs* to die? Because I certainly don't remember voting for a local executioner.,"We all decide that as individuals and it's, usually, the people that have guns that decide this.",Negative,False,True,True,True,True,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -729,7 +729,7 @@ print(classify_intent(""Except the entire point of Facebook is to share your inf
 ``` 
 This code should return ""counter-argue"" when executed. 
 ",Neutral,False,False,False,True,False,False,Counter-argue
-32,"the only reason the north ""invaded"", which makes no sense because it was union land, was to stop slavery.","That's revisionism at its finest. There were a lot of reasons, primarily economic, for the invasion.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+32,"the only reason the north ""invaded"", which makes no sense because it was union land, was to stop slavery.","That's revisionism at its finest. There were a lot of reasons, primarily economic, for the invasion.",Negative,False,True,False,True,True,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -1081,7 +1081,7 @@ Label: challenge
 Correct: True
 
 Parent: You are again mixing the idea of free",Negative,False,False,False,True,False,False,Challenge
-48,"Hormone therapy wouldn't work? And I'm sorry you have to deal with that, hope my post didn't offend you.","No no its fine, and I'm sure it would, I just don't want to go down that path.",Neutral,False,False,False,False,False,False,False,True,Counter-argue,False," neutral
+48,"Hormone therapy wouldn't work? And I'm sorry you have to deal with that, hope my post didn't offend you.","No no its fine, and I'm sure it would, I just don't want to go down that path.",Neutral,False,True,False,True,True,False,False,False,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -1256,7 +1256,7 @@ Reply: I am proud of the PlayStation 4, am I a Japanese patriot? I disagree with
 Intent: challenge
 Label: challenge
 Reply: Uh huh. Again, the best thing my nation has provided me is relative freedom. I am not proud",Neutral,False,False,False,False,True,False,Information seeking
-54,"I am seeing more and more analog smokers swapping to ecigs, and honestly it has a very unique and social community built around them as well. Lots of smokers carry around extra eliquid to let people try their flavors. If you see another vaper, you have something to talk about. However, confused people come up all the time asking about it as well. Although many places allow you to smoke ecigs inside where I live people often go outside to curb confusion and also just out of habit.","Adding to this, the lack of second hand smoke also allows other people to follow and socialize without having allergic reactions.",Positive,False,False,False,False,False,False,False,True,Counter-argue,False," positive
+54,"I am seeing more and more analog smokers swapping to ecigs, and honestly it has a very unique and social community built around them as well. Lots of smokers carry around extra eliquid to let people try their flavors. If you see another vaper, you have something to talk about. However, confused people come up all the time asking about it as well. Although many places allow you to smoke ecigs inside where I live people often go outside to curb confusion and also just out of habit.","Adding to this, the lack of second hand smoke also allows other people to follow and socialize without having allergic reactions.",Positive,False,True,False,False,True,False,False,False,Counter-argue,False," positive
 ====================================================================================================
 
 Parent: I am seeing more and more analog smokers swapping to ecigs, and honestly it has a very unique and social community built around them as well. Lots of smokers carry around extra eliquid to let people try their flavors. If you see another vaper, you have something to talk"," contempt, curiosity, neutral, sarcasm 
@@ -1282,7 +1282,7 @@ I'll give you that Pope Francis is probably going to change a minor Church polic
 
 The minor change is this: the ""Who am I to judge?"" quote came [in response to a question about gay priests.](http://www.nytimes.com/2013/07/30/world/europe/pope-francis-gay-priests.html?_r=0)  This is contrary to a [2005 Vatican document](http://en.wikipedia.org/wiki/Instruction_Concerning_the_Criteria_for_the_Discernment_of_Vocations_with_regard_to_Persons_with_Homosexual_Tendencies_in_view_of_their_Admission_to_the_Seminary_and_to_Holy_Orders) which stated that people with ""deep-seated homosexual tendencies"" may not become priests.  **HOWEVER**, this despite this document, it has been my observation that gay men in the Catholic Church are actually pressured into the priesthood by other Catholics.  They are encouraged into celibacy (since, you know, gay sex is bad). Then, because they're giving up sex already, their church friends encourage them to become a priest, to help with the current shortage of priests.  So, functionally, Pope Francis saying (informally, without any other actions) that a priest can be gay really doesn't change anything.","_
 
-This did change my view, and the fact that you provided links is awesome. Also, it wasn't hard to understand, either.",Positive,False,False,False,False,True,False,True,False,Support,False," positive
+This did change my view, and the fact that you provided links is awesome. Also, it wasn't hard to understand, either.",Positive,False,True,True,False,True,False,True,False,Support,False," positive
 Reason: The reply expresses approval and agreement in tone, using phrases like ""This did change my view"" and ""the fact that you provided links is awesome."" The tone is positive and appreciative. 
 The final answer is: positive. }}}}}}}}}}}}}}}}}}}}}}}}}}}}"," appreciation, neutral. 
 The final answer is appreciation,neutral.  I hope it is correct.  Thank you.  I am a bot.  I do not have personal opinions or feelings.  I am simply trying to learn and improve my responses.  I am not trying to be sarcastic or hostile."," support
@@ -1348,7 +1348,7 @@ Label: counter",Neutral,False,False,False,False,True,False,Information seeking
 
 Had Germany and Japan won, they would have had kangaroo courts give whatever absurd judgments they wanted. That's not a valid comparison.
 
-Here's a valid comparison: how many Axis officers were tried for war crimes based on strategic bombing? The answer is none. It was not considered against the rules of war at the time.",Nor was genocide.,Negative,False,False,False,False,False,False,False,True,Others,False," negative
+Here's a valid comparison: how many Axis officers were tried for war crimes based on strategic bombing? The answer is none. It was not considered against the rules of war at the time.",Nor was genocide.,Negative,False,False,False,True,True,False,False,False,Others,False," negative
 Label: negative
 ```python
 def classify_sentiment(reply):
@@ -1391,7 +1391,7 @@ def classify_sentiment(reply):
 Answer: contempt, hostility, neutral, sarcasm 
 Explanation: The reply is sarcastic because it says the opposite of what it means, or mocks the parent through exaggeration or irony. The reply is hostile because it implies that the parent is naive or foolish. The reply"," counter-argue
 Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply argues that even if men are not assaulting anyone, they may still cause fights when being flirted with by another man. This is a counter-argument to the parent's claim that",Neutral,False,False,False,True,False,False,Counter-argue
-61,"Physically, intellectually, and any other category of life I believe in general men are superior. I do recognize that there are very talented women in the world, some far better than men, but if you put the best man in a field against the best female in the same field I believe the male will dominate every time, no matter what the subject is. This seems to be true in academics, sports, and any other area in life. Even on a personal level I have found that girls are petty and silly, while men I have interacted with are far more interesting to have conversations with. I admit, I am very biased based on the fact that I have a male's perspective, but I have tried to be very open minded in talking to females but I find the majority of them dull and uninteresting. I think that the only successful girls in society are the ones that have natural ability (even then they don't get paid as much as men) or they use their looks to slide through life. Yes, I expect hordes of angry feminists to down vote me into oblivion (my sexism showing) and I could avoid this if I reworded my statements, but instead I'm choosing to pull on the oh so fragile female emotional strings. Instead of down voting me, prove me wrong. EDIT: You have all made excellent points. The error was not with the people around me, but myself and I appreciate all of your inputs, they honestly helped.",[That's right!](http://m.youtube.com/watch?client=mv-google&amp;hl=en&amp;gl=US&amp;v=b2Bc71SAGuI),Positive,False,False,False,False,False,False,False,True,Support,False," positive
+61,"Physically, intellectually, and any other category of life I believe in general men are superior. I do recognize that there are very talented women in the world, some far better than men, but if you put the best man in a field against the best female in the same field I believe the male will dominate every time, no matter what the subject is. This seems to be true in academics, sports, and any other area in life. Even on a personal level I have found that girls are petty and silly, while men I have interacted with are far more interesting to have conversations with. I admit, I am very biased based on the fact that I have a male's perspective, but I have tried to be very open minded in talking to females but I find the majority of them dull and uninteresting. I think that the only successful girls in society are the ones that have natural ability (even then they don't get paid as much as men) or they use their looks to slide through life. Yes, I expect hordes of angry feminists to down vote me into oblivion (my sexism showing) and I could avoid this if I reworded my statements, but instead I'm choosing to pull on the oh so fragile female emotional strings. Instead of down voting me, prove me wrong. EDIT: You have all made excellent points. The error was not with the people around me, but myself and I appreciate all of your inputs, they honestly helped.",[That's right!](http://m.youtube.com/watch?client=mv-google&amp;hl=en&amp;gl=US&amp;v=b2Bc71SAGuI),Positive,False,True,True,True,True,False,False,False,Support,False," positive
 Reason: The reply is a simple expression of agreement with the parent comment. The tone is supportive and approving. The use of the YouTube link is a playful way to reinforce the sentiment. The reply does not contain any negative language or criticism, which further supports the positive sentiment. The overall tone is lighthe"," sarcasm, hostility, contempt, curiosity, appreciation, neutral.  |
 |-------------|
 |  sarcasm    |
@@ -1438,7 +1438,7 @@ Reasoning: The reply is a short rebuttal that dismisses the parent's claim witho
 Note: The reply is not asking a question, it is not presenting its own reasoning or evidence,",Negative,True,False,False,False,False,False,Challenge
 63,"That's my point.
 
-When the army is a domestic army, there's only so long you can *keep* them on the government's side.",And of course the most effective way to turn them against the government is to shoot at them.,Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+When the army is a domestic army, there's only so long you can *keep* them on the government's side.",And of course the most effective way to turn them against the government is to shoot at them.,Negative,False,True,True,True,True,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -1690,7 +1690,7 @@ I believe that it doesn't matter what you do in life. Well, not in the big schem
 I'd love to be wrong on this one, so go ahead and change my view.
 _____
 
-&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","That's right, the world itself is meaningless, but your experience of it is meaningful. So, don't attach to the physical world, but make the best experience of it you can.",Positive,False,False,False,False,False,False,False,True,Counter-argue,False," positive
+&gt; *Hello, users of CMV! This is a footnote from your moderators. We'd just like to remind you of a couple of things. Firstly, please remember to* ***[read through our rules](http://www.reddit.com/r/changemyview/wiki/rules)***. *If you see a comment that has broken one, it is more effective to report it than downvote it. Speaking of which,* ***[downvotes don't change views](http://www.reddit.com/r/changemyview/wiki/guidelines#wiki_upvoting.2Fdownvoting)****! If you are thinking about submitting a CMV yourself, please have a look through our* ***[popular topics wiki](http://www.reddit.com/r/changemyview/wiki/populartopics)*** *first. Any questions or concerns? Feel free to* ***[message us](http://www.reddit.com/message/compose?to=/r/changemyview)***. *Happy CMVing!*","That's right, the world itself is meaningless, but your experience of it is meaningful. So, don't attach to the physical world, but make the best experience of it you can.",Positive,False,True,False,True,True,True,True,False,Counter-argue,False," positive
 Explanation: The reply expresses agreement with the parent comment, and offers a constructive suggestion on how to approach life despite the perceived meaninglessness of the world. The tone is encouraging and supportive.  The reply does not express disapproval or frustration, and does not have a clear negative tone. Therefore, the sentiment is"," neutral, appreciation, contempt, sarcasm, curiosity
 
 Answer:
@@ -1704,7 +1704,7 @@ Reasoning: The reply presents its own reasoning and alternative claim to support
 
 It's like a one of those generic mafia films, where the mobsters can never be sure whether or not their phones are tapped or their homes are bugged. It creates a certain level of paranoia. I mean, did the cops bust your jewelry heist 'cuz they tapped your phone? Was it just poor planning? Was there a mole? Obviously, any movie mobster is gonna operate under the *assumption* that his phone is bugged, but he can't no for sure until its too late. Unless he has a mole or something. But, you know, whatever.","&gt;Yeah, but they didn't know how the US was spying on their communications and the extent of its capabilities.
 
-What specifics changed this?",Negative,False,False,False,False,False,False,False,True,Information seeking,False," negative
+What specifics changed this?",Negative,False,True,False,True,True,False,False,False,Information seeking,False," negative
 Reasoning skill: Identifying Pros And Cons
 Category: Politics
 ```python
@@ -1743,7 +1743,7 @@ def identify_categories(reply, parent):
     # Check for hostility
     if ""you"," counter-argue
 Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply states that the browser engine is the same on iOS, which is a counter-argument to the parent's claim that the devs for the other browsers haven't tried to optimize their's",Neutral,False,False,False,True,False,False,Counter-argue
-77,"Well if you're going to cut off somebody's hand, then yes?",But we're talking about repeat offenders.if you are convicted multiple times then I'm not very sympathetic if you were framed on the 5th.,Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+77,"Well if you're going to cut off somebody's hand, then yes?",But we're talking about repeat offenders.if you are convicted multiple times then I'm not very sympathetic if you were framed on the 5th.,Negative,False,True,False,True,True,False,False,False,Counter-argue,False," negative
 ====================================================================================================
 
 ## Step 1: Analyze the tone of the reply
@@ -1918,7 +1918,7 @@ Answer: neutral
 Explanation: The reply is a neutral statement that doesn't express any emotion. It doesn't attack the parent, nor does it praise or mock the parent. It simply states a fact.  | 
 ---|---|"," others
 Reasoning: The reply does not engage with the parent's argument at all. It is a neutral statement that does not take a stance on the Oxford comma. The reply does not present any evidence or reasoning to support or challenge the parent's claim. It is simply a statement of fact. The reply is off",Neutral,False,False,False,True,False,False,Counter-argue
-85,[Yes.](http://buttcoin.org/the-cargo-cult-of-bitcoin),...Well shit...,Negative,False,False,False,False,False,False,False,True,Others,False," negative
+85,[Yes.](http://buttcoin.org/the-cargo-cult-of-bitcoin),...Well shit...,Negative,False,True,False,True,True,False,False,False,Others,False," negative
 ===============================================================================
 
 ```python
@@ -2105,7 +2105,7 @@ Reasoning: The reply presents its own reasoning, evidence, or alternative claim 
 
 Kolkata is a good illustration of the problem. To break Ã Â¦_Â¦Â²Ã Â¦__Ã Â¦Â¤Ã _ down: Ã Â¦ is ""k"", there is an implied vowel ""o"", Ã Â¦ is ""l"", Ã Â¦__ is ""ka"" and Ã Â¦Â¤Ã _ is ""ta"" as a direct transliteration, which also happens to be how is sounds. 
 
-Although if you don't know the pronunciation and just followed the general rules, you might want to transliterate as Kolokata. To let someone know the implied vowel is not there you either need a sign under the Ã Â¦ like Ã Â¦_Â¦Â²Ã Â§__Ã Â¦Â¾Ã Â¦Â¤Ã Â¦ or joining the consonants, Ã Â¦_Â¦Â²Ã Â§_Ã Â¦Â¾Ã Â¦Â¤Ã Â¦. But, this is an example where the formal rules, where the writing reflects speech, are bent because it is understood.","This is why the South Indian languages are better! Don't drop those vowels, just say them inhumanly fast!",Negative,False,False,False,False,False,False,False,True,Others,False," negative
+Although if you don't know the pronunciation and just followed the general rules, you might want to transliterate as Kolokata. To let someone know the implied vowel is not there you either need a sign under the Ã Â¦ like Ã Â¦_Â¦Â²Ã Â§__Ã Â¦Â¾Ã Â¦Â¤Ã Â¦ or joining the consonants, Ã Â¦_Â¦Â²Ã Â§_Ã Â¦Â¾Ã Â¦Â¤Ã Â¦. But, this is an example where the formal rules, where the writing reflects speech, are bent because it is understood.","This is why the South Indian languages are better! Don't drop those vowels, just say them inhumanly fast!",Negative,False,True,True,True,True,False,False,False,Others,False," negative
 Reason: The reply expresses disapproval and frustration toward the parent comment, implying that the parent's approach to transliteration is flawed and that the South Indian languages are superior. The tone is critical and dismissive. 
 ```python
 def classify_sentiment(reply):
@@ -2387,7 +2387,7 @@ def identify_categories(reply, parent):
     # Check for hostility
     if ""you"" in reply and"," counter-argue
 Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply argues that the parent's reasoning is unfair because it brings nationality into the discussion, and that uninformed people can be of any nationality, not just British. This is a clear counter",Neutral,False,False,True,False,False,False,Counter-argue
-105,"Then it might also benefit to carry a sort of diabetes card for a trans person, so the doctors can better deal with it; while the body chemistry of a trans person will likely not match their original sex, it may not match that of the intended sex, either.  Perhaps it would be best to include FtM or MtF on IDs.","It's not uncommon for trans folk to get a ""carry letter"" from their doctor that states they're undergoing or have transitioned, with the doctor's contact info.",Neutral,False,False,False,False,False,False,False,True,Counter-argue,False," neutral
+105,"Then it might also benefit to carry a sort of diabetes card for a trans person, so the doctors can better deal with it; while the body chemistry of a trans person will likely not match their original sex, it may not match that of the intended sex, either.  Perhaps it would be best to include FtM or MtF on IDs.","It's not uncommon for trans folk to get a ""carry letter"" from their doctor that states they're undergoing or have transitioned, with the doctor's contact info.",Neutral,False,True,False,True,True,False,False,False,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply):
     """"""
@@ -2411,7 +2411,7 @@ Reasoning: The reply presents its own reasoning and evidence (the existence of "
 
 On the other hand, food companies do some pretty shady shit with what's in their food.  Recently Monsanto and Starbucks sued Vermont to be allowed to hide their ingredients from consumers.
 
-Also very subtle shit like putting sugar in grams instead of tablespoons solely because most Americans can't visualize a gram of sugar.","A tablespoon is 15 grams. Not that hard. Then again, I'm not American.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+Also very subtle shit like putting sugar in grams instead of tablespoons solely because most Americans can't visualize a gram of sugar.","A tablespoon is 15 grams. Not that hard. Then again, I'm not American.",Negative,False,False,False,True,True,False,False,False,Counter-argue,False," negative
 ```python
 import re
 
@@ -2773,7 +2773,7 @@ Explanation: The reply is dismissive of the parent's point, implying that the pa
 Comment: The reply is not engaging with the parent's argument about the strength of a relationship. Instead, it is asking a question about the purpose of trust in a relationship, which is a separate topic. This is an example of ""others"" because it does not address the parent's claim. 
 
 Note:",Neutral,False,False,False,False,True,False,Information seeking
-121,"Humans are a violent species. We were violent before video games, before motion pictures or television. We were violent before cave paintings. We don't want to be this way so we try to blame our nature on outside forces.","Not only were we violent before, we are becoming less and less violent as we consume more and more media.",Positive,False,False,False,False,False,False,False,True,Counter-argue,False," positive
+121,"Humans are a violent species. We were violent before video games, before motion pictures or television. We were violent before cave paintings. We don't want to be this way so we try to blame our nature on outside forces.","Not only were we violent before, we are becoming less and less violent as we consume more and more media.",Positive,False,False,False,True,True,False,False,False,Counter-argue,False," positive
 ====================================================================================================
 
 ## Step 1: Analyze the tone of the reply
@@ -2958,7 +2958,7 @@ Intent: others
 ",Neutral,True,False,True,False,True,False,Challenge
 130,"I'm assuming you mean that you intend to live off the bush, hunting your own food, boiling your own water, etc. Whether you are to die depends on if you intend to remain like this forever or if you still potentially want to .. well.. do *something* productive with the rest of your life. If you intend to remain like this forever, it would go against this philosophy so I would have to put you to death. 
 
-edit: the thing is... no person in this day and age would do that.. at least I don't see it happening. It's like reverting back to times past where we had less technology and means to everything.",You've never heard of the Amish?,Positive,False,False,False,False,False,False,False,True,Counter-argue,False," positive
+edit: the thing is... no person in this day and age would do that.. at least I don't see it happening. It's like reverting back to times past where we had less technology and means to everything.",You've never heard of the Amish?,Positive,False,False,False,True,True,False,False,False,Counter-argue,False," positive
 ========================================================================
 Parent: I'm assuming you mean that you intend to live off the bush, hunting your own food, boiling your own water, etc. Whether you are to die depends on if you intend to remain like this forever or if you still potentially want to .. well.. do *something* productive with the"," contempt, neutral 
 
@@ -2978,7 +2978,7 @@ Explanation: The reply presents its own reasoning and evidence to support its pu
 
 As well as why OP tried to rule out ""utilitarian arguments""...","I think it's because they poke holes in OP's position. 
 
-""CMV but you're not allowed to use these effective arguments""",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+""CMV but you're not allowed to use these effective arguments""",Negative,False,True,False,True,True,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -3060,7 +3060,7 @@ The reply does not say the opposite of what it means or mock the parent through 
 IsCorrect: True
 ---
 Parent: I have nothing against homosexuals and they deserve to be accepted in society and get married like everyone else but I believe the approach is all wrong.  I think it's wrong trying to promote gay pride by dressing in leather and latex.  If people want others to accept",Negative,False,False,True,False,False,False,Challenge
-135,"Oh, I know this has no chance in hell of happening in the foreseeable future. People constantly throw around ""end the war on drugs"" as a way of blaming drug laws for criminal activity, and I'm wondering whether anyone actually has a feasible plan for making that work. I personally think it's impossible to do without making the costs outweigh the benefits.",Check out the Brazil's way of combating crack-cocaine use. They have decriminalized possession but made mandatory educational measures and community service instead of prison.,Positive,False,False,False,False,False,False,False,True,Counter-argue,False," positive
+135,"Oh, I know this has no chance in hell of happening in the foreseeable future. People constantly throw around ""end the war on drugs"" as a way of blaming drug laws for criminal activity, and I'm wondering whether anyone actually has a feasible plan for making that work. I personally think it's impossible to do without making the costs outweigh the benefits.",Check out the Brazil's way of combating crack-cocaine use. They have decriminalized possession but made mandatory educational measures and community service instead of prison.,Positive,False,True,False,False,True,True,False,False,Counter-argue,False," positive
 ```python
 def classify_sentiment(reply):
     """"""
@@ -3405,7 +3405,7 @@ Categories"," counter-argue
 Reasoning: The reply presents its own reasoning by pointing out that the parent's argument is based on a choice they made (living on a heavily traveled road), which is similar to the choice the motorcyclists and car drivers made to make their vehicles loud. This is a counter-argument because",Negative,True,False,True,False,False,False,Counter-argue
 149,"I think that the president hasn't made any good decisions since he took office. I think he is the scum of America, downright Yelawolf style crook. If you can give me examples of some good things that he has done, that would suffice, I mean it's good to have an open mind and I don't want to seem purposefully ignorant. I'm surrounded by people who share the same ideals as I do, if you get what I mean. Can you name like 5 things he did well in?  
 
-I live in New Jersey and I am 17 years old, I wish to gain an unbiased and factual answer for this.  Thank you.",He ended the war in Iraq.,Positive,False,False,False,False,False,False,False,True,Information seeking,False," positive
+I live in New Jersey and I am 17 years old, I wish to gain an unbiased and factual answer for this.  Thank you.",He ended the war in Iraq.,Positive,False,True,True,True,True,False,False,False,Information seeking,False," positive
 ```python
 def classify_sentiment(reply):
     # Define the sentiment labels
@@ -3715,7 +3715,7 @@ Reply: I",Neutral,True,False,True,False,False,False,Challenge
 
 I learned how by posting to /r/conservative for a while.  They delete comments from an opposing view, but they aren't very smart and often don't recognize them.  I think it's interesting to disagree, and sometimes even insult, without them being aware of it.
 
-edit:  Whoops!  Maybe they'll start watching for me on /r/conservative from now on.","Because /r/politics is a bastion of higher learning if i've ever seen one,",Negative,False,False,False,False,False,False,False,True,Challenge,False," negative
+edit:  Whoops!  Maybe they'll start watching for me on /r/conservative from now on.","Because /r/politics is a bastion of higher learning if i've ever seen one,",Negative,False,True,True,True,True,False,False,False,Challenge,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -4607,7 +4607,7 @@ def identify_categories(reply, parent):
 Reasoning: The reply presents its own reasoning, evidence, or alternative claim to support that pushback. The reply states that the character in question is not Winston, but an automaton, a shell, which is a clear counter-argument to the parent's claim. This requires the reader to",Negative,False,False,False,True,False,False,Counter-argue
 203,"&gt;If, in an attempt to save money I got her a cheap ring it could easily reflect poorly on me. 
 
-If people think poorly of you for not spending much money on a ring that will be worn for a short time then chucked into a box, it's an excellent way to weed out people not worth knowing.",The engagement ring is not replaced. It is normally worn in addition to the wedding ring. So it is worn for the duration of the marriage if not life.,Neutral,False,False,False,False,False,False,False,True,Counter-argue,False," neutral
+If people think poorly of you for not spending much money on a ring that will be worn for a short time then chucked into a box, it's an excellent way to weed out people not worth knowing.",The engagement ring is not replaced. It is normally worn in addition to the wedding ring. So it is worn for the duration of the marriage if not life.,Neutral,False,False,False,True,True,False,False,False,Counter-argue,False," neutral
 ```python
 def classify_sentiment(reply, parent):
     # Define the sentiment labels
@@ -4738,7 +4738,7 @@ data = {
     'text': ['I assumed you were using that article as an effort to be against",Neutral,False,False,False,True,False,False,Challenge
 209,"A few months ago, my brother was taking a constitutional law class, and he came home and explained to us how his professor was telling them that coercion/duress was never a defense to murder, i.e. if someone held a gun to your head and said kill that person over there or die, you are stilly legally responsible if you shoot the person over there. I've been looking for sources. So far, I've found one about how that's the law in [California](http://www.shouselaw.com/duress.html#1.2) and a source that lists all the defenses to the charge of murder, and [does not include duress/coercion](http://criminal.findlaw.com/criminal-charges/first-degree-murder-defenses.html). I'll edit more sources in as I find them.
 
-Edit: This is about [international law](http://www.lawschool.cornell.edu/research/ILJ/upload/Heim-final.pdf), but in response to OP's question, it clearly eliminates duress/ coercion as a full defense to murder of innocents","Wouldn't that be self defense though? Either I shoot that person, or I get shot.",Neutral,False,False,False,False,False,False,False,True,Counter-argue,False," The sentiment of the reply is neutral. The reply is a matter-of-fact statement that doesn't express any clear positive or negative tone. It's simply pointing out a potential alternative explanation for the situation described in the parent comment. The tone is calm and objective, without any emotional language or loaded words. Therefore, the"," contempt, neutral, sarcasm 
+Edit: This is about [international law](http://www.lawschool.cornell.edu/research/ILJ/upload/Heim-final.pdf), but in response to OP's question, it clearly eliminates duress/ coercion as a full defense to murder of innocents","Wouldn't that be self defense though? Either I shoot that person, or I get shot.",Neutral,False,True,False,True,True,False,False,False,Counter-argue,False," The sentiment of the reply is neutral. The reply is a matter-of-fact statement that doesn't express any clear positive or negative tone. It's simply pointing out a potential alternative explanation for the situation described in the parent comment. The tone is calm and objective, without any emotional language or loaded words. Therefore, the"," contempt, neutral, sarcasm 
 
 Answer:
 contempt, neutral, sarcasm 
@@ -4754,7 +4754,7 @@ http://money.cnn.com/2009/02/10/news/economy/yang_newdeal.fortune/
 
 Some links for you. The cnn article is probably the most balanced.
 
-Pretty solid ""no true Scotsman"" fallacy there, btw.",Neutral,False,True,False,True,True,False,False,False,Counter-argue,False," 
+Pretty solid ""no true Scotsman"" fallacy there, btw.",Neutral,False,True,True,True,True,False,False,False,Counter-argue,False," 
 Answer: neutral
 Explanation: The reply provides links to support its argument, which is a neutral action. The tone is not overtly positive or negative, but rather informative and slightly sarcastic (""Pretty solid 'no true Scotsman' fallacy there, btw.""). The sarcasm is not strong enough to classify the"," neutral, sarcasm, contempt
 
@@ -5095,7 +5095,7 @@ def classify_intent(reply):
     str: The label of the communicative intent.
     """"""
     # Remove leading and trailing whitespaces",Negative,True,True,True,False,False,False,Challenge
-226,"Sorry, I hadn't realized that you had already awarded deltas before. But yes, you're welcome to award more to others who have helped change your view.","no worries, more than happy to give credit where credit is due. Thanks again, cheers!",Positive,False,False,False,False,False,False,False,True,Support,False," positive
+226,"Sorry, I hadn't realized that you had already awarded deltas before. But yes, you're welcome to award more to others who have helped change your view.","no worries, more than happy to give credit where credit is due. Thanks again, cheers!",Positive,False,True,False,False,True,False,True,False,Support,False," positive
 ===============================================================================
 
 ## Step 1: Analyze the tone of the reply
@@ -5434,7 +5434,7 @@ Intent: challenge
 Intent: support
 Intent: others
 Intent:",Negative,True,False,False,False,False,False,Challenge
-242,Maybe the managers need questioned and the not the white people they hired?,"That's the point.  It's not the fault of those who receive the preferential treatment, it's the fault of those that create it.",Negative,False,False,False,False,False,False,False,True,Counter-argue,False," negative
+242,Maybe the managers need questioned and the not the white people they hired?,"That's the point.  It's not the fault of those who receive the preferential treatment, it's the fault of those that create it.",Negative,False,True,True,True,True,False,False,False,Counter-argue,False," negative
 ```python
 def classify_sentiment(reply):
     """"""
@@ -5593,7 +5593,7 @@ def classify_reply(reply):
 
 EDIT: THE MOD SAYS IM WRONG I CANT LIVE WITH MYSELF ANYMORE IM GOING TO GO RUNNING NOW TO END THE PAIN BY INTRODUCING A DIFFERENT KIND OF IT","&gt;A delta by itself will be ignored by the bot.  
 
-Not yet, actually. The bot's next update will cover that.",Positive,False,False,False,False,False,False,False,True,Others,False," positive
+Not yet, actually. The bot's next update will cover that.",Positive,False,True,False,False,True,False,False,False,Others,False," positive
 ===============================================================================
 
 Parent: I'm a 25 year old male and I'm starting to feel like I'm getting too old for this game. I've been playing since I was 8 and I've always been pretty good at it. But lately, I've been getting destroyed by younger players and I'm"," sarcasm, hostility, contempt, curiosity, appreciation, neutral. 

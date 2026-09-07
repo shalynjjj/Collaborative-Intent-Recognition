@@ -94,3 +94,19 @@ Two situations account for most of the error, in order of impact:
 
 1. **Challenge vs. Counter-argue** — a fine-grained "pushback with vs. without new reasoning" distinction the model collapses toward Counter-argue by default. This is the single largest confusion cell and the reason Challenge gets zero benefit from Dialogue Act (it shares Dialogue Act's dominant value with the class it's most often confused with).
 2. **Short, Parent-dependent replies** — a few words that are only interpretable against the Parent. Both the base model and the Dialogue-Act auxiliary signal can push these the wrong way once they over-rely on "disagree implies an argument was made."
+
+## 7. Oracle vs. Predicted: Is This the DA Signal Itself, or Strategy A's Prediction Errors?
+
+Sections 1–6 use `predicted`-mode's Dialogue Act (Strategy A's own prediction, only 55.4% accurate). Repeating the per-class comparison with `oracle`-mode's *gold* Dialogue Act (n=264, all eval rows) isolates whether the patterns above come from the Dialogue-Act signal itself or from Strategy A's errors in predicting it.
+
+| Intent | n | base acc | +DA acc (oracle) | Δ (oracle) | Δ (predicted, §4) |
+|---|---:|---:|---:|---:|---:|
+| Information seeking | 14 | 0.500 | 0.714 | **+0.214** | +0.214 |
+| Support | 56 | 0.393 | 0.625 | **+0.232** | +0.200 |
+| Counter-argue | 87 | 0.759 | 0.920 | **+0.161** | +0.094 |
+| Challenge | 78 | 0.167 | 0.154 | **−0.013** | −0.013 |
+| Others | 29 | 0.345 | 0.241 | **−0.103** | −0.103 |
+
+Overall: base macro-F1 0.385 → +DA(oracle) macro-F1 0.465 (Δ +0.080, matching the headline oracle result in the main report). Row-level flips: 107 stay correct, 37 flip wrong→correct, 11 flip correct→wrong, 109 stay wrong.
+
+**Finding:** with perfect Dialogue Act, Challenge and Others show the *exact same* pattern as with predicted Dialogue Act — Challenge gets essentially no benefit (−0.013 both ways) and Others gets *worse* by an identical margin (−0.103 both ways). This confirms these two failures are not Strategy-A prediction-error artifacts: even a perfect Dialogue-Act signal doesn't discriminate Challenge from Counter-argue (they share the same gold `disagree` value), and even the correct Dialogue Act pushes Others predictions the wrong way. Counter-argue and Support, by contrast, gain noticeably more from oracle DA than from predicted DA (+0.161 vs. +0.094, +0.232 vs. +0.200) — for these two classes, some of the predicted-mode gain was being held back by Strategy A's DA prediction errors, and the oracle numbers show the larger gain available once that noise is removed.

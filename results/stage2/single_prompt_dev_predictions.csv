@@ -40,7 +40,7 @@ Intent: counter-argue
 
 Sentiment: The reply does not express a clear positive or negative tone, simply stating a fact.
 Emotion: The reply expresses curiosity about the game dependency, but also has a neutral tone, as it does not express any",Negative,False,False,False,True,False,False,Counter-argue
-6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Neutral,True,False,False,False,False,False,False,True,Others,False,"```python
+6,"I read that whole thing, and I don't see anything comparing it to social problems and ease of living in Europe. Nor can I see how ""capitalism"" is the sole thing at fault here.",Slide 14. This is your future.,Neutral,True,False,False,False,True,False,False,False,Others,False,"```python
 def analyze_reply(reply, parent):
     sentiment = ""neutral""
     emotion = ""none""
@@ -74,7 +74,7 @@ Film Majors and Theater Majors will spend the at least 2 semesters of Coursework
 
 Which is the core of my issue with dance as a major, I don't see the other side of dance. It's 100% possible that's just my school, and other programs are different. 
 
-Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,False,False,False,False,False,False,True,Information seeking,False,"```python
+Assuming you (or someone on this thread) has studied dance, could you enlighten me to Technique, Theory, and history? Whats Dance's ""Metropolis"", ""Romeo and Juliet"". Whose Dance's Shakespeare or Orson Wells or Rembrandt? I'm genuinely interested, and largely ignorant to the art side of dance.","out of curiosity, what kind of dance do your friends do?",Neutral,False,False,False,False,False,True,False,False,Information seeking,False,"```python
 def analyze_reply(parent, reply):
     sentiment = 'neutral'
     emotion = 'curiosity'
@@ -244,7 +244,7 @@ Intent: support
 
 Sentiment: The reply expresses a positive attitude toward the parent's argument, as it agrees with the parent's position and provides a supporting example from physics.
 Emotion: The reply expresses curiosity, as it asks for clarification on the parent's",Neutral,False,False,False,True,False,False,Counter-argue
-24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Neutral,False,False,False,False,False,False,False,True,Others,True,"```python
+24,So why doesn't a Russia just relocate half of their population around the world and just vote for every country to be Russia?,"That is the winning strategy. Now imagine if all countries, not only Russia, would partake in doing the same thing.",Neutral,False,False,False,False,True,False,False,False,Others,True,"```python
 def analyze_reply(parent, reply):
     sentiment = ""neutral""
     emotion = ""none""

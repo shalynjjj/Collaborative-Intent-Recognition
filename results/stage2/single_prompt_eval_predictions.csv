@@ -74,7 +74,7 @@ Intent: The reply agrees with and reinforces the parent's position.
 
 Sentiment: positive
 Emotion:",Positive,False,False,False,False,False,True,Support
-7,"How is atheism a movement? I'm an agnostic atheist, but I fail to see how not identifying with a group makes me part of a (counter)movement.",Non-golfer here.,Neutral,False,False,False,False,False,False,False,True,Others,False,"```python
+7,"How is atheism a movement? I'm an agnostic atheist, but I fail to see how not identifying with a group makes me part of a (counter)movement.",Non-golfer here.,Neutral,False,False,False,False,True,False,False,False,Others,False,"```python
 def analyze_reply(reply):
     sentiment = ""neutral""
     emotion = ""neutral""
@@ -106,7 +106,7 @@ Emotion: appreciation
 Intent: information seeking
 
 Parent:",Positive,False,False,False,False,False,True,Support
-10,Why shouldn't they pursue someone who broke the law? That's they're job. They're the government. They can't just let him off because he did something that was morally defensible. Just shrugging their shoulders would make the US and Obama look incredibly weak.,If only they pursued the guy who stole my bike last year like they're pursuing this guy...,Neutral,True,False,False,False,False,False,False,True,Challenge,False,"This reply is a sarcastic jab at the parent's argument, implying that the parent is being overly
+10,Why shouldn't they pursue someone who broke the law? That's they're job. They're the government. They can't just let him off because he did something that was morally defensible. Just shrugging their shoulders would make the US and Obama look incredibly weak.,If only they pursued the guy who stole my bike last year like they're pursuing this guy...,Neutral,True,True,False,False,False,False,False,False,Challenge,False,"This reply is a sarcastic jab at the parent's argument, implying that the parent is being overly
 harsh and that the government should prioritize more pressing issues. The reply is not presenting its
 own reasoning or evidence, but rather mocking the parent's claim. Therefore, the reply is a challenge
 to the parent",Negative,True,False,False,False,False,False,Challenge
@@ -200,7 +200,7 @@ Intent: challenge
 Sentiment: The reply expresses disapproval and frustration, indicating a negative sentiment.
 Emotion: The reply is openly aggressive and dismissive, indicating hostility and contempt.
 Intent: The reply pushes back without presenting its own reasoning or alternative claim,",Negative,False,True,True,False,False,False,Challenge
-21,"Sorry, I should have used the word 'brain'. The brain is the physical object in my head that in which the process of consciousness is occurring, much the same way a program is a process that runs in a physical computer.","If consciousness isn't physical then it can't have a location i.e. in the brain, your hands or anywhere.",Negative,False,False,False,False,False,False,False,True,Challenge,False,"```python
+21,"Sorry, I should have used the word 'brain'. The brain is the physical object in my head that in which the process of consciousness is occurring, much the same way a program is a process that runs in a physical computer.","If consciousness isn't physical then it can't have a location i.e. in the brain, your hands or anywhere.",Negative,False,False,True,False,False,False,False,False,Challenge,False,"```python
 def analyze_reply(reply, parent):
     # Define sentiment, emotion, and intent
     sentiment = ""negative""
@@ -299,7 +299,7 @@ Sentiment: The reply is positive, as it uses the word ""awesome"" to express adm
 Emotion: The reply expresses appreciation, as it is a positive and admiring tone.
 
 Intent: The reply is",Positive,False,False,False,True,False,False,Others
-29,"Well, the force of the ""bully"" in this case allows for free, safe trade over the oceans for any country that can afford a boat, even the ones it's not very friendly with. The end result is a greater amount of trade and prosperity for all.",Prosperity for all? Who exactly is 'all' here?,Neutral,False,False,False,False,False,False,False,True,Information seeking,False,"```python
+29,"Well, the force of the ""bully"" in this case allows for free, safe trade over the oceans for any country that can afford a boat, even the ones it's not very friendly with. The end result is a greater amount of trade and prosperity for all.",Prosperity for all? Who exactly is 'all' here?,Neutral,False,False,False,False,False,True,False,False,Information seeking,False,"```python
 def analyze_reply(reply):
     sentiment = ""neutral""
     emotion = ""curiosity""
@@ -309,7 +309,7 @@ def analyze_reply(reply):
 
 sentiment, emotion, intent = analyze_reply(""Prosperity for all? Who exactly is 'all' here?"")
 print(f""Sent",Negative,False,False,False,False,True,False,Challenge
-30,And who gives anyone the right to decide who *needs* to die? Because I certainly don't remember voting for a local executioner.,"We all decide that as individuals and it's, usually, the people that have guns that decide this.",Negative,False,False,False,False,False,False,False,True,Challenge,False,"```python
+30,And who gives anyone the right to decide who *needs* to die? Because I certainly don't remember voting for a local executioner.,"We all decide that as individuals and it's, usually, the people that have guns that decide this.",Negative,False,False,True,False,False,False,False,False,Challenge,False,"```python
 def analyze_reply(reply):
     sentiment = ""negative""
     emotion = ""hostility""
@@ -799,7 +799,7 @@ Intent: information seeking
 
 Sentiment: neutral
 Em",Neutral,False,False,False,False,True,False,Challenge
-76,"Hmm, odd. Well, I can't fault Apple for focusing on their products. Just seems odd that the devs for the other browsers haven't tried to optimize their's for iOS.","Well we are talking about Mac, on iOS they all use the same browser engine",Neutral,False,False,False,False,False,False,False,True,Others,False,"```python
+76,"Hmm, odd. Well, I can't fault Apple for focusing on their products. Just seems odd that the devs for the other browsers haven't tried to optimize their's for iOS.","Well we are talking about Mac, on iOS they all use the same browser engine",Neutral,False,False,False,False,True,False,False,False,Others,False,"```python
 def analyze_reply(reply, parent):
     # Define sentiment, emotion, and intent
     sentiment = ""neutral""
@@ -809,7 +809,7 @@ def analyze_reply(reply, parent):
     # Check if reply is a question
     if ""?"" in reply:
         # If question, check if it's asking for",Neutral,False,False,False,True,False,False,Counter-argue
-77,"Well if you're going to cut off somebody's hand, then yes?",But we're talking about repeat offenders.if you are convicted multiple times then I'm not very sympathetic if you were framed on the 5th.,Negative,False,False,False,False,False,False,False,True,Counter-argue,False,"```python
+77,"Well if you're going to cut off somebody's hand, then yes?",But we're talking about repeat offenders.if you are convicted multiple times then I'm not very sympathetic if you were framed on the 5th.,Negative,False,False,True,False,False,False,False,False,Counter-argue,False,"```python
 def analyze_reply(reply):
     sentiment = ""negative""
     emotion = ""hostility""
@@ -1145,7 +1145,7 @@ Parent:",Neutral,False,False,False,True,False,False,Support
 
 On the other hand, food companies do some pretty shady shit with what's in their food.  Recently Monsanto and Starbucks sued Vermont to be allowed to hide their ingredients from consumers.
 
-Also very subtle shit like putting sugar in grams instead of tablespoons solely because most Americans can't visualize a gram of sugar.","A tablespoon is 15 grams. Not that hard. Then again, I'm not American.",Neutral,False,False,False,False,False,False,False,True,Others,False,"```python
+Also very subtle shit like putting sugar in grams instead of tablespoons solely because most Americans can't visualize a gram of sugar.","A tablespoon is 15 grams. Not that hard. Then again, I'm not American.",Neutral,False,False,False,False,True,False,False,False,Others,False,"```python
 def analyze_reply(reply, parent):
     # Define sentiment, emotion, and intent
     sentiment = ""neutral""
@@ -1349,7 +1349,7 @@ Intent: challenge
 
 Sentiment: The reply expresses disapproval of the parent's claim that FTL is fun and replayable enough to unlock everything.
 Emotion: The reply expresses hostility (anger) and contempt (dismissing the parent's opinion) toward the",Negative,False,False,False,True,False,False,Others
-120,"I agree. But if you are so untrusting of your partner that you need a paternity test, then the relationship isn't very strong.",ok. whats the purpose of trust in a relationship?,Neutral,False,False,False,False,False,False,False,True,Information seeking,False,"```python
+120,"I agree. But if you are so untrusting of your partner that you need a paternity test, then the relationship isn't very strong.",ok. whats the purpose of trust in a relationship?,Neutral,False,False,False,False,False,True,False,False,Information seeking,False,"```python
 def analyze_reply(reply):
     sentiment = ""neutral""
     emotion = ""curiosity""
@@ -1397,7 +1397,7 @@ Intent: information seeking
 Sentiment:",Neutral,False,False,False,True,False,False,Support
 124,"We're not talking about random dates. That's not where ""nice guys"" have the problem. The problem is the situation of asking a friend or acquaintance out and then wanting absolutely nothing to do with them of rejected and blaming them for things.
 
-That makes you an asshole",Maybe it's too painful for them to continue going on being friends with their crush? Why do you see this as being assholish behavior?,Neutral,False,False,False,False,False,False,False,True,Information seeking,False,"```python
+That makes you an asshole",Maybe it's too painful for them to continue going on being friends with their crush? Why do you see this as being assholish behavior?,Neutral,False,False,False,False,True,False,False,False,Information seeking,False,"```python
 def analyze_reply(reply, parent):
     # Define sentiment, emotion, and intent
     sentiment = ""neutral""
@@ -1991,7 +1991,7 @@ Emotion: contempt, hostility
 Intent: counter-argue
 
 Parent:",Negative,False,False,True,True,False,False,Counter-argue
-178,"The problem here is that the Britannica used subject matter experts to create its entries and once written, the entry didn't change very often. There's no such assurance about the expertise of anyone who has written a Wikipedia entry and no guarantee that the Wikipedia entry I look at following your citation is the same entry that you used, since it's potentially subject to editing every day.",That latter point is a very good one.  Thanks very much for your response.,Positive,False,False,False,False,False,False,False,True,Support,False,"```python
+178,"The problem here is that the Britannica used subject matter experts to create its entries and once written, the entry didn't change very often. There's no such assurance about the expertise of anyone who has written a Wikipedia entry and no guarantee that the Wikipedia entry I look at following your citation is the same entry that you used, since it's potentially subject to editing every day.",That latter point is a very good one.  Thanks very much for your response.,Positive,False,False,False,False,False,False,True,False,Support,False,"```python
 def analyze_reply(reply):
     sentiment = ""positive""
     emotion = ""appreciation""
@@ -2324,7 +2324,7 @@ Emotion: contempt, sarcasm
 Intent: challenge
 
 Parent:",Negative,True,True,True,False,False,False,Challenge
-218,"Let's stay practical: In any country with several millions of voters (such as mine), my vote is irrelevant. Votes in groups of e.g. 5 people - that's a completely different matter.","So again, what level of statistical significance to do consider mattering?",Neutral,False,False,False,False,False,False,False,True,Information seeking,False,"```python
+218,"Let's stay practical: In any country with several millions of voters (such as mine), my vote is irrelevant. Votes in groups of e.g. 5 people - that's a completely different matter.","So again, what level of statistical significance to do consider mattering?",Neutral,False,False,False,False,False,True,False,False,Information seeking,False,"```python
 def analyze_reply(reply):
     sentiment = ""neutral""
     emotion = ""curiosity""
@@ -2743,7 +2743,7 @@ Intent: challenge
 Sentiment: positive
 Emotion: appreciation, neutral
 Intent:",Positive,False,False,False,False,False,True,Others
-259,Is a man imprisoned if he is locked in a room that he has no intention of leaving?,I'm saying he doesn't even get to choose if he has an intention of leaving or not.,Neutral,False,False,False,False,False,False,False,True,Others,False,"```python
+259,Is a man imprisoned if he is locked in a room that he has no intention of leaving?,I'm saying he doesn't even get to choose if he has an intention of leaving or not.,Neutral,False,False,False,False,True,False,False,False,Others,False,"```python
 def analyze_reply(reply):
     sentiment = ""neutral""
     emotion = ""none""

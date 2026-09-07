@@ -104,22 +104,51 @@ def _emotion_answer_text(raw_output: str) -> str:
     answer marker -- when present -- avoids matching every category word in
     that echoed list; `_first_line` alone was catching all of them as
     positives, which is why Hostility/Contempt/Curiosity precision was so low.
+
+    The "answer" marker itself is sometimes on its own line, with nothing
+    after the colon and the actual (often narrower) category list on the
+    next line instead, e.g. "Answer:\\ncontempt, neutral, sarcasm". When the
+    marker line has no text after it, fall through to the next non-empty
+    line rather than returning an empty string.
     """
     stripped = (raw_output or "").strip()
     if not stripped:
         return ""
-    for line in stripped.splitlines():
+    lines = stripped.splitlines()
+    for i, line in enumerate(lines):
         idx = line.lower().rfind("answer")
         if idx != -1:
             after = line[idx:]
             colon = after.find(":")
-            return (after[colon + 1 :] if colon != -1 else after).strip()
-    return stripped.splitlines()[0]
+            text = (after[colon + 1 :] if colon != -1 else after).strip()
+            if text:
+                return text
+            for later_line in lines[i + 1 :]:
+                later_line = later_line.strip()
+                if later_line:
+                    return later_line
+            return text
+    return lines[0]
+
+
+_EMOTION_SYNONYMS: Dict[str, List[str]] = {
+    "Sarcasm": ["sarcastic"],
+    "Hostility": ["hostile"],
+    "Contempt": ["contemptuous"],
+    "Curiosity": ["curious"],
+    "Appreciation": ["appreciative"],
+}
 
 
 def parse_emotion_labels(raw_output: str) -> Tuple[Dict[str, bool], bool]:
     text = _emotion_answer_text(raw_output).lower()
-    result = {label: (label.lower() in text) for label in EMOTION_LABELS}
+    result = {}
+    for label in EMOTION_LABELS:
+        # Match the label word itself plus its adjective form (e.g. "sarcasm"
+        # / "sarcastic"): the model sometimes uses the adjective when
+        # describing the reply in free text instead of the category noun.
+        variants = [label.lower()] + _EMOTION_SYNONYMS.get(label, [])
+        result[label] = any(variant in text for variant in variants)
     if "none" in text and not any(result.values()):
         # Defensive synonym: the prompt asks for "neutral", but the model may
         # still occasionally answer "none" -- treat them as equivalent rather
@@ -130,20 +159,35 @@ def parse_emotion_labels(raw_output: str) -> Tuple[Dict[str, bool], bool]:
     return result, fallback_used
 
 
+_ASSIGN_LINE = re.compile(r"^\s*(\w+)\s*=\s*(.+)$")
+
+
 def _split_labeled_lines(raw_output: str) -> Dict[str, str]:
     """First occurrence of each key wins. The model sometimes keeps
     generating past its answer and hallucinates a new Parent/Reply example
     with its own (often truncated) Sentiment/Emotion/Intent lines; taking the
     last occurrence would let that hallucinated continuation silently
     overwrite the real answer.
+
+    Also recognizes Python-assignment-style lines (e.g. `emotion = "neutral"`)
+    in addition to `Key: value` lines: the model sometimes answers inside a
+    fenced Python code block instead of the requested plain-text format.
     """
     fields: Dict[str, str] = {}
     for line in (raw_output or "").splitlines():
+        key: Optional[str] = None
+        value = ""
         if ":" in line:
             key, _, value = line.partition(":")
-            key = key.strip().lower()
-            if key not in fields:
-                fields[key] = value.strip()
+        else:
+            match = _ASSIGN_LINE.match(line)
+            if match:
+                key, value = match.group(1), match.group(2)
+        if key is None:
+            continue
+        key = key.strip().lower()
+        if key not in fields:
+            fields[key] = value.strip()
     return fields
 
 
