@@ -1,0 +1,110 @@
+{
+  "macro_f1": 0.4020655397684111,
+  "cohen_kappa": 0.31815472642746456,
+  "fallback_count": 0,
+  "classification_report": {
+    "Information seeking": {
+      "precision": 0.23809523809523808,
+      "recall": 0.7142857142857143,
+      "f1-score": 0.35714285714285715,
+      "support": 14.0
+    },
+    "Challenge": {
+      "precision": 0.7692307692307693,
+      "recall": 0.12987012987012986,
+      "f1-score": 0.2222222222222222,
+      "support": 77.0
+    },
+    "Counter-argue": {
+      "precision": 0.4873417721518987,
+      "recall": 0.9058823529411765,
+      "f1-score": 0.6337448559670782,
+      "support": 85.0
+    },
+    "Support": {
+      "precision": 0.7941176470588235,
+      "recall": 0.4909090909090909,
+      "f1-score": 0.6067415730337079,
+      "support": 55.0
+    },
+    "Others": {
+      "precision": 0.3076923076923077,
+      "recall": 0.13793103448275862,
+      "f1-score": 0.19047619047619047,
+      "support": 29.0
+    },
+    "accuracy": 0.49230769230769234,
+    "macro avg": {
+      "precision": 0.5192955468458074,
+      "recall": 0.4757756644977739,
+      "f1-score": 0.4020655397684111,
+      "support": 260.0
+    },
+    "weighted avg": {
+      "precision": 0.6022603873397161,
+      "recall": 0.49230769230769234,
+      "f1-score": 0.4418231534960623,
+      "support": 260.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      10,
+      0,
+      2,
+      0,
+      2
+    ],
+    [
+      14,
+      10,
+      49,
+      1,
+      3
+    ],
+    [
+      5,
+      0,
+      77,
+      2,
+      1
+    ],
+    [
+      9,
+      0,
+      16,
+      27,
+      3
+    ],
+    [
+      4,
+      3,
+      14,
+      4,
+      4
+    ]
+  ],
+  "labels": [
+    "Information seeking",
+    "Challenge",
+    "Counter-argue",
+    "Support",
+    "Others"
+  ],
+  "bootstrap": {
+    "n_boot": 2000,
+    "boot_seed": 42,
+    "macro_f1_boot_mean": 0.39932578262685314,
+    "macro_f1_boot_std": 0.0333485034502489,
+    "macro_f1_ci95": [
+      0.3376054950219169,
+      0.46579813299384887
+    ],
+    "cohen_kappa_boot_mean": 0.3168772980979358,
+    "cohen_kappa_boot_std": 0.03581667393456362,
+    "cohen_kappa_ci95": [
+      0.2519345398960019,
+      0.3872787363646965
+    ]
+  }
+}

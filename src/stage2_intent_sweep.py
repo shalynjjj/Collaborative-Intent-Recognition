@@ -72,6 +72,18 @@ def _load_oracle_predictions(split: str) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+# feature_source -> which Experiment 1 architecture's Sentiment/Emotion
+# predictions to attach. "predicted" (multi_module) is the original,
+# already-reported pipeline; "predicted_sp" (single_prompt) is a sensitivity
+# check added after Experiment 1's fixed re-run showed single_prompt is at
+# least as good, to test whether the choice of upstream architecture changes
+# Experiment 2's conclusions.
+_MODULE_SOURCE_BY_FEATURE_SOURCE = {
+    "predicted": "multi_module",
+    "predicted_sp": "single_prompt",
+}
+
+
 def load_feature_dataframe(split: str, feature_source: str) -> pd.DataFrame:
     """Load Stage 2 rows and attach either gold or genuinely predicted inputs."""
     csv_path = STAGE2_DEV_CSV if split == "dev" else STAGE2_EVAL_CSV
@@ -92,7 +104,10 @@ def load_feature_dataframe(split: str, feature_source: str) -> pd.DataFrame:
         raise ValueError("Strategy A predictions contain duplicate Parent-Reply pairs")
     merged = stage2.merge(da, on=["Parent", "Reply"], how="inner", validate="one_to_one")
 
-    module_path = STAGE2_DIR / f"multi_module_{split}_predictions.csv"
+    module_source = _MODULE_SOURCE_BY_FEATURE_SOURCE.get(feature_source)
+    if module_source is None:
+        raise ValueError(f"Unknown feature_source: {feature_source}")
+    module_path = STAGE2_DIR / f"{module_source}_{split}_predictions.csv"
     if not module_path.exists():
         raise FileNotFoundError(f"Experiment 1 predictions not found: {module_path}")
     modules = pd.read_csv(module_path)
@@ -152,7 +167,7 @@ def run_intent_sweep_dataframe(
                 dialogue_act = row.get("Dialogue_act")
                 sentiment = row.get("Sentiment")
                 emotion = gold_emotion_labels(row)
-            elif feature_source == "predicted":
+            elif feature_source in ("predicted", "predicted_sp"):
                 dialogue_act = row.get("predicted_dialogue_act")
                 sentiment = row.get("predicted_sentiment")
                 emotion = predicted_emotion_labels(row)
@@ -220,7 +235,10 @@ def run_sweep(
         else make_transformers_generator(max_new_tokens=STAGE2_MAX_NEW_TOKENS)
     )
     reused_base = None
-    if feature_source == "predicted":
+    if feature_source != "oracle":
+        # The base (no-auxiliary-input) combination doesn't depend on which
+        # architecture's Sentiment/Emotion is attached, so it's always
+        # reused from the oracle run rather than regenerated.
         base = _load_oracle_predictions(split).set_index(["Parent", "Reply"])
         reused_base = base[["intent_base", "intent_base_fallback"]]
     pred_path = (
@@ -289,10 +307,10 @@ def evaluate_sweep(split: str = "dev", feature_source: str = "oracle") -> pd.Dat
     return summary
 
 
-def compare_oracle_and_predicted(split: str) -> pd.DataFrame:
+def compare_oracle_and_predicted(split: str, feature_source: str = "predicted") -> pd.DataFrame:
     """Compare oracle and predicted auxiliary inputs on their exact common rows."""
     oracle = _load_oracle_predictions(split)
-    predicted_path = _prediction_path("predicted", split)
+    predicted_path = _prediction_path(feature_source, split)
     if not predicted_path.exists():
         raise FileNotFoundError(predicted_path)
     predicted = pd.read_csv(predicted_path)
@@ -317,16 +335,18 @@ def compare_oracle_and_predicted(split: str) -> pd.DataFrame:
             merged[f"intent_{name}_predicted"],
             labels=INTENT_LABELS,
         )
-        rows.append({"combination": name, "a": "oracle", "b": "predicted", "n_rows": len(merged), **paired})
+        rows.append({"combination": name, "a": "oracle", "b": feature_source, "n_rows": len(merged), **paired})
     result = pd.DataFrame(rows)
-    result.to_csv(STAGE2_DIR / f"intent_sweep_oracle_vs_predicted_{split}_paired.csv", index=False)
+    result.to_csv(STAGE2_DIR / f"intent_sweep_oracle_vs_{feature_source}_{split}_paired.csv", index=False)
     return result
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Experiment 2 intent input-combination sweep.")
     parser.add_argument("--split", choices=["dev", "eval"], default="dev")
-    parser.add_argument("--feature-source", choices=["oracle", "predicted"], default="oracle")
+    parser.add_argument(
+        "--feature-source", choices=["oracle", "predicted", "predicted_sp"], default="oracle"
+    )
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--mock", action="store_true", help="Use deterministic local mock outputs.")
     parser.add_argument(
@@ -349,9 +369,9 @@ def main() -> None:
 
     summary = evaluate_sweep(split=args.split, feature_source=args.feature_source)
     print(summary.to_string(index=False))
-    if args.feature_source == "predicted" and args.limit is None:
+    if args.feature_source in ("predicted", "predicted_sp") and args.limit is None:
         print("\nOracle vs predicted auxiliary inputs (paired common rows):")
-        print(compare_oracle_and_predicted(args.split).to_string(index=False))
+        print(compare_oracle_and_predicted(args.split, args.feature_source).to_string(index=False))
 
 
 if __name__ == "__main__":
