@@ -11,25 +11,12 @@ RAW_UTTERANCES_JSONL = DATA_DIR / "winning-args-corpus" / "utterances.jsonl"
 SILVER_CANDIDATES_CSV = DATA_DIR / "task3_silver_candidates_10k.csv"
 SILVER_LABELED_CSV = DATA_DIR / "task3_silver_labeled_10k.csv"
 
-# Held-out test set: independent of GOLD_CSV, never used for tuning/model
-# selection. GOLD_CSV plays the dev role (training + hyperparameter/config
-# selection for all three strategies); TEST_CSV is only touched once per
-# strategy, after its config below has been locked in.
-# Expanded from the original 80-row pilot (pilot80 + batch2, double-annotated
-# with Cohen's kappa 0.9563) for the A-vs-B/A-vs-C power analysis. Batch2 was
-# collected via simple random sampling (natural class distribution), so the
-# 530-row union is class-imbalanced (disagree 188 / statement 164 / question
-# 95 / agree 83); src/prepare_heldout_balanced.py downsamples every class to
-# the smallest class's count (83) for a balanced 332-row set. Per-class macro-F1
-# precision is bottlenecked by the smallest class regardless, so this loses no
-# effective power. The full imbalanced set is still available as
-# cmv_test_candidates_heldout_expanded.csv. The pre-expansion *_heldout
-# results (n=80) remain in results/strategy_*_heldout for comparison.
+# GOLD_CSV is used for development and configuration selection. TEST_CSV is
+# the independent held-out set and must only be used after a configuration is locked.
 TEST_CSV = DATA_DIR / "cmv_test_candidates_heldout_balanced.csv"
 
-# Stage 2 dev/eval split of GOLD_CSV, stratified by Intent. dev is for prompt
-# iteration only and is never reported; eval is touched once per locked
-# prompt config, mirroring the GOLD_CSV/TEST_CSV touch-once discipline above.
+# Fixed Intent-stratified split: dev is for prompt development; eval is for the
+# final locked prompts.
 STAGE2_DEV_CSV = DATA_DIR / "cmv_300_gold_stage2_dev.csv"
 STAGE2_EVAL_CSV = DATA_DIR / "cmv_300_gold_stage2_eval.csv"
 STAGE2_DEV_FRACTION = 0.12
@@ -42,20 +29,16 @@ STRATEGY_A_HELDOUT_DIR = RESULTS_DIR / "strategy_a_heldout"
 STRATEGY_B_HELDOUT_DIR = RESULTS_DIR / "strategy_b_heldout"
 STRATEGY_C_HELDOUT_DIR = RESULTS_DIR / "strategy_c_heldout"
 
-# Locked final configs, chosen from GOLD_CSV (dev) results. Each was picked
-# by macro_f1_mean in results/<strategy>/summary*.csv before TEST_CSV was
-# ever evaluated against. Do not add list-valued fields here — heldout eval
-# functions must only accept one fixed config, never a sweep.
-STRATEGY_A_FINAL_MODE = "fewshot"  # zeroshot=0.5148 F1, fewshot=0.5916 F1 on gold
+# Final configurations were selected on development data before held-out testing.
+# Keep each setting scalar: held-out evaluation accepts one configuration, not a sweep.
+STRATEGY_A_FINAL_MODE = "fewshot"
 
 STRATEGY_B_FINAL_SILVER_CSV = DATA_DIR / "task3_silver_labeled_10k_fewshot.csv"
 STRATEGY_B_FINAL_CONFIG = {
     "silver_size": 2500,
     "sample_seed": 123,
     "use_class_weights": True,
-}  # sample_seed=123 macro_f1_mean=0.6375 (vs sample_seed=42: 0.6064) on gold;
-# silver_size=2500 was the top overall (0.6220 avg across both sample_seeds)
-# in the fewshot-silver sweep in results/strategy_b_fewshot/summary.csv
+}
 
 STRATEGY_C_FINAL_CONFIG = {
     "model_type": "roberta",
@@ -63,23 +46,14 @@ STRATEGY_C_FINAL_CONFIG = {
     "split_seed": 42,
     "warmup_steps": 20,
     "epochs": 8,
-}  # gold 5-fold OOF macro_f1_mean=0.5309 (std 0.0038), zero class collapse across
-# all 15 fold/seed runs, in results/strategy_c/roberta_weights_warmup20_epochs8/
-# summary_oof.csv. Beats TF-IDF+weights (0.2485) and weights-off at the same
-# warmup/epochs (0.3499, collapses on 8/15 runs). The warmup=20/epochs=8 fix
-# resolved the training-instability diagnosed in strategy_c_diagnose (models
-# were failing to fit their own training folds); earlier collapsed numbers
-# from before that fix (RoBERTa+weights 0.2208, no-weights 0.1629) no longer
-# apply and should not be cited.
+}
 
 DIALOGUE_LABELS = ["agree", "disagree", "question", "statement"]
 LABEL2ID = {label: idx for idx, label in enumerate(DIALOGUE_LABELS)}
 ID2LABEL = {idx: label for label, idx in LABEL2ID.items()}
 FALLBACK_LABEL = "statement"
 
-# Stage 2 label schemes, matching the exact casing used in GOLD_CSV's
-# Sentiment/Sarcasm/Hostility/Contempt/Neutral/Curiosity/Appreciation/Intent
-# columns so predictions can be compared to gold without re-casing either side.
+# Preserve the casing used by the Stage 2 gold columns.
 STAGE2_DIR = RESULTS_DIR / "stage2"
 
 SENTIMENT_LABELS = ["Positive", "Negative", "Neutral"]
@@ -90,11 +64,7 @@ EMOTION_LABELS = ["Sarcasm", "Hostility", "Contempt", "Neutral", "Curiosity", "A
 INTENT_LABELS = ["Information seeking", "Challenge", "Counter-argue", "Support", "Others"]
 FALLBACK_INTENT = "Others"
 
-# Strategy A's LLM.max_new_tokens=8 is sized for a single dialogue-act word
-# and truncates Stage 2 output -- the emotion module's comma-separated
-# category list and single_prompt_baseline's 3 stacked lines both need more
-# room. 64 covers the worst case (all 6 emotion categories + a two-word
-# intent label) with headroom.
+# Stage 2 needs more output tokens than single-label Strategy A inference.
 STAGE2_MAX_NEW_TOKENS = 64
 
 SEEDS = [42, 123, 2026]
