@@ -1,12 +1,22 @@
+# Current ModelScope releases require Python 3.10 or newer.
+
+# Core data processing and evaluation
 pandas
 numpy
 scikit-learn
+
+# Model training, inference, and ModelScope downloads
 torch
 transformers
 modelscope
 accelerate
 python-dotenv
 tqdm
+
+# Notebook and plotting support
 jupyter
 matplotlib
-seaborn
+
+# Error analysis and corpus preparation
+nltk
+convokit
