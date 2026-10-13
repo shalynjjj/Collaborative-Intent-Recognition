@@ -1,13 +1,8 @@
-"""Score a completed blind re-label of the 27 hard agree/disagree rows.
+"""Score blind re-labels of the 27 difficult agree/disagree rows.
 
 Usage:
     python3 -m src.score_agree_disagree_relabel \\
-        --blind-csv results/strategy_c/agree_disagree_hard27_blind.csv \\
-        [--blind-csv-2 results/strategy_c/agree_disagree_hard27_blind_annotator2.csv]
-
-Compares `your_label` against the original gold label (were the 27 rows
-mislabeled in the first place, or genuinely ambiguous) and, if a second
-annotator's file is given, computes raw agreement between the two annotators.
+        --blind-csv results/strategy_c/agree_disagree_hard27_blind.csv
 """
 
 import argparse

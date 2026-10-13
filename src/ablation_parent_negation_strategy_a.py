@@ -1,9 +1,4 @@
-"""Same parent-negation ablation as ablation_parent_negation.py, but for
-Strategy A (Llama few-shot prompting) instead of Strategy B.
-
-Strategy A needs no retraining -- it's re-prompted directly with the locked
-few-shot config (STRATEGY_A_FINAL_MODE), so this only costs one model load
-plus 6 short generations (3 examples x original/edited).
+"""Parent-negation ablation for Strategy A (Llama few-shot).
 
 Usage:
     python3 -m src.ablation_parent_negation_strategy_a

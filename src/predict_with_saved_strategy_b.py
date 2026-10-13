@@ -1,14 +1,7 @@
-"""Predict with an already-trained, saved Strategy B model (no retraining).
-
-Loads the model+tokenizer saved under
-results/strategy_b_heldout/models/seed{N}/ (see save_model_dir in
-train_roberta.py / ablation_parent_negation.py) and predicts on any CSV with
-Parent/Reply columns. Averages logits across all available seeds unless
---seed is given.
+"""Predict with saved Strategy B models without retraining.
 
 Usage:
     python3 -m src.predict_with_saved_strategy_b --input some_rows.csv --output preds.csv
-    python3 -m src.predict_with_saved_strategy_b --input some_rows.csv --output preds.csv --seed 42
 """
 
 import argparse

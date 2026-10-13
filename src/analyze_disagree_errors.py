@@ -1,10 +1,4 @@
-"""Manual-analysis support for why `disagree` underperforms in Strategies B/C.
-
-Loads B and C's held-out (332-row) predictions across their 3 locked seeds,
-isolates every row whose gold label is `disagree`, and for each error
-destination (statement / agree / question) computes simple text-feature
-rates (negation, hedge words, contractions, spelling-error heuristic, very
-long/short reply) against the correctly-classified `disagree` baseline.
+"""Analyse text features in Strategy B and C `disagree` errors.
 
 Usage:
     python3 -m src.analyze_disagree_errors

@@ -160,10 +160,7 @@ def _training_args(output_dir: Path, seed: int, TrainingArguments, overrides: Op
         kwargs["warmup_steps"] = TRAINING.warmup_steps
     if "logging_strategy" in params:
         kwargs["logging_strategy"] = "epoch"
-    # Diagnostic-only overrides (e.g. warmup_steps, num_train_epochs). Never
-    # set by Strategy A/B or the normal Strategy C path -- only
-    # diagnose_strategy_c_train_fit passes these, so default behavior for
-    # every other caller is unchanged.
+    # Optional per-run settings without changing the global defaults.
     if overrides:
         kwargs.update(overrides)
     return TrainingArguments(**kwargs)
@@ -385,7 +382,7 @@ def _run_once(
 def _sample_silver_subset(silver: pd.DataFrame, size: int, sample_seed: int) -> pd.DataFrame:
     if size > len(silver):
         raise ValueError(f"Requested silver size {size}, but the pool has only {len(silver)} rows.")
-    # One deterministic ordering per sample_seed keeps future learning-curve sizes nested.
+    # One ordering per seed keeps learning-curve subsets nested.
     return silver.sample(frac=1, random_state=sample_seed).head(size).reset_index(drop=True)
 
 
@@ -549,16 +546,9 @@ def run_strategy_b(
 
 
 def run_strategy_b_heldout_eval(dry_run: bool = False, save_models: bool = True) -> pd.DataFrame:
-    """One-shot confirmatory eval of the locked Strategy B config on TEST_CSV.
+    """Evaluate the locked Strategy B configuration on TEST_CSV.
 
-    Trains on the single silver subset fixed by STRATEGY_B_FINAL_CONFIG and
-    evaluates against TEST_CSV instead of GOLD_CSV. Takes no size/seed-list
-    arguments on purpose -- this must not turn into a second sweep. Run once,
-    after the silver-size sweep against GOLD_CSV is finalized.
-
-    save_models persists each seed's fine-tuned model+tokenizer under
-    STRATEGY_B_HELDOUT_DIR/models/seed{N}/ so later scripts (e.g. an ablation
-    study) can load and predict on new inputs without retraining from scratch.
+    The fixed configuration prevents a held-out sweep. Models are saved by seed.
     """
     ensure_results_dirs()
     STRATEGY_B_HELDOUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -568,10 +558,7 @@ def run_strategy_b_heldout_eval(dry_run: bool = False, save_models: bool = True)
     label_col = _infer_label_column(silver)
     silver = _prepare_labeled_frame(silver, label_col)
 
-    # Pair-level dedup (prepare_gold_test_candidates.py) doesn't catch a single
-    # utterance appearing as TEST_CSV's Reply and a different silver row's
-    # Parent (or vice versa). Filter those out of the sampling pool so no
-    # future silver_size/sample_seed choice can pull in a contaminated row.
+    # Remove utterances shared across silver and test, including cross-role overlap.
     if "utt_id" in test_df.columns and {"parent_id", "reply_id"}.issubset(silver.columns):
         test_utt_ids = set(test_df["utt_id"])
         before = len(silver)
@@ -789,11 +776,10 @@ def run_strategy_c(
     warmup_steps: Optional[int] = None,
     epochs: Optional[int] = None,
 ) -> pd.DataFrame:
-    """warmup_steps/epochs override TRAINING's roberta defaults for this run
-    only (never touches the global TRAINING singleton), so Strategy B and any
-    other Strategy C run without these flags are unaffected. Results are
-    written to a config-tagged directory so they never mix with runs under
-    different hyperparameters (see _strategy_c_output_dir)."""
+    """Run Strategy C with optional per-run warmup and epoch settings.
+
+    Results are stored in configuration-specific directories.
+    """
     ensure_results_dirs()
     seeds = seeds or SEEDS
     weights_enabled = TRAINING.use_class_weights if use_class_weights is None else use_class_weights
@@ -888,13 +874,9 @@ def run_strategy_c(
 
 
 def run_strategy_c_heldout_eval(dry_run: bool = False) -> pd.DataFrame:
-    """One-shot confirmatory eval of the locked Strategy C config on TEST_CSV.
+    """Train the locked Strategy C configuration on all gold data and test it.
 
-    Trains on the full 300-row gold set (no outer CV split -- CV was only
-    needed to pick the config on GOLD_CSV) and evaluates against TEST_CSV
-    instead. Takes no seed-list/model/weight arguments on purpose -- this
-    must not turn into a second sweep. Run once, after STRATEGY_C_FINAL_CONFIG
-    is locked.
+    The fixed configuration prevents a held-out sweep.
     """
     ensure_results_dirs()
     STRATEGY_C_HELDOUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -978,22 +960,9 @@ def diagnose_strategy_c_train_fit(
     warmup_steps: Optional[int] = None,
     epochs: Optional[int] = None,
 ) -> Dict:
-    """Strategy C diagnostic: does RoBERTa fit its own training fold?
+    """Compare Strategy C fit on one training fold and its held-out fold.
 
-    Trains on one fold (same 5-fold split as run_strategy_c) and predicts
-    both on the held-out fold (normal eval) and on the training rows
-    themselves (also_predict_train). Low scores on both -> broken training
-    config (bad LR/warmup/epochs), not "not enough data" -- a model this
-    size should be able to fit ~240 rows if training is actually working.
-    High train-fit but low eval -> genuine overfitting, which does support
-    "300 gold rows isn't enough for full RoBERTa fine-tuning."
-
-    warmup_steps/epochs override TRAINING's defaults for this call only --
-    they are never touched globally, so Strategy A/B and the normal
-    Strategy C path are unaffected regardless of what's passed here.
-
-    Single fold/seed by design: this is a diagnostic, not a sweep. Not
-    wired into run_strategy_c's normal loop.
+    Warmup and epoch overrides apply only to this diagnostic call.
     """
     gold = _prepare_labeled_frame(load_gold_data(), "Dialogue_act").reset_index(drop=True)
     splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
@@ -1055,18 +1024,7 @@ def run_strategy_c_diagnose_sweep(
     warmup_steps: Optional[int] = None,
     epochs: Optional[int] = None,
 ) -> pd.DataFrame:
-    """Run diagnose_strategy_c_train_fit across every fold x seed combination.
-
-    Default is all 5 folds x the project's standard SEEDS (42, 123, 2026) --
-    same granularity as run_strategy_c's real sweep, so the "does this
-    fold/seed combo overfit vs fail to fit" pattern can be judged from more
-    than one anecdotal run before concluding whether Strategy C's problem is
-    training instability or genuine data insufficiency.
-
-    warmup_steps/epochs let this diagnostic be re-run with a fixed config
-    change (e.g. warmup_steps=20, epochs=8) to check whether that stabilizes
-    training, without touching the global TRAINING defaults used elsewhere.
-    """
+    """Run the Strategy C fit diagnostic across folds and seeds."""
     folds = folds or [1, 2, 3, 4, 5]
     train_seeds = train_seeds or SEEDS
 

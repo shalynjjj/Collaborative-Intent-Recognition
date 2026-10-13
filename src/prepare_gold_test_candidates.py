@@ -62,14 +62,7 @@ def load_excluded_pairs() -> set:
 
 
 def load_excluded_utt_ids() -> set:
-    """Utterance ids already used anywhere (as parent or reply) in silver (10k).
-
-    Pair-level exclusion only blocks exact (Parent, Reply) duplicates. A single
-    utterance can appear as the Parent of one pair and the Reply of a different
-    pair, so it needs its own id-level check -- otherwise a test candidate's
-    Reply text can silently match a silver row's Parent text (or vice versa),
-    which is a milder but real train/test overlap that pair-level dedup misses.
-    """
+    """Return silver utterance IDs to prevent cross-role train/test overlap."""
     excluded_ids = set()
     if Path(SILVER_CANDIDATES_CSV).exists():
         silver = pd.read_csv(SILVER_CANDIDATES_CSV, encoding="latin1")

@@ -33,18 +33,11 @@ GOLD_COLUMNS = [
 ]
 
 
-# ---------------------------------------------------------------------------
 # Parsing
-# ---------------------------------------------------------------------------
 
 
 def _first_line(raw_output: str) -> str:
-    """The model's actual answer is always the first line -- anything after
-    that is unconstrained rambling (observed: hallucinated Python docstrings
-    that restate all candidate labels, e.g. "Returns: positive, negative, or
-    neutral"). Scoping to the first line avoids matching label words that
-    only appear in that rambling continuation.
-    """
+    """Return the first line and ignore later generated text."""
     stripped = (raw_output or "").strip()
     return stripped.splitlines()[0] if stripped else ""
 
@@ -53,14 +46,7 @@ _NON_ALNUM_RUN = re.compile(r"[^a-z0-9]+")
 
 
 def _normalize_for_label_match(text: str) -> str:
-    """Case/whitespace/punctuation-insensitive form for matching a label
-    against model output. Lowercases, then collapses every run of
-    non-alphanumeric characters (spaces, hyphens, underscores, punctuation,
-    markdown markup like `**`/`_`) into a single space, so a multi-word
-    label matches regardless of how the model spelled the separator --
-    "Counter-argue" == "counter argue" == "COUNTER_ARGUE" == "**counter -
-    argue**".
-    """
+    """Normalise case and separators before matching labels."""
     return _NON_ALNUM_RUN.sub(" ", text.lower()).strip()
 
 
@@ -79,15 +65,8 @@ def parse_single_label(raw_output: str, labels: List[str], fallback: str) -> Tup
     if match is not None:
         return match, False
 
-    # The model sometimes abandons the requested format entirely (free-text
-    # reasoning instead of a bare label) but still commits to exactly one
-    # candidate label somewhere later in its answer -- recover that instead
-    # of discarding a real answer as a fallback. Require an *exact one*
-    # match across the full output, not just the first line: when the model
-    # instead echoes back several/all candidate labels (e.g. restating the
-    # option list, or rambling into a second hallucinated example with a
-    # different answer), there is no way to tell which one is the real
-    # answer, so that case still falls back rather than guessing.
+    # Accept the full response only when it contains one candidate label.
+    # Multiple matches are ambiguous and use the fallback.
     normalized_full = _normalize_for_label_match(raw_output or "")
     found = {label for label in labels if _normalize_for_label_match(label) in normalized_full}
     if len(found) == 1:
@@ -97,19 +76,9 @@ def parse_single_label(raw_output: str, labels: List[str], fallback: str) -> Tup
 
 
 def _emotion_answer_text(raw_output: str) -> str:
-    """The emotion prompt ends with "Categories:", and the model's completion
-    often continues that sentence by echoing the full category list back
-    (observed on ~39% of dev rows) before giving its real answer later,
-    introduced by "answer" / "the final answer is". Scoping to an explicit
-    answer marker -- when present -- avoids matching every category word in
-    that echoed list; `_first_line` alone was catching all of them as
-    positives, which is why Hostility/Contempt/Curiosity precision was so low.
+    """Extract Emotion text after an answer marker when present.
 
-    The "answer" marker itself is sometimes on its own line, with nothing
-    after the colon and the actual (often narrower) category list on the
-    next line instead, e.g. "Answer:\\ncontempt, neutral, sarcasm". When the
-    marker line has no text after it, fall through to the next non-empty
-    line rather than returning an empty string.
+    If the marker is empty, use the next non-empty line.
     """
     stripped = (raw_output or "").strip()
     if not stripped:
@@ -144,15 +113,11 @@ def parse_emotion_labels(raw_output: str) -> Tuple[Dict[str, bool], bool]:
     text = _emotion_answer_text(raw_output).lower()
     result = {}
     for label in EMOTION_LABELS:
-        # Match the label word itself plus its adjective form (e.g. "sarcasm"
-        # / "sarcastic"): the model sometimes uses the adjective when
-        # describing the reply in free text instead of the category noun.
+        # Accept category nouns and common adjective forms.
         variants = [label.lower()] + _EMOTION_SYNONYMS.get(label, [])
         result[label] = any(variant in text for variant in variants)
     if "none" in text and not any(result.values()):
-        # Defensive synonym: the prompt asks for "neutral", but the model may
-        # still occasionally answer "none" -- treat them as equivalent rather
-        # than falling back.
+        # Treat "none" as Neutral when no category was found.
         result["Neutral"] = True
         return result, False
     fallback_used = not any(result.values())
@@ -163,15 +128,9 @@ _ASSIGN_LINE = re.compile(r"^\s*(\w+)\s*=\s*(.+)$")
 
 
 def _split_labeled_lines(raw_output: str) -> Dict[str, str]:
-    """First occurrence of each key wins. The model sometimes keeps
-    generating past its answer and hallucinates a new Parent/Reply example
-    with its own (often truncated) Sentiment/Emotion/Intent lines; taking the
-    last occurrence would let that hallucinated continuation silently
-    overwrite the real answer.
+    """Extract the first value for each field.
 
-    Also recognizes Python-assignment-style lines (e.g. `emotion = "neutral"`)
-    in addition to `Key: value` lines: the model sometimes answers inside a
-    fenced Python code block instead of the requested plain-text format.
+    Accept both `Key: value` and Python-style assignment lines.
     """
     fields: Dict[str, str] = {}
     for line in (raw_output or "").splitlines():
@@ -191,14 +150,10 @@ def _split_labeled_lines(raw_output: str) -> Dict[str, str]:
     return fields
 
 
-# ---------------------------------------------------------------------------
-# Prompts
-# ---------------------------------------------------------------------------
+# Prompt definitions
 
 
-# Shared verbatim across the per-task prompts (multi_module) and the combined
-# prompt (single_prompt) so that the two Experiment 1 conditions differ only
-# in call structure (3 calls vs. 1), not in how much guidance the model gets.
+# Keep definitions identical across joint and task-specific prompts.
 _SENTIMENT_DEFINITIONS = """- positive: the reply expresses approval, agreement in tone, or a favorable attitude.
 - negative: the reply expresses disapproval, frustration, or an unfavorable attitude.
 - neutral: the reply is matter-of-fact, with no clear positive or negative tone."""
@@ -301,10 +256,7 @@ Reply: {reply}
 """
 
 
-# ---------------------------------------------------------------------------
-# Module calls (each independently callable -- "multi-module orchestration"
-# below is just these three run in sequence)
-# ---------------------------------------------------------------------------
+# Task modules
 
 
 def run_sentiment_module(parent: str, reply: str, generator: Callable[[str], str]) -> Tuple[str, bool, str]:
@@ -363,12 +315,9 @@ def run_multi_module_pipeline(
     reply: str,
     generator: Callable[[str], str],
 ) -> Dict:
-    """Run Experiment 1's three independent task-specific prompts.
+    """Run three independent prompts using the same Parent and Reply.
 
-    All three modules receive the same source information (Parent + Reply).
-    Auxiliary labels such as dialogue act are intentionally excluded here so
-    that the comparison with the single-prompt baseline isolates prompt/task
-    decomposition.  Auxiliary-input combinations belong to Experiment 2.
+    Auxiliary labels are used only in Experiment 2.
     """
     sentiment, sentiment_fallback, sentiment_raw = run_sentiment_module(parent, reply, generator)
     emotion_labels, emotion_fallback, emotion_raw = run_emotion_module(parent, reply, generator)
@@ -386,11 +335,7 @@ def run_multi_module_pipeline(
     }
 
 
-# ---------------------------------------------------------------------------
-# Mock generator for plumbing smoke tests (no LLM load). Dispatches on the
-# fixed instruction phrasing in each prompt above, mirroring the mock
-# generator already used for Strategy A in llm_annotate.py.
-# ---------------------------------------------------------------------------
+# Mock generator for smoke tests without loading the LLM.
 
 
 def _mock_sentiment(reply_text: str) -> str:
@@ -450,9 +395,7 @@ def make_stage2_mock_generator() -> Callable[[str], str]:
     return generate
 
 
-# ---------------------------------------------------------------------------
-# Dataframe-level driver + CLI
-# ---------------------------------------------------------------------------
+# Dataframe driver and CLI
 
 
 def annotate_stage2_dataframe(
@@ -468,10 +411,7 @@ def annotate_stage2_dataframe(
 
     if output_csv is not None:
         output_csv.parent.mkdir(parents=True, exist_ok=True)
-        # Resume support: a long LLM run over a remote/SSH connection can get
-        # cut off partway through. If a previous partial run's output is
-        # already on disk, keep its rows and append only the ones still
-        # missing, instead of overwriting and re-generating from row 0.
+        # Resume a compatible partial run without regenerating completed rows.
         if output_csv.exists() and output_csv.stat().st_size > 0:
             existing = pd.read_csv(output_csv)
             rows.extend(existing.to_dict("records"))
@@ -528,10 +468,7 @@ def run_stage2(mode: str, split: str = "dev", limit: Optional[int] = None, mock:
     if limit is not None:
         df = df.head(limit).copy()
 
-    # single_prompt's completion sometimes runs past its answer and
-    # hallucinates a new "Parent: ..." example; cut generation off there so
-    # the real answer can't be overwritten by a truncated duplicate field
-    # (see _split_labeled_lines). 
+    # Stop a single-prompt response before a generated Parent/Reply example.
     stop_strings = ["\nParent:"] if mode == "single_prompt" else None
     generator = (
         make_stage2_mock_generator()

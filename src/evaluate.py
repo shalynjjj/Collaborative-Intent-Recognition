@@ -48,13 +48,9 @@ def bootstrap_ci(
     n_boot: int = 2000,
     seed: int = 42,
 ) -> Dict:
-    """Percentile bootstrap CI for macro-F1 / kappa over a fixed prediction set.
+    """Bootstrap confidence intervals over fixed prediction rows.
 
-    Resamples (y_true, y_pred) row pairs with replacement to estimate how much
-    the reported score would move under a different draw of the same-size
-    eval set. This is evaluation-sample variance, not model-refit variance
-    (there is nothing to retrain for a fixed LLM prompt/output pair) -- it
-    does not require calling the model or re-reading the source data again.
+    These intervals do not include model-retraining variance.
     """
     label_names = labels or DIALOGUE_LABELS
     y_true = np.asarray(list(y_true))
@@ -93,12 +89,7 @@ def paired_bootstrap_difference(
     n_boot: int = 2000,
     seed: int = 42,
 ) -> Dict:
-    """Paired bootstrap CI for the macro-F1 difference ``A - B``.
-
-    Both systems must predict the same rows. Resampling shared row indices
-    preserves that pairing and is the appropriate comparison for Stage 2's
-    prompt/input ablations.
-    """
+    """Paired bootstrap CI for the macro-F1 difference ``A - B``."""
     label_names = labels or DIALOGUE_LABELS
     y_true = np.asarray(list(y_true))
     y_pred_a = np.asarray(list(y_pred_a))
@@ -140,10 +131,7 @@ def compute_emotion_metrics(
     gold_prefix: str = "gold_",
     pred_prefix: str = "emotion_",
 ) -> Dict:
-    """Per-category precision/recall/F1 for the 6 emotion columns, then
-    macro-averaged. A row can match zero, one, or several categories at
-    once, so this can't reuse compute_metrics' single-label confusion matrix.
-    """
+    """Compute per-category and macro metrics for multi-label Emotion."""
     label_names = labels or EMOTION_LABELS
     per_category = {}
     for label in label_names:

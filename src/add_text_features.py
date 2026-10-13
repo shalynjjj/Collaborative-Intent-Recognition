@@ -1,12 +1,4 @@
-"""Add negation/hedge/question text-feature columns to every row of the full
-annotated corpus (not just the misclassified rows checked in
-`analyze_disagree_errors.py`), so the delivered dataset can be used
-downstream (e.g. to train a negation classifier).
-
-Unions the 300-row gold set and the 530-row expanded held-out set (no
-overlap between them; together they're the full labeled corpus), computes
-the same text features already validated in the disagree error analysis on
-both Reply and Parent, and writes one combined CSV.
+"""Add Parent and Reply text features to the full annotated corpus.
 
 Usage:
     python3 -m src.add_text_features

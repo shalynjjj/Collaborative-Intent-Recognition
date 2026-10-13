@@ -12,30 +12,17 @@ N = 450
 
 OUTPUT_CSV = DATA_DIR / "cmv_test_candidates_batch2.csv"
 
-# Annotator-facing copy: same rows, same shuffled order, but with
-# heuristic_label stripped out. Annotators must never see which class a row
-# was guessed to be -- knowing "this one looks like a question" biases their
-# independent judgment before they even read the text (see the proposal's
-# own "Sure, great logic." example: it reads agree, but is annotated
-# disagree). Use OUTPUT_CSV only as the internal tracking copy for counting
-# progress toward each class's target.
+# The annotator copy hides heuristic labels to avoid bias.
 ANNOTATE_CSV = DATA_DIR / "cmv_test_candidates_batch2_annotate.csv"
 
-# Every file that already carries candidates drawn from the corpus for the
-# held-out test set, whether or not annotation on it is finished. All of
-# these must be excluded so batch 2 never re-samples something already
-# collected.
+# Exclude all previously collected test candidates.
 EXISTING_TEST_CSVS = [
     DATA_DIR / "cmv_test_candidates.csv",
     DATA_DIR / "cmv_test_candidates_labeled.csv",
     DATA_DIR / "cmv_test_candidates_random_topup.csv",
 ]
 
-# Purely descriptive, post-hoc tag for the internal tracking copy -- it plays
-# no role in which rows get sampled. Sampling below is simple random
-# (stratified only by length_group, same as the original
-# prepare_gold_test_candidates.py), so this heuristic can't bias which
-# rows enter the batch or what their real label turns out to be.
+# Heuristic labels are for internal tracking and do not affect sampling.
 QUESTION_PATTERN = re.compile(
     r"\?|\b(what|why|how|who|when|where|which|could you|can you|would you|"
     r"do you|did you|isn'?t it|aren'?t you)\b",
@@ -157,13 +144,7 @@ def collect_data(excluded_pairs: set, excluded_utt_ids: set) -> pd.DataFrame:
 
 
 def sample_data(df: pd.DataFrame, n: int = N, seed: int = SEED) -> pd.DataFrame:
-    """Simple random sampling stratified only by length_group, matching
-    prepare_gold_test_candidates.py. Not stratified by heuristic_label: the
-    natural gold-set class distribution (disagree ~48%, agree ~21%,
-    statement ~16%, question ~15%) means n=450 clears 50+ per class with
-    >99% probability even in the rarest class, without risking the
-    compositional bias a keyword-based class heuristic would introduce.
-    """
+    """Sample by reply-length group without using heuristic labels."""
     df = df.copy()
     df["length_group"] = pd.cut(
         df["token_count"],

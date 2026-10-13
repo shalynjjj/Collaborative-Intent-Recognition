@@ -123,12 +123,8 @@ def make_transformers_generator(
     hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_TOKEN")
     auth_kwargs = {"token": hf_token} if LLM.model_source == "huggingface" and hf_token else {}
     tokenizer = AutoTokenizer.from_pretrained(model_path, **auth_kwargs)
-    # float16 on any accelerated device (CUDA or Apple Silicon's MPS) --
-    # loading in float32 doubles memory for no accuracy benefit here, and on
-    # a unified-memory Mac that difference is the gap between fitting an 8B
-    # model in RAM and not (an 8B model is ~15GB on disk in fp16; fp32 would
-    # need ~30GB). CPU-only execution keeps float32 since CPU matmul kernels
-    # don't reliably support fp16.
+    # Use float16 on accelerated devices to reduce memory use. CPU stays on
+    # float32 because its kernels may not support float16 reliably.
     if torch.cuda.is_available() or torch.backends.mps.is_available():
         torch_dtype = torch.float16
     else:
@@ -151,9 +147,7 @@ def make_transformers_generator(
         if LLM.temperature > 0:
             generation_kwargs.update({"temperature": LLM.temperature, "top_p": LLM.top_p})
         if stop_strings:
-            # Stops generation once the model starts hallucinating a new
-            # Parent/Reply example past its actual answer, instead of relying
-            # on max_new_tokens to cut it off mid-line.
+            # Stop before the model starts generating another Parent/Reply pair.
             generation_kwargs.update({"stop_strings": stop_strings, "tokenizer": tokenizer})
         output_ids = model.generate(**inputs, **generation_kwargs)
         new_tokens = output_ids[0][inputs["input_ids"].shape[-1] :]
@@ -246,11 +240,9 @@ def run_strategy_a(mode: str, limit: Optional[int] = None, mock: bool = False) -
 
 
 def run_strategy_a_heldout(mock: bool = False) -> Dict:
-    """One-shot confirmatory run of the locked Strategy A config on TEST_CSV.
+    """Evaluate the locked Strategy A configuration on TEST_CSV.
 
-    Always uses STRATEGY_A_FINAL_MODE -- this does not take a `mode` argument
-    on purpose, so it can't be pointed at a config that hasn't been locked in
-    config.py. Run this once, after prompt iteration is finished.
+    The fixed mode prevents a held-out prompt sweep.
     """
     ensure_results_dirs()
     set_seed(42)
@@ -288,15 +280,7 @@ def run_strategy_a_heldout(mock: bool = False) -> Dict:
 def add_bootstrap_ci(
     predictions_csv: Path, metrics_json: Path, n_boot: int = 2000, seed: int = 42
 ) -> Dict:
-    """Attach a bootstrap macro-F1/kappa CI to an already-saved metrics file.
-
-    Reads the (gold_label, pred_label) pairs already written by a prior run
-    and resamples them -- the LLM is temperature=0 (LLM.temperature in
-    config.py), so its output is deterministic and re-running it would only
-    reproduce the same predictions. This also means it never re-reads
-    TEST_CSV, so it does not count against the "TEST_CSV touched once"
-    rule for held-out runs.
-    """
+    """Add bootstrap intervals to saved predictions without rerunning the LLM."""
     predictions = pd.read_csv(predictions_csv)
     metrics = json.loads(metrics_json.read_text(encoding="utf-8"))
     metrics["bootstrap"] = bootstrap_ci(

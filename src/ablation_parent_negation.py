@@ -1,17 +1,4 @@
-"""Parent-negation ablation for Strategy B: does it use the Parent, or just
-pattern-match the Reply?
-
-For each hand-picked agree/disagree row that Strategy B frequently
-misclassifies as `statement` across the 3 locked seeds (see
-results/strategy_b_heldout), we flip
-the negation in the Parent (add it if absent, remove it if present), leave
-the Reply untouched, and flip the gold label to match the now-negated
-Parent. Re-running the *same* locked Strategy B config (silver_size=2500,
-sample_seed=123, class weights on) on both the original and edited Parent
-tells us whether predictions respond to the Parent edit. An unchanged
-prediction is evidence of insensitivity for that example, not proof that the
-model always ignores Parent. A prediction that changes to the edited expected
-label is stronger evidence that the model used the changed context.
+"""Parent-negation ablation for the locked Strategy B configuration.
 
 Usage:
     python3 -m src.ablation_parent_negation

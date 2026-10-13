@@ -22,10 +22,7 @@ from .llm_annotate import make_transformers_generator
 from .stage2_pipeline import make_stage2_mock_generator, run_intent_module
 from .utils import ensure_results_dirs, set_seed
 
-# Seven non-empty subsets of {dialogue_act, sentiment, emotion}, plus a
-# Parent+Reply baseline. ``oracle`` measures ideal information value using
-# gold auxiliary labels; ``predicted`` measures the realistic pipeline using
-# outputs from Stage 1 and Experiment 1.
+# Seven auxiliary-label combinations plus the Parent/Reply baseline.
 FEATURES = ["dialogue_act", "sentiment", "emotion"]
 COMBINATIONS = [
     frozenset(combo)
@@ -72,12 +69,7 @@ def _load_oracle_predictions(split: str) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-# feature_source -> which Experiment 1 architecture's Sentiment/Emotion
-# predictions to attach. "predicted" (multi_module) is the original,
-# already-reported pipeline; "predicted_sp" (single_prompt) is a sensitivity
-# check added after Experiment 1's fixed re-run showed single_prompt is at
-# least as good, to test whether the choice of upstream architecture changes
-# Experiment 2's conclusions.
+# Map each predicted source to its Experiment 1 architecture.
 _MODULE_SOURCE_BY_FEATURE_SOURCE = {
     "predicted": "multi_module",
     "predicted_sp": "single_prompt",
@@ -85,15 +77,14 @@ _MODULE_SOURCE_BY_FEATURE_SOURCE = {
 
 
 def load_feature_dataframe(split: str, feature_source: str) -> pd.DataFrame:
-    """Load Stage 2 rows and attach either gold or genuinely predicted inputs."""
+    """Load Stage 2 rows and attach gold or predicted auxiliary labels."""
     csv_path = STAGE2_DEV_CSV if split == "dev" else STAGE2_EVAL_CSV
     stage2 = pd.read_csv(csv_path, encoding="utf-8-sig")
     if feature_source == "oracle":
         return stage2
 
-    # Strategy A few-shot predictions deliberately exclude its four prompt
-    # demonstrations. Inner matching therefore produces the leakage-free
-    # common benchmark (260/264 eval rows; all comparisons use these same rows).
+    # Strategy A excludes its four few-shot demonstrations, leaving 260
+    # common evaluation rows after the inner join.
     da_path = STRATEGY_A_DIR / "fewshot_predictions.csv"
     if not da_path.exists():
         raise FileNotFoundError(f"Predicted Dialogue Act file not found: {da_path}")
@@ -138,17 +129,14 @@ def run_intent_sweep_dataframe(
     reused_base: Optional[pd.DataFrame] = None,
     output_csv: Optional[Path] = None,
 ) -> pd.DataFrame:
-    all_combos = [frozenset()] + COMBINATIONS  # frozenset() = text-only baseline
+    all_combos = [frozenset()] + COMBINATIONS  # Empty set is the text-only baseline.
     rows = []
     done_row_ids: set = set()
     writer = None
     file_handle = None
     if output_csv is not None:
         output_csv.parent.mkdir(parents=True, exist_ok=True)
-        # Resume support: this sweep runs 8 combinations per row, so a
-        # remote/SSH connection dropping partway through is expensive to
-        # redo from scratch. If a previous partial run's output is already
-        # on disk, keep its rows and only fill in what's missing.
+        # Resume a compatible partial sweep instead of regenerating completed rows.
         if output_csv.exists() and output_csv.stat().st_size > 0:
             existing = pd.read_csv(output_csv)
             rows.extend(existing.to_dict("records"))
@@ -236,9 +224,7 @@ def run_sweep(
     )
     reused_base = None
     if feature_source != "oracle":
-        # The base (no-auxiliary-input) combination doesn't depend on which
-        # architecture's Sentiment/Emotion is attached, so it's always
-        # reused from the oracle run rather than regenerated.
+        # The text-only baseline is independent of the auxiliary-label source.
         base = _load_oracle_predictions(split).set_index(["Parent", "Reply"])
         reused_base = base[["intent_base", "intent_base_fallback"]]
     pred_path = (
@@ -308,7 +294,7 @@ def evaluate_sweep(split: str = "dev", feature_source: str = "oracle") -> pd.Dat
 
 
 def compare_oracle_and_predicted(split: str, feature_source: str = "predicted") -> pd.DataFrame:
-    """Compare oracle and predicted auxiliary inputs on their exact common rows."""
+    """Compare oracle and predicted inputs on their common rows."""
     oracle = _load_oracle_predictions(split)
     predicted_path = _prediction_path(feature_source, split)
     if not predicted_path.exists():
