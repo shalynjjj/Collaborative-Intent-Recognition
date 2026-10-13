@@ -1,85 +1,73 @@
 # Dialogue Act and Intent Recognition in Online Argumentative Discussions Using Large Language Models
 
-This project investigates Dialogue Act and Intent recognition in Reddit's Change My View (CMV) discussions using LLMs.
+We classify replies in Reddit's Change My View (CMV) discussions. Each example is a Parent–Reply pair: the Parent is the comment being answered and the Reply is the one we classify. The Parent matters because a reply that looks like a neutral statement on its own can be disagreeing with, or questioning, the comment above it.
 
-## 1. Project Overview
+The project has two stages:
 
-CMV is an online forum where users present a view and discuss it with other participants. This project represents each interaction as a **Parent–Reply pair**: the Parent is the comment being answered, and the Reply is the response to classify. Interpreting the Reply together with its Parent is important because a sentence that appears neutral in isolation may agree with, challenge, or question the earlier comment.
+- Stage 1 labels the Reply's dialogue act: `agree`, `disagree`, `question` or `statement`.
+- Stage 2 labels Sentiment, Emotion and Intent. Intent is the more specific purpose of the reply, such as asking for information, challenging a claim, counter-arguing or supporting.
 
-The project has two stages. **Stage 1** classifies the Reply's Dialogue Act as `agree`, `disagree`, `question`, or `statement`. **Stage 2** extends the analysis to Sentiment, Emotion, and Intent. Here, Intent describes the more specific purpose of a Reply, such as seeking information, challenging a claim, counter-arguing, or offering support.
+## Research questions
 
-## 2. Research Objectives
+1. For dialogue acts, how does prompting an LLM directly compare with fine-tuning RoBERTa on LLM-generated (silver) labels or on human (gold) labels?
+2. Can silver labels give a competitive classifier when there is little hand-labelled data?
+3. For Sentiment, Emotion and Intent, is one joint prompt better or worse than a separate prompt per task?
+4. Does giving the model the Dialogue Act, Sentiment or Emotion label help it predict Intent, both with human labels and with predicted ones?
 
-The project addresses four main questions:
+## Method
 
-- How does direct LLM prompting compare with RoBERTa trained on LLM-generated silver labels or human-annotated gold labels for Dialogue Act classification?
-- Can silver labels support a competitive supervised classifier when manually labelled training data are limited?
-- For Sentiment, Emotion, and Intent, how does a single joint prompt compare with independent task-specific prompts?
-- Do Dialogue Act, Sentiment, or Emotion labels improve Intent classification when the auxiliary labels are human-annotated or model-predicted?
+### Stage 1: dialogue acts
 
-## 3. Methodology
+All three strategies were tuned on a 300-pair gold set and then evaluated once on a separate, balanced test set of 332 pairs.
 
-### Stage 1 — Dialogue Act Classification
+- Strategy A prompts Llama 3.1 8B Instruct directly. We compared a zero-shot and a few-shot prompt and kept the few-shot one.
+- Strategy B uses Llama to label a larger pool of CMV pairs and fine-tunes RoBERTa on those labels. The final model uses 2,500 few-shot silver examples with class weights, trained with three seeds.
+- Strategy C fine-tunes RoBERTa on the 300 gold pairs only. We chose its settings with five-fold cross-validation and ended up with class weights, 20 warmup steps and 8 epochs.
 
-The three strategies were developed on a 300-example gold set. After configuration selection, each final strategy was evaluated on the same balanced 332-example held-out set.
+Strategy A uses a different model (Llama) from B and C (RoBERTa), so comparisons with A mix the effect of the model with the effect of the training approach.
 
-- **Strategy A — Direct LLM prompting:** Llama 3.1 8B Instruct predicts Dialogue Act labels directly. Zero-shot and few-shot prompts were compared, and few-shot prompting was selected.
-- **Strategy B — RoBERTa on silver labels:** Llama labels a larger pool of CMV examples, which is then used to fine-tune RoBERTa. The final configuration uses 2,500 examples from the few-shot-labelled silver pool, class weights, and three training seeds.
-- **Strategy C — RoBERTa on gold labels:** RoBERTa is trained directly on the 300 human-annotated examples. Five-fold out-of-fold evaluation was used for configuration selection. The final setting uses class weights, 20 warmup steps, and eight epochs.
+### Stage 2: Sentiment, Emotion and Intent
 
-This comparison examines whether direct LLM use, LLM-generated training data, or limited gold training data provides the most effective route for this task. Because Strategy A uses Llama while Strategies B and C use RoBERTa, the comparison does not isolate model architecture from training strategy.
+The same 300 gold pairs were split into 36 for prompt development and 264 for evaluation.
 
-### Stage 2 — Sentiment, Emotion, and Intent
+Experiment 1 compares two ways of prompting. In `single_prompt`, one LLM call returns all three labels. In `multi_module`, three separate prompts each handle one task. The three prompts run independently; none of them sees the others' output.
 
-The same 300 annotated Parent–Reply pairs were divided into 36 development examples for prompt design and 264 examples for final evaluation.
+Experiment 2 asks whether extra labels help Intent. We start from a prompt that sees only the Parent and Reply, then add every combination of Dialogue Act, Sentiment and Emotion. The extra labels come from one of three sources:
 
-#### Experiment 1 — Prompting architectures
+- `oracle`: the human labels
+- `predicted`: Strategy A's Dialogue Act plus the multi-module Sentiment and Emotion predictions
+- `predicted_sp`: the same Dialogue Act plus the single-prompt Sentiment and Emotion predictions
 
-- **Single-prompt:** one LLM call predicts Sentiment, Emotion, and Intent jointly.
-- **Multi-module:** three independent task-specific prompts predict the three targets separately.
+We report Macro-F1 throughout. For single-label tasks we also report Cohen's kappa, per-class scores and confusion matrices. Emotion is multi-label, so we compute F1 for each of its six categories and average them. Where two conditions are compared on the same examples, we use a paired bootstrap confidence interval.
 
-Both architectures receive only Parent and Reply. The independent prompts are not a sequential pipeline and do not pass predictions between tasks.
-
-#### Experiment 2 — Auxiliary information for Intent
-
-A Parent–Reply-only Intent prompt was compared with all combinations of Dialogue Act, Sentiment, and Emotion as additional inputs. The experiment used:
-
-- `oracle` auxiliary labels from human annotations;
-- `predicted` labels using Strategy A Dialogue Act predictions and multi-module Sentiment and Emotion predictions;
-- `predicted_sp` labels using the same Dialogue Act predictions and single-prompt Sentiment and Emotion predictions.
-
-Macro-F1 is the main evaluation measure. Single-label tasks also report Cohen's kappa, per-class scores, and confusion matrices. Emotion is multi-label, so F1 is calculated separately for its six categories and then macro-averaged. Selected comparisons use paired bootstrap confidence intervals.
-
-## 4. Repository Structure
+## Repository layout
 
 ```text
 .
-├── data/          # Gold, silver, held-out, and Stage 2 datasets
-├── docs/          # Experiment reports and error analyses
-├── notebooks/     # Exploratory Stage 1 notebook
-├── results/       # Saved predictions, metrics, and confusion matrices
-├── src/           # Data preparation, training, inference, and evaluation code
-├── tests/         # Unit tests for the experiment logic
+├── data/          datasets (see data/README.md)
+├── results/       saved predictions, metrics and confusion matrices (see results/README.md)
+├── src/           all experiment code (see src/README.md)
+├── tests/         unit tests
 ├── .env.example
 ├── requirements.txt
 └── 2026_depolarAIze_MScProject_Proposal_XinXiaying.pdf
 ```
 
-The main entry points are:
+The scripts you are most likely to need:
 
-- `src/llm_annotate.py` — Strategy A and silver-label generation
-- `src/train_roberta.py` — Strategies B and C
-- `src/stage2_pipeline.py` — Stage 2 Experiment 1
-- `src/stage2_intent_sweep.py` — Stage 2 Experiment 2
-- `src/evaluate_stage2.py` — Stage 2 Experiment 1 evaluation
+| Script | What it runs |
+|---|---|
+| `src/llm_annotate.py` | Strategy A, and silver-label generation |
+| `src/train_roberta.py` | Strategies B and C |
+| `src/stage2_pipeline.py` | Stage 2, Experiment 1 |
+| `src/evaluate_stage2.py` | Scoring for Experiment 1 |
+| `src/stage2_intent_sweep.py` | Stage 2, Experiment 2 |
 
-The repository retains historical experiments and diagnostic outputs. The final results are identified in Section 7 below.
+`results/` also holds outputs from earlier, superseded runs. `results/README.md` says which files the reported numbers come from.
 
-## 5. Installation and Quick Start
+## Setup
 
-### Environment setup
-
-The repository does not pin Python or dependency versions. The CLI requires Python 3.9 or newer.
+You need Python 3.10 or newer (the current ModelScope release requires it). Dependency versions are not pinned.
 
 ```bash
 python3 -m venv .venv
@@ -88,7 +76,7 @@ python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 ```
 
-Models are downloaded from ModelScope by default. If using Hugging Face model access instead, copy the environment template and add a local token:
+Models are downloaded from ModelScope by default. To use Hugging Face instead, copy the template and add your token:
 
 ```bash
 cp .env.example .env
@@ -98,20 +86,22 @@ cp .env.example .env
 HF_TOKEN=your_huggingface_token_here
 ```
 
-Real Llama and RoBERTa runs require network access for the initial model download, sufficient disk space, and suitable compute. Llama 3.1 8B inference is intended for GPU execution. Commands should be run from the repository root.
+The first run downloads the models, so you need network access and enough disk space. Llama 3.1 8B needs a GPU in practice. Run every command from the repository root.
 
-### Stage 1 — Strategy A
+## Running the experiments
+
+### Strategy A
 
 ```bash
-# Development comparison
+# compare prompts on the gold set
 python3 -m src.llm_annotate --mode zeroshot
 python3 -m src.llm_annotate --mode fewshot
 
-# Final held-out evaluation with the locked few-shot prompt
+# final run on the held-out set with the few-shot prompt
 python3 -m src.llm_annotate --heldout
 ```
 
-To regenerate the final few-shot silver labels from the included candidate pool:
+To regenerate the few-shot silver labels from the candidate pool:
 
 ```bash
 python3 -m src.llm_annotate \
@@ -120,10 +110,10 @@ python3 -m src.llm_annotate \
   --output-csv data/task3_silver_labeled_10k_fewshot.csv
 ```
 
-### Stage 1 — Strategy B
+### Strategy B
 
 ```bash
-# Final development configuration
+# final configuration on the gold set
 python3 -m src.train_roberta strategy_b \
   --silver-csv data/task3_silver_labeled_10k_fewshot.csv \
   --sizes 2500 \
@@ -132,16 +122,16 @@ python3 -m src.train_roberta strategy_b \
   --class-weights \
   --results-dir results/strategy_b_fewshot
 
-# Locked held-out evaluation
+# held-out evaluation
 python3 -m src.train_roberta strategy_b_heldout
 ```
 
-The held-out command retrains the three models and saves checkpoints under `results/strategy_b_heldout/models/`. These checkpoints are not included in the current checkout, so they must be regenerated before using `src.predict_with_saved_strategy_b`.
+The held-out command retrains the three models and saves them to `results/strategy_b_heldout/models/`. The checkpoints are not in the repository, so run this before using `src.predict_with_saved_strategy_b`.
 
-### Stage 1 — Strategy C
+### Strategy C
 
 ```bash
-# Selected five-fold OOF configuration
+# five-fold cross-validation with the chosen settings
 python3 -m src.train_roberta strategy_c \
   --model roberta \
   --seeds 42 123 2026 \
@@ -150,11 +140,11 @@ python3 -m src.train_roberta strategy_c \
   --warmup-steps 20 \
   --epochs 8
 
-# Locked held-out evaluation
+# held-out evaluation
 python3 -m src.train_roberta strategy_c_heldout
 ```
 
-### Stage 2 — Experiment 1
+### Stage 2, Experiment 1
 
 ```bash
 python3 -m src.stage2_pipeline --mode multi_module --split eval
@@ -164,9 +154,9 @@ python3 -m src.stage2_pipeline --mode single_prompt --split eval
 python3 -m src.evaluate_stage2 --mode single_prompt --split eval
 ```
 
-### Stage 2 — Experiment 2
+### Stage 2, Experiment 2
 
-Run the oracle condition first because the predicted conditions reuse its Parent–Reply-only baseline:
+Run `oracle` first. The two predicted conditions reuse its Parent–Reply-only baseline, and they also need the saved Strategy A and Experiment 1 predictions.
 
 ```bash
 python3 -m src.stage2_intent_sweep --split eval --feature-source oracle
@@ -174,7 +164,7 @@ python3 -m src.stage2_intent_sweep --split eval --feature-source predicted
 python3 -m src.stage2_intent_sweep --split eval --feature-source predicted_sp
 ```
 
-The predicted conditions require Strategy A few-shot predictions and the corresponding Experiment 1 predictions. Existing complete predictions can be rescored without new LLM calls by adding `--eval-only` to each command.
+If the predictions already exist, add `--eval-only` to recompute the metrics without calling the LLM again.
 
 ### Tests
 
@@ -182,89 +172,75 @@ The predicted conditions require Strategy A few-shot predictions and the corresp
 python3 -m unittest discover -s tests -v
 ```
 
-The current suite contains 27 tests covering sampling, grouped splitting, out-of-fold aggregation, Stage 2 parsing, prompt inputs, predicted-feature loading, and resumable output generation.
+There are 27 tests. They cover silver sampling, the grouped train/validation split, out-of-fold aggregation, Stage 2 output parsing, prompt inputs, loading predicted features, and resuming partial runs.
 
-## 6. Data Overview
+## Data
 
-| File | Rows | Role |
+| File | Rows | Used for |
 |---|---:|---|
-| `data/cmv_300_gold_final.csv` | 300 | Stage 1 gold development data and complete Stage 2 annotations |
+| `data/cmv_300_gold_final.csv` | 300 | Stage 1 development; all Stage 2 labels |
 | `data/task3_silver_candidates_10k.csv` | 10,000 | Unlabelled silver candidates |
-| `data/task3_silver_labeled_10k_fewshot.csv` | 10,000 | Silver pool used by final Strategy B |
-| `data/cmv_test_candidates_heldout_balanced.csv` | 332 | Balanced final Stage 1 test set, 83 examples per class |
-| `data/cmv_300_gold_stage2_dev.csv` | 36 | Stage 2 prompt-development split |
-| `data/cmv_300_gold_stage2_eval.csv` | 264 | Stage 2 final evaluation split |
+| `data/task3_silver_labeled_10k_fewshot.csv` | 10,000 | Silver labels used for Strategy B |
+| `data/cmv_test_candidates_heldout_balanced.csv` | 332 | Stage 1 test set, 83 per class |
+| `data/cmv_300_gold_stage2_dev.csv` | 36 | Stage 2 prompt development |
+| `data/cmv_300_gold_stage2_eval.csv` | 264 | Stage 2 evaluation |
 
-The Stage 2 split is stratified by Intent using seed 42 and can be regenerated with:
+The Stage 2 split is stratified by Intent with seed 42. To recreate it:
 
 ```bash
 python3 -m src.prepare_stage2_split
 ```
 
-## 7. Results
+`data/README.md` explains how every file was built and how they relate to each other.
 
-### Stage 1 final held-out evaluation
+## Results
 
-All three locked configurations were evaluated on the same balanced set of 332 Parent–Reply pairs.
+### Stage 1 (332 held-out pairs)
 
-| Strategy | Final method | Macro-F1 | Cohen's kappa |
+| Strategy | Method | Macro-F1 | Cohen's kappa |
 |---|---|---:|---:|
-| A | Llama few-shot prompting | 0.6734 | 0.5582 |
+| A | Llama, few-shot prompt | 0.6734 | 0.5582 |
 | B | RoBERTa on 2,500 few-shot silver labels | 0.6686 ± 0.0016 | 0.5649 ± 0.0061 |
 | C | RoBERTa on 300 gold labels | 0.5859 ± 0.0858 | 0.4833 ± 0.1125 |
 
-The Strategy B and C values are means ± sample standard deviations across three training seeds. Strategies A and B had similar Macro-F1 scores, and their paired-bootstrap comparison did not support a difference. Strategy C had a lower mean and greater variation across training seeds.
+B and C are the mean ± standard deviation over three training seeds. A and B are close, and the paired bootstrap does not show a real difference between them. C scores lower on average and varies a lot from seed to seed.
 
-### Stage 2 Experiment 1
+### Stage 2, Experiment 1 (264 eval pairs)
 
-| Architecture | Sentiment Macro-F1 | Emotion Macro-F1 | Intent Macro-F1 |
+| Prompting | Sentiment | Emotion | Intent |
 |---|---:|---:|---:|
 | Multi-module | 0.5718 | 0.3994 | 0.3866 |
 | Single-prompt | 0.6248 | 0.4255 | 0.4090 |
 
-The single prompt produced higher point estimates on all three tasks. However, paired bootstrap intervals for Sentiment and Intent included zero, so the experiment did not establish a supported performance difference between the architectures. No corresponding paired test was conducted for the multi-label Emotion score.
+The single prompt scores higher on all three tasks, but for Sentiment and Intent the paired bootstrap interval includes zero, so we can't say one setup is better. We did not run a paired test for Emotion because it is multi-label.
 
-### Stage 2 Experiment 2
+### Stage 2, Experiment 2 (Intent Macro-F1)
 
-| Auxiliary source | Intent input | Rows | Macro-F1 | Difference from base | Paired 95% CI |
+| Extra labels from | Intent input | Rows | Macro-F1 | Change | Paired 95% CI |
 |---|---|---:|---:|---:|---|
-| Gold (`oracle`) | Parent–Reply only | 264 | 0.3848 | — | — |
-| Gold (`oracle`) | + Dialogue Act | 264 | 0.4645 | +0.0797 | [0.0277, 0.1297] |
-| Predicted | Parent–Reply only | 260 | 0.3779 | — | — |
+| Human (`oracle`) | Parent–Reply only | 264 | 0.3848 | | |
+| Human (`oracle`) | + Dialogue Act | 264 | 0.4645 | +0.0797 | [0.0277, 0.1297] |
+| Predicted | Parent–Reply only | 260 | 0.3779 | | |
 | Predicted | + Dialogue Act | 260 | 0.4326 | +0.0547 | [0.0016, 0.1113] |
 
-Dialogue Act was the only auxiliary signal whose paired confidence interval against the baseline excluded zero in both the oracle and predicted sweeps. Sentiment, Emotion, and their combinations did not show a supported improvement. The `predicted_sp` sensitivity check led to the same Dialogue-Act-only conclusion.
+Dialogue Act is the only extra label that helped, with human labels and with predicted ones. Sentiment, Emotion and their combinations did not. The `predicted_sp` run gives the same picture. The most common Intent error is predicting `Counter-argue` for a reply that is actually `Challenge`.
 
-The main Intent error was `Challenge` being predicted as `Counter-argue`. The complete analysis and examples are in `docs/stage2_intent_error_analysis.md`.
+## Limitations
 
-## 8. Limitations and Reproducibility
+- Strategy A uses Llama while B and C use RoBERTa, so differences involving A combine model and training effects.
+- Nobody checked the silver labels by hand.
+- Strategy C only has 300 training examples and is sensitive to the random seed.
+- Stage 2 uses a single 36/264 split, and some Intent and Emotion classes have very few examples.
+- Dialogue Act and Intent are closely linked in our annotation scheme. The Dialogue Act gain shows that the label is useful under this scheme, not that the model reasons more deeply.
+- `data/winning-args-corpus/utterances.jsonl`, which is needed to rebuild the silver candidates, is too large for git and is not included.
+- Model checkpoints are not included and dependencies are not pinned, so a rerun may differ slightly depending on hardware and library versions.
 
-- Strategy A uses Llama, whereas Strategies B and C use RoBERTa. Differences involving Strategy A therefore combine model-family and training-strategy effects.
-- The silver pool was not subjected to a systematic human accuracy audit.
-- Strategy C is trained on only 300 gold examples and remains sensitive to the training seed.
-- Stage 2 uses one fixed 36/264 split, with relatively few examples for several Intent and Emotion categories.
-- Dialogue Act and Intent are strongly associated in the annotation scheme. The auxiliary-input result shows predictive value under this scheme, but does not by itself demonstrate deeper model reasoning.
-- The raw `data/winning-args-corpus/utterances.jsonl` file required to rebuild the 10,000 silver candidates is git-ignored and not included.
-- Trained checkpoints are not included, and Python dependencies are not version-pinned. Exact reproduction may therefore vary with model availability, hardware, and library versions.
+All reported numbers come from the files saved in `results/`. We did not rerun the GPU experiments after tidying up the code.
 
-The saved CSV and JSON artifacts contain the final predictions and metrics. The commands above were checked against the current CLIs, and all 27 unit tests passed during the README update. The GPU-intensive experiments were not rerun as part of this documentation work.
+## References
 
-Further experiment records are available in:
+The data comes from the Winning Arguments Corpus: Tan et al. (2016), *Winning Arguments: Interaction Dynamics and Persuasion Strategies in Good-faith Online Discussions*.
 
-- `docs/stage1_full_report.md`
-- `docs/stage2_report.md`
-- `docs/stage2_intent_error_analysis.md`
-- `docs/parent_negation_ablation_report.md`
+Models: `LLM-Research/Meta-Llama-3.1-8B-Instruct` and `AI-ModelScope/roberta-base`.
 
-`docs/full-report-draft.tex` is an earlier draft and still contains outdated Stage 2 placeholders.
-
-## 9. References
-
-The CMV data were derived from the Winning Arguments Corpus introduced by Tan et al. (2016), *Winning Arguments: Interaction Dynamics and Persuasion Strategies in Good-faith Online Discussions*.
-
-Configured model identifiers:
-
-- `LLM-Research/Meta-Llama-3.1-8B-Instruct`
-- `AI-ModelScope/roberta-base`
-
-No licence file is included in this repository. Reuse must follow the terms of the source dataset and model providers.
+There is no licence file in this repository. Any reuse must follow the terms of the dataset and the model providers.

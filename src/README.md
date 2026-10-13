@@ -1,63 +1,54 @@
-# Source Code Guide
+# Source code
 
-## Overview
+All experiment code for both stages lives here. Run every command from the repository root as `python3 -m src.<script>`. Installation and the final results are in the root [`README.md`](../README.md).
 
-The `src/` package contains the code for both project stages:
+## Main scripts
 
-- **Stage 1:** Dialogue Act classification using direct Llama prompting (Strategy A), RoBERTa trained on Llama-generated silver labels (Strategy B), and RoBERTa trained on human gold labels (Strategy C).
-- **Stage 2:** Sentiment, Emotion, and Intent classification, including the prompting-architecture comparison and the Intent auxiliary-information experiment.
-
-Run all commands from the repository root. See the root [`README.md`](../README.md) for installation, datasets, and final results.
-
-## Main Scripts
-
-| Script | Purpose |
+| Script | What it does |
 |---|---|
-| `config.py` | Central paths, labels, model identifiers, seeds, defaults, and locked final configurations. |
-| `prepare_silver_data.py` | Builds the 10,000-example silver candidate pool from raw CMV utterances. |
-| `prepare_stage2_split.py` | Creates the fixed 36-example development and 264-example evaluation splits for Stage 2. |
-| `llm_annotate.py` | Runs Strategy A and generates Llama-labelled silver data for Strategy B. |
-| `train_roberta.py` | Trains and evaluates Strategies B and C. |
-| `stage2_pipeline.py` | Runs Stage 2 Experiment 1 using single-prompt or independent task-specific prompts. |
-| `evaluate_stage2.py` | Evaluates saved Experiment 1 predictions. |
-| `stage2_intent_sweep.py` | Runs Stage 2 Experiment 2 with different auxiliary-label combinations. |
-| `evaluate.py` | Shared metrics, confusion matrices, and bootstrap comparisons. |
+| `config.py` | Paths, label sets, model names, seeds, default settings, and the final configuration of each strategy |
+| `prepare_silver_data.py` | Samples the 10,000 silver candidate pairs from the raw CMV utterances |
+| `prepare_stage2_split.py` | Splits the gold set into the 36-pair Stage 2 dev set and the 264-pair eval set |
+| `llm_annotate.py` | Runs Strategy A, and labels the silver pool with Llama for Strategy B |
+| `train_roberta.py` | Trains and evaluates Strategies B and C |
+| `stage2_pipeline.py` | Stage 2 Experiment 1, with either one joint prompt or three separate ones |
+| `evaluate_stage2.py` | Scores the saved Experiment 1 predictions |
+| `stage2_intent_sweep.py` | Stage 2 Experiment 2, adding different combinations of extra labels to the Intent prompt |
+| `evaluate.py` | Shared metrics, confusion matrices and bootstrap tests |
 
-The remaining scripts support data collection, saved-model prediction, learning-curve plotting, error analysis, ablations, diagnostics, and historical comparisons. They are optional and are not required to run the final experiments.
+The other scripts were used for collecting the held-out data, plotting the learning curve, error analysis, ablations and diagnostics, or predicting with a saved model. You don't need them to reproduce the main results.
 
-## Stage 1 Workflow
+## How Stage 1 fits together
 
 ```text
 Strategy A
-300 gold development examples -> select the Llama prompt
-296 shared examples           -> compare zero-shot and few-shot fairly
-locked few-shot prompt        -> evaluate on 332 held-out examples
+300 gold pairs   -> pick the prompt (zero-shot vs few-shot, compared on the 296 pairs
+                    that are not few-shot examples)
+few-shot prompt  -> run once on the 332 held-out pairs
 
 Strategy B
 10k CMV candidates -> Llama few-shot labels -> silver pool
-300 gold examples  -> select the configuration
-2,500 silver examples -> fine-tune RoBERTa -> evaluate on 332 held-out examples
+300 gold pairs     -> choose silver size and settings
+2,500 silver pairs -> fine-tune RoBERTa -> run once on the 332 held-out pairs
 
 Strategy C
-300 gold examples -> five-fold development evaluation
-locked configuration -> train on all 300 gold examples
-                     -> evaluate on 332 held-out examples
+300 gold pairs     -> five-fold cross-validation to choose settings
+chosen settings    -> train on all 300 gold pairs -> run once on the 332 held-out pairs
 ```
 
-The 332-example held-out set is independent of development and training. It is not used for prompt or configuration selection.
+The held-out set was never used to choose a prompt or a setting.
 
-## Stage 2 Workflow
+## How Stage 2 fits together
 
-The 300 fully annotated examples are split into 36 development examples for prompt design and 264 examples for final evaluation.
+The 300 gold pairs are split into 36 for prompt development and 264 for evaluation.
 
-- **Experiment 1:** compares one joint `single_prompt` call with three independent `multi_module` calls for Sentiment, Emotion, and Intent. The multi-module predictions are independent, not sequential.
-- **Experiment 2:** tests whether Dialogue Act, Sentiment, and Emotion labels improve Intent classification. `oracle` uses human labels, while `predicted` and `predicted_sp` use saved model predictions.
+Experiment 1 compares one joint call (`single_prompt`) with three separate calls (`multi_module`) for Sentiment, Emotion and Intent. The three separate calls don't share their outputs.
 
-The predicted conditions require Strategy A Dialogue Act predictions and the corresponding Experiment 1 Sentiment and Emotion predictions. They operate on 260 common rows because the four Strategy A few-shot demonstrations are excluded.
+Experiment 2 tests whether Dialogue Act, Sentiment or Emotion labels help the Intent prompt. `oracle` uses the human labels; `predicted` and `predicted_sp` use saved model predictions. The predicted runs need Strategy A's Dialogue Act predictions and the matching Experiment 1 predictions. They use 260 of the 264 eval pairs, because the four gold pairs used as Strategy A few-shot examples have no Strategy A prediction.
 
-## Running the Main Experiments
+## Commands
 
-### Stage 1 — Strategy A
+### Strategy A
 
 ```bash
 python3 -m src.llm_annotate --mode zeroshot
@@ -65,7 +56,7 @@ python3 -m src.llm_annotate --mode fewshot
 python3 -m src.llm_annotate --heldout
 ```
 
-Generate the final few-shot silver labels:
+To regenerate the few-shot silver labels:
 
 ```bash
 python3 -m src.llm_annotate \
@@ -74,7 +65,7 @@ python3 -m src.llm_annotate \
   --output-csv data/task3_silver_labeled_10k_fewshot.csv
 ```
 
-### Stage 1 — Strategy B
+### Strategy B
 
 ```bash
 python3 -m src.train_roberta strategy_b \
@@ -88,9 +79,9 @@ python3 -m src.train_roberta strategy_b \
 python3 -m src.train_roberta strategy_b_heldout
 ```
 
-`sample_seed` selects the silver subset. `train_seed` controls model-training randomness. Strategy B uses a `source_root`-grouped train/validation split.
+`sample_seed` decides which silver subset is drawn; `train_seed` controls the randomness in training. The train/validation split is grouped by `source_root` (the thread), so replies from one thread never end up on both sides.
 
-### Stage 1 — Strategy C
+### Strategy C
 
 ```bash
 python3 -m src.train_roberta strategy_c \
@@ -104,7 +95,7 @@ python3 -m src.train_roberta strategy_c \
 python3 -m src.train_roberta strategy_c_heldout
 ```
 
-### Stage 2 — Experiment 1
+### Stage 2, Experiment 1
 
 ```bash
 python3 -m src.prepare_stage2_split
@@ -116,9 +107,9 @@ python3 -m src.stage2_pipeline --mode single_prompt --split eval
 python3 -m src.evaluate_stage2 --mode single_prompt --split eval
 ```
 
-### Stage 2 — Experiment 2
+### Stage 2, Experiment 2
 
-Run `oracle` first because the predicted conditions reuse its Parent–Reply-only baseline.
+Run `oracle` first; the predicted runs reuse its Parent–Reply-only baseline.
 
 ```bash
 python3 -m src.stage2_intent_sweep --split eval --feature-source oracle
@@ -126,7 +117,7 @@ python3 -m src.stage2_intent_sweep --split eval --feature-source predicted
 python3 -m src.stage2_intent_sweep --split eval --feature-source predicted_sp
 ```
 
-Add `--eval-only` to recalculate metrics from complete saved predictions without calling the LLM again.
+With `--eval-only`, the metrics are recomputed from saved predictions without calling the LLM.
 
 ### Tests
 
@@ -134,12 +125,11 @@ Add `--eval-only` to recalculate metrics from complete saved predictions without
 python3 -m unittest discover -s tests -v
 ```
 
-## Important Implementation Notes
+## Things worth knowing
 
-- RoBERTa receives `Parent` and `Reply` through the tokenizer's text-pair API, with a maximum length of 256 tokens.
-- Random seeds cover Python, NumPy, PyTorch, and CUDA.
-- Predictions, raw LLM responses, parsing fallbacks, metrics, and confusion matrices are saved under `results/`.
-- Stage 2 generation can resume from a compatible partial prediction file.
-- Real Llama and RoBERTa runs require model downloads and suitable GPU resources.
-- The raw `winning-args-corpus/utterances.jsonl` and final Strategy B checkpoints are not included. Prepared CSV files are included, and checkpoints can be regenerated with `strategy_b_heldout`.
-- Optional error-analysis and ablation scripts are not part of the main execution path.
+- RoBERTa gets the Parent and Reply as a text pair through the tokenizer, truncated to 256 tokens.
+- `set_seed` fixes the Python, NumPy, PyTorch and CUDA seeds.
+- Every run saves its predictions, the raw LLM output, fallback flags, metrics and a confusion matrix under `results/`.
+- If a Stage 2 run stops halfway, running the same command again picks up where it left off.
+- The real Llama and RoBERTa runs download the models and need a GPU.
+- `winning-args-corpus/utterances.jsonl` and the Strategy B checkpoints are not in the repository. The prepared CSVs are, and `strategy_b_heldout` recreates the checkpoints.
